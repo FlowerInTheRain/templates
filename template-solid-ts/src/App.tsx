@@ -2,7 +2,7 @@ import {createSignal} from 'solid-js'
 import './App.css'
 import Navbar from "./render/Navbar.tsx"
 import {Box, createTheme, ThemeProvider} from "@suid/material";
-
+import Alerts from "./render/Alerts.tsx"
 function App() {
     const darkTheme = createTheme({
         palette: {
@@ -22,6 +22,9 @@ function App() {
     });
     const [usedTheme, setUsedTheme] = createSignal(lightTheme);
     const [themeName, setThemeName] = createSignal('light');
+    const [isAlertOpen, setIsAlertOpen] = createSignal(false)
+    const [alertType, setAlertType] = createSignal("success")
+    const [alertMessage, setAlertMessage] = createSignal("ouaiouai")
 
     const updateTheme = () => {
         console.log(themeName() === 'light')
@@ -30,7 +33,15 @@ function App() {
         if (themeName() === 'light') {
             setThemeName(`dark`)
             setUsedTheme(darkTheme)
+            setAlertMessage("On mange?")
+
+            setAlertType("warning")
+            setIsAlertOpen(true)
         } else {
+            setIsAlertOpen(true)
+            setAlertMessage("On baise?")
+            setAlertType("success")
+
             setThemeName("light")
             setUsedTheme(lightTheme);
         }
@@ -38,7 +49,8 @@ function App() {
 
     return (
         <>
-            <Box class={themeName() === 'light' ? "global" : "global-dark"}>
+            <Box class={themeName() === 'light' ? "global" : "global-dark"} sx={{ flexGrow: 1 }}>
+                <Alerts message={alertMessage} type={alertType} opened={isAlertOpen} setIsAlertOpen={setIsAlertOpen}></Alerts>
                 <ThemeProvider theme={usedTheme}>
                     <Navbar/>
                     <h1>Vite + Solid</h1>
