@@ -1,4 +1,4 @@
-import {Alert} from "@suid/material";
+import CloseIcon from '@suid/icons-material/Close';
 
 export default function Alerts({type, message, opened, setIsAlertOpen}){
     const closeAlert = () => {
@@ -8,11 +8,10 @@ export default function Alerts({type, message, opened, setIsAlertOpen}){
             <>
                 {opened() &&
 	                <Alert severity={type()} class={"alerts"}
-	                       action={
-                               () => setTimeout(
-                                   closeAlert, 2500
-                               )
-                           }>{message()}</Alert>
+                            action={
+                        <IconButton size="small" aria-label="close" color="inherit" onClick={closeAlert} ><CloseIcon/></IconButton>
+                    }
+                    >{message()}</Alert>
                 }
 
             </>

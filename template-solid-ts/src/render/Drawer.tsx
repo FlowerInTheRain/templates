@@ -1,19 +1,5 @@
-import MailIcon from "@suid/icons-material/Mail";
-import InboxIcon from "@suid/icons-material/MoveToInbox";
-import {
-    Box,
-    Button,
-    Divider,
-    Drawer,
-    List,
-    ListItem,
-    ListItemButton,
-    ListItemIcon,
-    ListItemText,
-} from "@suid/material";
 
 export default function TemporaryDrawer({isDrawerOpen, closeDrawer}) {
-    console.log(isDrawerOpen)
 
     const list = (anchor: string) => (
         <Box

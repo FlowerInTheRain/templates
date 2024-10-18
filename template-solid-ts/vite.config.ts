@@ -1,11 +1,13 @@
-import { defineConfig } from 'vite'
-import solid from 'vite-plugin-solid'
-import solidPlugin from "vite-plugin-solid";
-import suidPlugin from "@suid/vite-plugin";
+import path from "path"
+
+import solid from 'vite-plugin-solid';
+import { defineConfig } from "vite"
 
 export default defineConfig({
-  plugins: [solid(), solidPlugin(), suidPlugin()],
-  build: {
-    target: "esnext",
-  },
+  plugins: [solid()],
+  resolve: {
+    alias: {
+      "~": path.resolve(__dirname, "./src")
+    }
+  }
 })

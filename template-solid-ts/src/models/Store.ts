@@ -4,6 +4,8 @@ interface StoreContent {
     isLogged: boolean;
     // @ts-ignore
     user: User | null;
+
+    theme: string;
 }
 
 export type {
