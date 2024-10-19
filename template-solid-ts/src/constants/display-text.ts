@@ -1,10 +1,13 @@
 const data = {
     horizontal: "horizontal",
     vertical: "vertical",
+    mailSentToDescription :"Mail envoyé à",
+    mailSentToTitle :"Mail envoyé",
     themeNameLight: "light",
     themeNameDark: "dark",
     toasterUpdateThemeTitle: "Modification du thème",
-    toasterUpdateThemeContent: "La modification de thème a bien été prise en compte",
+    toasterUpdateThemeDarkContent: "Thème sombre activé",
+    toasterUpdateThemeLightContent: "Thème jour activé",
     menuItemOne: "Learn",
     menuItemOneLabel: ["Sid", "Pigment"],
     menuItemOneDescription: ["Unstyled, accessible components for SolidJS.", "Ready-to-use components with a" +

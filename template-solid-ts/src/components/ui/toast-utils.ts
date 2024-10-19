@@ -1,6 +1,7 @@
 import {showToast} from "./toast.tsx";
 
 const showSuccessToaster = (title:string, description: string) => {
+    console.log("ok")
     showToast({
         title: title,
         description: description,
@@ -22,7 +23,7 @@ const showErrorToaster = (title:string, description: string) => {
     showToast({
         title: title,
         description: description,
-        variant: "warning",
+        variant: "error",
         duration:2500
     })
 }
