@@ -2,23 +2,15 @@ import './App.css'
 import {Card, CardContent, CardHeader, CardTitle} from "./components/ui/card"
 import {Col, Grid} from "./components/ui/grid"
 import {Flex} from "./components/ui/flex.tsx";
-import {createResource, createSignal, For, onMount} from "solid-js"
-
-import {
-    Table,
-    TableBody,
-    TableCaption,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow
-} from "./components/ui/table"
+import {createSignal, For, onMount} from "solid-js"
+import {Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow} from "./components/ui/table"
 import {Button} from "./components/ui/button.tsx";
 import {useNavigate} from "@solidjs/router";
 import dayjs from 'dayjs';
 import formatters from "./constants/formatters.ts";
 import {getMockData} from "./services/FakeService.ts";
-const format ="YYYY-MM-DD HH:mm";
+
+const format = "YYYY-MM-DD HH:mm";
 const invoices = [
     {
         invoice: "INV001",
@@ -81,16 +73,16 @@ const invoices = [
 ]
 
 
-
 function Home() {
     const nav = useNavigate();
     const [data, setData] = createSignal([])
     const goToInvoiceDetails = (reference: string) => {
-        nav(`/invoice-details/${reference}` )
+        nav(`/invoice-details/${reference}`)
     };
     onMount(async () => {
         const res = await getMockData()
         setData(res.data)
+        console.log(data())
     });
     return (
         <Flex class={"app-content"}>
@@ -110,7 +102,6 @@ function Home() {
                                         <TableHead>Method</TableHead>
                                         <TableHead class="text-right">Amount</TableHead>
                                         <TableHead class="text-center">Date</TableHead>
-
                                         <TableHead>Details</TableHead>
                                     </TableRow>
                                 </TableHeader>
@@ -124,13 +115,12 @@ function Home() {
                                                 <TableCell>{invoice.paymentMethod}</TableCell>
                                                 <TableCell class="text-right">{invoice.totalAmount}</TableCell>
                                                 <TableCell class="text-center">{invoice.date}</TableCell>
-
                                                 <TableCell>
                                                     <Button variant="outline"
                                                             class={"invoice-details-button"}
                                                             onClick={
-                                                        () => goToInvoiceDetails(invoice.invoice)
-                                                    }>Invoice details</Button>
+                                                                () => goToInvoiceDetails(invoice.invoice)
+                                                            }>Invoice details</Button>
                                                 </TableCell>
                                             </TableRow>
                                         )}

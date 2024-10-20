@@ -6,7 +6,7 @@ import displayText from "../../constants/display-text.ts";
 
 export default function SendEmailDialog(props: {
     recipient: string,
-    updateEmail: (e) => string,
+    updateEmail: (e: string) => void,
     sendEmail: () => void
 }) {
     return(
@@ -26,7 +26,7 @@ export default function SendEmailDialog(props: {
                     </TextFieldErrorMessage>
                     <TextFieldInput id={"email"}
                                     class="col-span-3" type="email"
-                                    onKeyPress={(e) => {
+                                    onKeyPress={(e: KeyboardEvent) => {
                                         if (e.key === 'Enter' && formatters.regexEmail.exec(props.recipient)) {
                                             props.sendEmail();
                                         }

@@ -1,42 +1,34 @@
-import {Tooltip, TooltipTrigger} from "../ui/tooltip.tsx";
-import {tooltipContent} from "../ui/TooltipUtils.tsx";
 import {NavigationMenu} from "@kobalte/core/navigation-menu";
-import {useColorMode} from "@kobalte/core";
 import {showSuccessToaster, showWarningToaster} from "../ui/toast-utils.ts";
-import data from "../../constants/display-text.ts";
-import {Toggle} from "../ui/toggle.tsx";
-import {Show} from "solid-js";
-import {DarkModeIcon, LightModeIcon} from "../../assets/icons/SvgIcons.tsx";
+import displayText from "../../constants/display-text.ts";
 import {AccountMenu} from "./AccountMenu.tsx";
 import {setAppStore} from "../../stores/AppStore.ts";
+import {useColorMode} from "@kobalte/core";
+import type { Orientation } from "@kobalte/utils";
 
-export default function BasicAppBar({themeName, setThemeName}) {
+export default function BasicAppBar(props: { themeName: () => string, setThemeName: (e: string) => void }) {
     const {setColorMode} = useColorMode()
 
     const updateTheme = (theme: string) => {
-        if (theme === data.themeNameDark) {
-            setThemeName(data.themeNameDark)
-            showWarningToaster(data.toasterUpdateThemeTitle, data.toasterUpdateThemeDarkContent
+        if (theme === displayText.themeNameDark) {
+            props.setThemeName(displayText.themeNameDark)
+            showWarningToaster(displayText.toasterUpdateThemeTitle, displayText.toasterUpdateThemeDarkContent
             );
-            setColorMode(data.themeNameDark)
-            setAppStore((store) => {
-                store.theme = data.themeNameDark
-            })
+            // @ts-ignore
+            setColorMode(displayText.themeNameDark)
+            setAppStore("theme", displayText.themeNameDark)
         } else {
-            showSuccessToaster(data.toasterUpdateThemeTitle, data.toasterUpdateThemeLightContent);
-            setThemeName(data.themeNameLight)
-            setColorMode(data.themeNameLight)
-            setAppStore((store) => {
-                store.theme = data.themeNameLight
-            })
+            showSuccessToaster(displayText.toasterUpdateThemeTitle, displayText.toasterUpdateThemeLightContent);
+            props.setThemeName(displayText.themeNameLight)
+            // @ts-ignore
+            setColorMode(displayText.themeNameLight)
+            setAppStore("theme", displayText.themeNameLight)
         }
     }
 
-
     return (
         <>
-
-            <NavigationMenu orientation={data.horizontal} class="navigation-menu__root">
+            <NavigationMenu orientation={displayText.horizontal as Orientation} class="navigation-menu__root">
                 <NavigationMenu.Menu>
                     <NavigationMenu.Item
 
@@ -47,7 +39,7 @@ export default function BasicAppBar({themeName, setThemeName}) {
                 </NavigationMenu.Menu>
                 <NavigationMenu.Menu>
                     <NavigationMenu.Trigger class="navigation-menu__trigger">
-                        {data.menuItemOne}{" "}
+                        {displayText.menuItemOne}{" "}
                     </NavigationMenu.Trigger>
                     <NavigationMenu.Portal>
                         <NavigationMenu.Content class="navigation-menu__content content-1">
@@ -62,10 +54,10 @@ export default function BasicAppBar({themeName, setThemeName}) {
                                     alt="Kobalte"
                                 />
                                 <NavigationMenu.ItemLabel class="navigation-menu__item-label">
-                                    {data.menuItemOneLabel[0]}
+                                    {displayText.menuItemOneLabel[0]}
                                 </NavigationMenu.ItemLabel>
                                 <NavigationMenu.ItemDescription class="navigation-menu__item-description">
-                                    {data.menuItemOneDescription[0]}
+                                    {displayText.menuItemOneDescription[0]}
                                 </NavigationMenu.ItemDescription>
                             </NavigationMenu.Item>
                             <NavigationMenu.Item
@@ -73,10 +65,10 @@ export default function BasicAppBar({themeName, setThemeName}) {
                                 href="https://pigment.kobalte.dev"
                             >
                                 <NavigationMenu.ItemLabel class="navigation-menu__item-label">
-                                    {data.menuItemOneLabel[1]}
+                                    {displayText.menuItemOneLabel[1]}
                                 </NavigationMenu.ItemLabel>
                                 <NavigationMenu.ItemDescription class="navigation-menu__item-description">
-                                    {data.menuItemOneDescription[1]}
+                                    {displayText.menuItemOneDescription[1]}
                                 </NavigationMenu.ItemDescription>
                             </NavigationMenu.Item>
                             <NavigationMenu.Item
@@ -167,8 +159,7 @@ export default function BasicAppBar({themeName, setThemeName}) {
                     <NavigationMenu.Arrow class="navigation-menu__arrow"/>
                 </NavigationMenu.Viewport>
             </NavigationMenu>
-            <AccountMenu updateTheme={updateTheme} themeName={themeName}></AccountMenu>
+            <AccountMenu updateTheme={updateTheme} themeName={props.themeName}></AccountMenu>
         </>
-
     )
 }

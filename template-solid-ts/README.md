@@ -26,3 +26,12 @@ Your app is ready to be deployed!
 ## Deployment
 
 Learn more about deploying your application with the [documentations](https://vitejs.dev/guide/static-deploy.html)
+
+
+## Vitest 
+
+Learn more about vitest [vitest](https://docs.solidjs.com/guides/testing) set up and usage
+
+## UI 
+
+SolidUI / Kobalte are the main tools to build the interface
