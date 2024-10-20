@@ -1,8 +1,16 @@
-const data = {
+const displayText = {
+    mailDialogSubmit: "Envoyer",
+    mailDialogTitle: "Envoyer la facture par mail",
+    mailDialogError:"Adresse mail invalide",
     horizontal: "horizontal",
     vertical: "vertical",
+    download: "Télécharger",
+    invoiceCardTitle: "Facture",
+    invoiceCardDescription: "Détails de la facture",
     mailSentToDescription :"Mail envoyé à",
     mailSentToTitle :"Mail envoyé",
+    mailUnsentDescription :"Erreur lors de l'envoi de l'email, veuillez vérifier le destinataire",
+    mailUnsentTitle :"Email non envoyé",
     themeNameLight: "light",
     themeNameDark: "dark",
     toasterUpdateThemeTitle: "Modification du thème",
@@ -19,4 +27,4 @@ const data = {
 
 }
 
-export default data;
+export default displayText;

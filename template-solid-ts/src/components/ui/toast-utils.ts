@@ -1,7 +1,6 @@
 import {showToast} from "./toast.tsx";
 
 const showSuccessToaster = (title:string, description: string) => {
-    console.log("ok")
     showToast({
         title: title,
         description: description,

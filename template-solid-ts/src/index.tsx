@@ -18,6 +18,7 @@ const storageManager = createLocalStorageManager("vite-ui-theme")
 const filters = {
     reference: (v: string) => v.length === 6
 };
+
 render(() => (
     <>
         <Toaster/>

@@ -2,7 +2,7 @@ import './App.css'
 import {Card, CardContent, CardHeader, CardTitle} from "./components/ui/card"
 import {Col, Grid} from "./components/ui/grid"
 import {Flex} from "./components/ui/flex.tsx";
-import {For} from "solid-js"
+import {createResource, createSignal, For, onMount} from "solid-js"
 
 import {
     Table,
@@ -16,8 +16,8 @@ import {
 import {Button} from "./components/ui/button.tsx";
 import {useNavigate} from "@solidjs/router";
 import dayjs from 'dayjs';
-
 import formatters from "./constants/formatters.ts";
+import {getMockData} from "./services/FakeService.ts";
 const format ="YYYY-MM-DD HH:mm";
 const invoices = [
     {
@@ -84,11 +84,14 @@ const invoices = [
 
 function Home() {
     const nav = useNavigate();
-
+    const [data, setData] = createSignal([])
     const goToInvoiceDetails = (reference: string) => {
         nav(`/invoice-details/${reference}` )
     };
-
+    onMount(async () => {
+        const res = await getMockData()
+        setData(res.data)
+    });
     return (
         <Flex class={"app-content"}>
             <Grid cols={1} colsMd={2} colsLg={3} class="w-full gap-2">
@@ -123,7 +126,9 @@ function Home() {
                                                 <TableCell class="text-center">{invoice.date}</TableCell>
 
                                                 <TableCell>
-                                                    <Button variant="outline" onClick={
+                                                    <Button variant="outline"
+                                                            class={"invoice-details-button"}
+                                                            onClick={
                                                         () => goToInvoiceDetails(invoice.invoice)
                                                     }>Invoice details</Button>
                                                 </TableCell>

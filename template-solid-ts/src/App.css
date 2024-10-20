@@ -9,6 +9,8 @@
         font-family: "Ubuntu", sans-serif;
         font-weight: 400;
         font-style: normal;
+
+        min-height: 100vh;
         --muted: 240 4.8% 95.9%;
         --muted-foreground: 240 3.8% 46.1%;
 
@@ -52,7 +54,7 @@
 
     .dark,
     [data-kb-theme="dark"] {
-        --background: 240 10% 3.9%;
+        --background: 240 10% 10%;
         --foreground: 0 0% 98%;
 
         --muted: 240 3.7% 15.9%;
@@ -67,7 +69,7 @@
         --border: 240 3.7% 15.9%;
         --input: 240 3.7% 15.9%;
 
-        --card: 240 10% 3.9%;
+        --card: 240 10% 15%;
         --card-foreground: 0 0% 98%;
 
         --primary: 0 0% 98%;
@@ -149,7 +151,7 @@ nav {
     justify-content: space-evenly;
     align-content: center;
 
-    border-bottom: 0.1em solid darkgrey;
+    border-bottom: 0.1px solid darkgrey;
     height: 50px;
 }
 
@@ -220,8 +222,8 @@ nav {
     background-color: hsl(var(--background));
     color:hsl(var(--foreground));
     box-shadow:
-            0 4px 6px -1px rgb(0 0 0 / 0.1),
-            0 2px 4px -2px rgb(0 0 0 / 0.1);
+            0 4px 6px -1px hsl(var(--background)),
+            0 2px 4px -2px hsl(var(--background));
     opacity: 0;
     overflow-x: clip;
     overflow-y: visible;
@@ -232,7 +234,7 @@ nav {
             250ms ease;
     animation: viewportHide 250ms ease-in forwards;
     pointer-events: none;
-    z-index: 999;
+
 }
 .navigation-menu__viewport[data-orientation="vertical"] {
     overflow-x: visible;
@@ -475,6 +477,7 @@ nav {
     padding: 50px;
     display: flex;
     justify-content: space-around;
+    background-color: hsl(var(--card));
     margin: 0 auto;
 }
 
@@ -517,7 +520,7 @@ nav {
     padding: 8px;
     background-color: hsl(var(--background));
     border-radius: 6px;
-    border: 1px solid hsl(240 6% 90%);
+    border: 1px solid hsl(var(--background));
     box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
     outline: none;
     transform-origin: var(--kb-menu-content-transform-origin);
@@ -544,7 +547,7 @@ nav {
     outline: none;
 }
 .dropdown-menu__sub-trigger[data-expanded] {
-    background-color: hsl(204 94% 94%);
+    background-color: hsl(var(--background));
     color: hsl(201 96% 32%);
 }
 .dropdown-menu__item[data-disabled],
@@ -587,7 +590,7 @@ nav {
     margin-left: auto;
     padding-left: 20px;
     font-size: 14px;
-    color: hsl(240 4% 46%);
+    color: hsl(var(--foreground));
 }
 [data-highlighted] > .dropdown-menu__item-right-slot {
     color: white;
@@ -668,9 +671,17 @@ button.w-full:hover{
     margin: 0 auto;
     max-width: 90%;
     border-radius: unset;
+}
 
+.invoice-details-button{
+    background-color: hsl(var(--background));
 }
 
 .hover\:bg-primary\/90:hover {
     background-color: hsl(var(--foreground));
+}
+
+/** dialog */
+.input-error-message{
+    padding-bottom: 10px;
 }

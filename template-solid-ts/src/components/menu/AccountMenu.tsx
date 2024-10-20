@@ -2,13 +2,13 @@ import { createSignal } from "solid-js"
 
 import {Avatar, AvatarFallback, AvatarImage} from "../ui/avatar.tsx";
 import {DropdownMenu} from "@kobalte/core/dropdown-menu";
-import {DarkModeIcon} from "../../assets/icons/SvgIcons.tsx";
+import {CheckedIcon, DarkModeIcon, LightModeIcon} from "../../assets/icons/SvgIcons.tsx";
+import displayText from "../../constants/display-text.ts";
 
-export function AccountMenu() {
+export function AccountMenu(props :{updateTheme : (e) => string, themeName:string}) {
     const [showGitLog, setShowGitLog] = createSignal(false)
     const [showHistory, setShowHistory] = createSignal(false)
-    const [branch, setBranch] = createSignal("develop")
-
+    console.log(props.themeName())
     return (
     <DropdownMenu>
         <DropdownMenu.Trigger class="dropdown-menu__trigger">
@@ -16,6 +16,7 @@ export function AccountMenu() {
                         <AvatarImage src="https://github.com/sek-consulting.png" height={15} width={15} />
                         <AvatarFallback>EK</AvatarFallback>
                     </Avatar>
+
         </DropdownMenu.Trigger>
         <DropdownMenu.Portal>
 
@@ -78,20 +79,27 @@ export function AccountMenu() {
                 <DropdownMenu.Separator class="dropdown-menu__separator"/>
                 <DropdownMenu.Group>
                     <DropdownMenu.GroupLabel class="dropdown-menu__group-label">
-                        Branches
+                        Thèmes
                     </DropdownMenu.GroupLabel>
-                    <DropdownMenu.RadioGroup value={branch()} onChange={setBranch}>
-                        <DropdownMenu.RadioItem class="dropdown-menu__radio-item" value="main">
+
+                    <DropdownMenu.RadioGroup value={props.themeName()} onChange={(e) => props.updateTheme(e)}>
+                        <DropdownMenu.RadioItem class="dropdown-menu__radio-item" value={displayText.themeNameLight}>
                             <DropdownMenu.ItemIndicator class="dropdown-menu__item-indicator">
-                                <DarkModeIcon/>
+                                <CheckedIcon/>
                             </DropdownMenu.ItemIndicator>
-                            main
+                            Light
+                            <div className="dropdown-menu__item-right-slot">
+                                <LightModeIcon/>
+                            </div>
                         </DropdownMenu.RadioItem>
-                        <DropdownMenu.RadioItem class="dropdown-menu__radio-item" value="develop">
+                        <DropdownMenu.RadioItem class="dropdown-menu__radio-item" value={displayText.themeNameDark}>
                             <DropdownMenu.ItemIndicator class="dropdown-menu__item-indicator">
-                                <DarkModeIcon/>
+                                <CheckedIcon/>
                             </DropdownMenu.ItemIndicator>
-                            develop
+                            Dark
+                            <div className="dropdown-menu__item-right-slot">
+                                <DarkModeIcon/>
+                            </div>
                         </DropdownMenu.RadioItem>
                     </DropdownMenu.RadioGroup>
                 </DropdownMenu.Group>

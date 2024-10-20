@@ -7,8 +7,7 @@ import {createSignal} from "solid-js";
 import SendEmailDialog from "../dialogs/SendEmailDialog.tsx";
 import formatters from "../../constants/formatters.ts";
 import {showErrorToaster, showSuccessToaster} from "../ui/toast-utils.ts";
-import data from "../../constants/display-text.ts";
-
+import displayText from "../../constants/display-text.ts";
 
 export default function InvoiceDetail() {
 
@@ -17,17 +16,22 @@ export default function InvoiceDetail() {
 
     const sendEmail = () => {
         if (formatters.regexEmail.exec(recipient())) {
-            showSuccessToaster(data.mailSentToTitle, `${data.mailSentToDescription} ${recipient()}`)
+            showSuccessToaster(displayText.mailSentToTitle, `${displayText.mailSentToDescription} ${recipient()}`)
         } else {
-            showErrorToaster("Échec de l'envoi", "Format de l'adresse mail non valide")
+            showErrorToaster(displayText.mailUnsentTitle, displayText.mailUnsentDescription)
         }
+    }
+
+
+    const updateEmail = (mail: string) => {
+        setRecipient(mail)
     }
     return (
         <Flex class={"app-content"}>
             <Card class={"invoice-details-card"}>
                 <CardHeader>
-                    <CardTitle>Invoice {params.reference}</CardTitle>
-                    <CardDescription>Details for the invoice</CardDescription>
+                    <CardTitle>{displayText.invoiceCardTitle} {params.reference}</CardTitle>
+                    <CardDescription>{displayText.invoiceCardDescription}</CardDescription>
                 </CardHeader>
                 <CardContent>
                     <div class="mb-4 grid grid-cols-[25px_1fr] items-start pb-4 last:mb-0 last:pb-0">
@@ -38,18 +42,15 @@ export default function InvoiceDetail() {
                         </div>
                     </div>
                 </CardContent>
-
                 <CardFooter>
                     <Button class="w-full">
                         <DownloadIcon/>
-                        Download
+                        {displayText.download}
                     </Button>
-
-                    <SendEmailDialog value={recipient()} onChange={(e) => setRecipient(e.target.value)}
-                                     onClick={() => sendEmail()}/>
+                    <SendEmailDialog recipient={recipient()} updateEmail={updateEmail}
+                                     sendEmail={() => sendEmail()}/>
                 </CardFooter>
             </Card>
-
         </Flex>
     )
 }
