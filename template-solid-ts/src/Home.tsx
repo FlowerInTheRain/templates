@@ -78,22 +78,76 @@ const invoices = [
         totalAmount: "$300.00",
         paymentMethod: "Credit Card",
         date: dayjs().subtract(6, 'days').format(formatters.dateTimeNoSecondsFormat)
+    },
+    {
+        invoice: "INV008",
+        paymentStatus: "Pending",
+        totalAmount: "$200.00",
+        paymentMethod: "Bank Transfer",
+        date: dayjs().subtract(8, 'days').format(formatters.dateTimeNoSecondsFormat)
+    },
+    {
+        invoice: "INV009",
+        paymentStatus: "Unpaid",
+        totalAmount: "$300.00",
+        paymentMethod: "Credit Card",
+        date: dayjs().subtract(10, 'days').format(formatters.dateTimeNoSecondsFormat)
+    },
+    {
+        invoice: "INV010",
+        paymentStatus: "Pending",
+        totalAmount: "$200.00",
+        paymentMethod: "Bank Transfer",
+        date: dayjs().subtract(12, 'days').format(formatters.dateTimeNoSecondsFormat)
+    },
+    {
+        invoice: "INV011",
+        paymentStatus: "Paid",
+        totalAmount: "$300.00",
+        paymentMethod: "Credit Card",
+        date: dayjs().subtract(15, 'days').format(formatters.dateTimeNoSecondsFormat)
+    },
+    {
+        invoice: "INV012",
+        paymentStatus: "Pending",
+        totalAmount: "$200.00",
+        paymentMethod: "Bank Transfer",
+        date: dayjs().subtract(15, 'days').format(formatters.dateTimeNoSecondsFormat)
+    },
+    {
+        invoice: "INV013",
+        paymentStatus: "Paid",
+        totalAmount: "$300.00",
+        paymentMethod: "Credit Card",
+        date: dayjs().subtract(15, 'days').format(formatters.dateTimeNoSecondsFormat)
+    },
+    {
+        invoice: "INV014",
+        paymentStatus: "Pending",
+        totalAmount: "$200.00",
+        paymentMethod: "Bank Transfer",
+        date: dayjs().subtract(16, 'days').format(formatters.dateTimeNoSecondsFormat)
+    },
+    {
+        invoice: "INV015",
+        paymentStatus: "Unpaid",
+        totalAmount: "$300.00",
+        paymentMethod: "Credit Card",
+        date: dayjs().subtract(17, 'days').format(formatters.dateTimeNoSecondsFormat)
     }
 ]
 
 
 function Home() {
     const nav = useNavigate();
-    const [data, setData] = createSignal([])
+    const [products, setProducts] = createSignal([])
     const goToInvoiceDetails = (reference: string) => {
         nav(`/invoice-details/${reference}`)
     };
-    console.log(Math.ceil(5 / 5))
     onMount(async () => {
         const res = await getMockData()
         if (res && res.status === 200) {
-            setData(res.data)
-            console.log(data())
+            setProducts(res.data)
         }
     });
     const iconsToPlace = (amount: number) => {
@@ -111,111 +165,125 @@ function Home() {
         <Flex class={"app-content"}>
             <Grid cols={1} colsMd={2} colsLg={3} class="w-full gap-2">
                 <Col span={1} spanLg={2}>
-                    <Table>
-                        <TableCaption>A list of your recent invoices.</TableCaption>
-                        <TableHeader>
-                            <TableRow>
-                                <TableHead class="w-[100px]">Invoice</TableHead>
-                                <TableHead>Status</TableHead>
-                                <TableHead>Method</TableHead>
-                                <TableHead class="text-right">Amount</TableHead>
-                                <TableHead class="text-center">Date</TableHead>
-                                <TableHead>Details</TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            <For each={invoices.slice(maxIndex() - 5, maxIndex())}>
-                                {(invoice) => (
-                                    <TableRow>
-                                        <TableCell class="font-medium">{invoice.invoice}</TableCell>
-                                        <TableCell
-                                            class={invoice.paymentStatus === 'Paid' ? 'ok-status' : invoice.paymentStatus === 'Pending' ? 'waiting-status' : "ko-status"}>{invoice.paymentStatus}</TableCell>
-                                        <TableCell>{invoice.paymentMethod}</TableCell>
-                                        <TableCell class="text-right">{invoice.totalAmount}</TableCell>
-                                        <TableCell class="text-center">{invoice.date}</TableCell>
-                                        <TableCell>
-                                            <Button variant="outline"
-                                                    class={"invoice-details-button"}
-                                                    onClick={
-                                                        () => goToInvoiceDetails(invoice.invoice)
-                                                    }>Invoice details</Button>
-                                        </TableCell>
-                                    </TableRow>
-                                )}
-                            </For>
-                        </TableBody>
-                        <TableFooter class={"table-footer"}>
-                            <TableRow>
-                                <TableCell colSpan={6}>
-                                </TableCell>
-                            </TableRow>
-                        </TableFooter>
-                    </Table>
-                    <Pagination
-                        count={Math.ceil(data().length / 5)}
-                        fixedItems
-                        onPageChange={updateDisplayableItems}
-                        itemComponent={(props) => <PaginationItem page={props.page}>{props.page}</PaginationItem>}
-                        ellipsisComponent={() => <PaginationEllipsis/>}
-                    >
-                        <PaginationPrevious/>
-                        <PaginationItems/>
-                        <PaginationNext/>
-                    </Pagination>
+                    <Card>
+
+                        {invoices.length > 5 &&
+                            <Pagination style={{}} class={"pagination"}
+                                        count={Math.ceil(invoices.length / 5)}
+                                        fixedItems
+                                        onPageChange={updateDisplayableItems}
+                                        itemComponent={(props) => <PaginationItem
+                                            page={props.page}>{props.page}</PaginationItem>}
+                                        ellipsisComponent={() => <PaginationEllipsis/>}
+                            >
+                                <PaginationPrevious/>
+                                <PaginationItems/>
+                                <PaginationNext/>
+                            </Pagination>
+                        }
+                        <Table>
+                            <TableCaption>A list of your recent invoices.</TableCaption>
+                            <TableHeader>
+                                <TableRow>
+                                    <TableHead class="w-[100px]">Invoice</TableHead>
+                                    <TableHead>Status</TableHead>
+                                    <TableHead>Method</TableHead>
+                                    <TableHead class="text-right">Amount</TableHead>
+                                    <TableHead class="text-center">Date</TableHead>
+                                    <TableHead>Details</TableHead>
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                                <For each={invoices.slice(maxIndex() - 5, maxIndex())}>
+                                    {(invoice) => (
+                                        <TableRow>
+                                            <TableCell class="font-medium">{invoice.invoice}</TableCell>
+                                            <TableCell
+                                                class={invoice.paymentStatus === 'Paid' ? 'ok-status' : invoice.paymentStatus === 'Pending' ? 'waiting-status' : "ko-status"}>{invoice.paymentStatus}</TableCell>
+                                            <TableCell>{invoice.paymentMethod}</TableCell>
+                                            <TableCell class="text-right">{invoice.totalAmount}</TableCell>
+                                            <TableCell class="text-center">{invoice.date}</TableCell>
+                                            <TableCell>
+                                                <Button variant="outline"
+                                                        class={"invoice-details-button"}
+                                                        onClick={
+                                                            () => goToInvoiceDetails(invoice.invoice)
+                                                        }>Invoice details</Button>
+                                            </TableCell>
+                                        </TableRow>
+                                    )}
+                                </For>
+                            </TableBody>
+                            <TableFooter class={"table-footer"}>
+                                <TableRow>
+                                    <TableCell colSpan={6}>
+                                    </TableCell>
+                                </TableRow>
+                            </TableFooter>
+                        </Table>
+                    </Card>
+
                 </Col>
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Products</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <Accordion multiple={false} collapsible>
-                            {data().map((item: any) => (
-                                <AccordionItem value={`item-${item.product_id}`}>
-                                    <AccordionTrigger>{item.name} </AccordionTrigger>
-                                    <AccordionContent>
-                                        <div
-                                            class="mb-4 grid grid-cols-[25px_1fr] items-start pb-4 last:mb-0 last:pb-0">
-                                            <div class="space-y-1">
-                                                <p class="text-sm font-medium leading-none">{item.brand}</p>
-                                                <p class="text-sm text-muted-foreground">Marque</p>
-                                            </div>
+                <Col>
+
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Products</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <Accordion multiple={false} collapsible>
+                                <For each={products()} fallback={<div>Loading...</div>}>
+                                    {(item: any, index) => (
+                                        <div>
+                                            <AccordionItem value={`item-${index}`}>
+                                                <AccordionTrigger>{item.name} </AccordionTrigger>
+                                                <AccordionContent>
+                                                    <div
+                                                        class="mb-4 grid grid-cols-[25px_1fr] items-start pb-4 last:mb-0 last:pb-0">
+                                                        <div class="space-y-1">
+                                                            <p class="text-sm font-medium leading-none">{item.brand}</p>
+                                                            <p class="text-sm text-muted-foreground">Marque</p>
+                                                        </div>
+                                                    </div>
+                                                    <div
+                                                        class="mb-4 grid grid-cols-[25px_1fr] items-start pb-4 last:mb-0 last:pb-0">
+                                                        <div class="space-y-1">
+                                                            <p>{item.description}</p>
+                                                            <p class="text-sm text-muted-foreground">Description</p>
+                                                        </div>
+                                                    </div>
+                                                    <div
+                                                        class="mb-4 grid grid-cols-[25px_1fr] items-start pb-4 last:mb-0 last:pb-0">
+                                                        <div class="space-y-1">
+                                                            <p>{item.price} €</p>
+                                                            <p class="text-sm text-muted-foreground">Prix</p>
+                                                        </div>
+                                                    </div>
+                                                    <div
+                                                        class="mb-4 grid grid-cols-[25px_1fr] items-start pb-4 last:mb-0 last:pb-0">
+                                                        <div class="space-y-1">
+                                                            <p>{item.category}</p>
+                                                            <p class="text-sm text-muted-foreground">Catégorie</p>
+                                                        </div>
+                                                    </div>
+                                                    <div
+                                                        class="mb-4 grid grid-cols-[25px_1fr] items-start pb-4 last:mb-0 last:pb-0">
+                                                        <div class="space-y-1">
+                                                            <div
+                                                                class={"stars-display"}>{iconsToPlace(Math.floor(item.rating)).map(meh => meh)}</div>
+                                                            <p class="text-sm text-muted-foreground">Note moyenne des
+                                                                utilisateurs</p>
+                                                        </div>
+                                                    </div>
+                                                </AccordionContent>
+                                            </AccordionItem>
                                         </div>
-                                        <div
-                                            class="mb-4 grid grid-cols-[25px_1fr] items-start pb-4 last:mb-0 last:pb-0">
-                                            <div class="space-y-1">
-                                                <p>{item.description}</p>
-                                                <p class="text-sm text-muted-foreground">Description</p>
-                                            </div>
-                                        </div>
-                                        <div
-                                            class="mb-4 grid grid-cols-[25px_1fr] items-start pb-4 last:mb-0 last:pb-0">
-                                            <div class="space-y-1">
-                                                <p>{item.price} €</p>
-                                                <p class="text-sm text-muted-foreground">Prix</p>
-                                            </div>
-                                        </div>
-                                        <div
-                                            class="mb-4 grid grid-cols-[25px_1fr] items-start pb-4 last:mb-0 last:pb-0">
-                                            <div class="space-y-1">
-                                                <p>{item.category}</p>
-                                                <p class="text-sm text-muted-foreground">Catégorie</p>
-                                            </div>
-                                        </div>
-                                        <div
-                                            class="mb-4 grid grid-cols-[25px_1fr] items-start pb-4 last:mb-0 last:pb-0">
-                                            <div class="space-y-1">
-                                                <div
-                                                    class={"stars-display"}>{iconsToPlace(Math.floor(item.rating)).map(meh => meh)}</div>
-                                                <p class="text-sm text-muted-foreground">Note moyenne des
-                                                    utilisateurs</p>
-                                            </div>
-                                        </div>
-                                    </AccordionContent>
-                                </AccordionItem>
-                            ))}
-                        </Accordion>
-                    </CardContent>
-                </Card>
+                                    )}
+                                </For>
+                            </Accordion>
+                        </CardContent>
+                    </Card>
+                </Col>
                 <Col>
                     <Card>
                         <CardHeader>

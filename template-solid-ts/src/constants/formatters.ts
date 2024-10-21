@@ -1,5 +1,5 @@
 const formatters = {
-    dateTimeNoSecondsFormat: "YYYY-MM-DD HH:mm",
+    dateTimeNoSecondsFormat: "DD-MM-YYYY HH:mm",
     regexEmail: /^\S+@\S+$/
 }
 

@@ -741,3 +741,11 @@ button.w-full:hover{
 .stars-display{
     display:block ruby;
 }
+
+.pagination{
+    display: flex;
+    justify-content: end;
+    border-bottom: 0.1px solid darkgrey;
+    height: 50px;
+    width: unset;
+}
