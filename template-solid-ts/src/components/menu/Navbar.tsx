@@ -23,6 +23,10 @@ export default function BasicAppBar(props: { themeName: () => string, setThemeNa
         }
     }
 
+    const login = () => {
+        setAppStore("token", "123456789")
+    }
+
     return (
         <>
             <NavigationMenu orientation={displayText.horizontal as Orientation} class="navigation-menu__root">
@@ -155,7 +159,7 @@ export default function BasicAppBar(props: { themeName: () => string, setThemeNa
                     <NavigationMenu.Arrow class="navigation-menu__arrow"/>
                 </NavigationMenu.Viewport>
             </NavigationMenu>
-            <AccountMenu updateTheme={updateTheme} themeName={props.themeName}></AccountMenu>
+            <AccountMenu updateTheme={updateTheme} themeName={props.themeName} logIn={login}></AccountMenu>
         </>
     )
 }

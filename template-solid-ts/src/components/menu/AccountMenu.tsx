@@ -4,8 +4,9 @@ import {Avatar, AvatarFallback, AvatarImage} from "../ui/avatar.tsx";
 import {DropdownMenu} from "@kobalte/core/dropdown-menu";
 import {CheckedIcon, DarkModeIcon, LightModeIcon} from "../../assets/icons/SvgIcons.tsx";
 import displayText from "../../constants/display-text.ts";
+import {appStore} from "../../stores/AppStore.ts";
 
-export function AccountMenu(props: { updateTheme: (e: string) => void, themeName: () => string }) {
+export function AccountMenu(props: { updateTheme: (e: string) => void, themeName: () => string, logIn: () => void}) {
     const [showGitLog, setShowGitLog] = createSignal(false)
     const [showHistory, setShowHistory] = createSignal(false)
     return (
@@ -18,11 +19,15 @@ export function AccountMenu(props: { updateTheme: (e: string) => void, themeName
             </DropdownMenu.Trigger>
             <DropdownMenu.Portal>
                 <DropdownMenu.Content class="dropdown-menu__content">
+                    { appStore.token === null ?
+                        <DropdownMenu.Item class="dropdown-menu__item" onClick={props.logIn}>
+                            Connexion
+                        </DropdownMenu.Item>
+                        :null
+                    }
+
                     <DropdownMenu.Item class="dropdown-menu__item">
-                        Connexion <div class="dropdown-menu__item-right-slot">⇧+⌘+K</div>
-                    </DropdownMenu.Item>
-                    <DropdownMenu.Item class="dropdown-menu__item">
-                        Profil <div class="dropdown-menu__item-right-slot">⌘+K</div>
+                        Profil
                     </DropdownMenu.Item>
                     <DropdownMenu.Item class="dropdown-menu__item" disabled>
                         Update Project <div class="dropdown-menu__item-right-slot">⌘+T</div>
