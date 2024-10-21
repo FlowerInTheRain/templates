@@ -725,3 +725,19 @@ button.w-full:hover{
     line-height: 1;
     font-weight: 500;
 }
+
+/** Table */
+.table-footer {
+    background-color: hsl(var(--card));
+    color: hsl(var(--foreground));
+}
+
+.space-y-1{
+    white-space: nowrap;
+    width: fit-content;
+    display: inline-list-item;
+}
+
+.stars-display{
+    display:block ruby;
+}

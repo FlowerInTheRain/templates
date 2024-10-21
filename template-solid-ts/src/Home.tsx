@@ -3,14 +3,32 @@ import {Card, CardContent, CardHeader, CardTitle} from "./components/ui/card"
 import {Col, Grid} from "./components/ui/grid"
 import {Flex} from "./components/ui/flex.tsx";
 import {createSignal, For, onMount} from "solid-js"
-import {Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow} from "./components/ui/table"
+import {
+    Table,
+    TableBody,
+    TableCaption,
+    TableCell,
+    TableFooter,
+    TableHead,
+    TableHeader,
+    TableRow
+} from "./components/ui/table"
 import {Button} from "./components/ui/button.tsx";
 import {useNavigate} from "@solidjs/router";
 import dayjs from 'dayjs';
 import formatters from "./constants/formatters.ts";
 import {getMockData} from "./services/FakeService.ts";
+import {Accordion, AccordionContent, AccordionItem, AccordionTrigger} from "./components/ui/accordion.tsx";
+import {FilledStarIcon} from "./assets/icons/SvgIcons.tsx";
+import {
+    Pagination,
+    PaginationEllipsis,
+    PaginationItem,
+    PaginationItems,
+    PaginationNext,
+    PaginationPrevious
+} from "./components/ui/pagination.tsx";
 
-const format = "YYYY-MM-DD HH:mm";
 const invoices = [
     {
         invoice: "INV001",
@@ -25,7 +43,6 @@ const invoices = [
         totalAmount: "$150.00",
         paymentMethod: "PayPal",
         date: dayjs().format(formatters.dateTimeNoSecondsFormat)
-
     },
     {
         invoice: "INV003",
@@ -33,7 +50,6 @@ const invoices = [
         totalAmount: "$350.00",
         paymentMethod: "Bank Transfer",
         date: dayjs().format(formatters.dateTimeNoSecondsFormat)
-
     },
     {
         invoice: "INV004",
@@ -41,7 +57,6 @@ const invoices = [
         totalAmount: "$450.00",
         paymentMethod: "Credit Card",
         date: dayjs().subtract(2, 'hours').format(formatters.dateTimeNoSecondsFormat)
-
     },
     {
         invoice: "INV005",
@@ -49,8 +64,6 @@ const invoices = [
         totalAmount: "$550.00",
         paymentMethod: "PayPal",
         date: dayjs().subtract(2, 'days').format(formatters.dateTimeNoSecondsFormat)
-
-
     },
     {
         invoice: "INV006",
@@ -58,17 +71,13 @@ const invoices = [
         totalAmount: "$200.00",
         paymentMethod: "Bank Transfer",
         date: dayjs().subtract(4, 'days').format(formatters.dateTimeNoSecondsFormat)
-
-
     },
     {
         invoice: "INV007",
         paymentStatus: "Unpaid",
         totalAmount: "$300.00",
         paymentMethod: "Credit Card",
-        date: dayjs().subtract(6, 'days').format(format)
-
-
+        date: dayjs().subtract(6, 'days').format(formatters.dateTimeNoSecondsFormat)
     }
 ]
 
@@ -79,62 +88,133 @@ function Home() {
     const goToInvoiceDetails = (reference: string) => {
         nav(`/invoice-details/${reference}`)
     };
+    console.log(Math.ceil(5 / 5))
     onMount(async () => {
         const res = await getMockData()
-        setData(res.data)
-        console.log(data())
+        if (res && res.status === 200) {
+            setData(res.data)
+            console.log(data())
+        }
     });
+    const iconsToPlace = (amount: number) => {
+        let res = [];
+        for (let i = 0; i < amount; i++) {
+            res.push(<FilledStarIcon></FilledStarIcon>);
+        }
+        return res;
+    }
+    const updateDisplayableItems = (index: number) => {
+        setMaxIndex(index * 5)
+    }
+    const [maxIndex, setMaxIndex] = createSignal(5);
     return (
         <Flex class={"app-content"}>
             <Grid cols={1} colsMd={2} colsLg={3} class="w-full gap-2">
                 <Col span={1} spanLg={2}>
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>Latest invoices</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <Table>
-                                <TableCaption>A list of your recent invoices.</TableCaption>
-                                <TableHeader>
+                    <Table>
+                        <TableCaption>A list of your recent invoices.</TableCaption>
+                        <TableHeader>
+                            <TableRow>
+                                <TableHead class="w-[100px]">Invoice</TableHead>
+                                <TableHead>Status</TableHead>
+                                <TableHead>Method</TableHead>
+                                <TableHead class="text-right">Amount</TableHead>
+                                <TableHead class="text-center">Date</TableHead>
+                                <TableHead>Details</TableHead>
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                            <For each={invoices.slice(maxIndex() - 5, maxIndex())}>
+                                {(invoice) => (
                                     <TableRow>
-                                        <TableHead class="w-[100px]">Invoice</TableHead>
-                                        <TableHead>Status</TableHead>
-                                        <TableHead>Method</TableHead>
-                                        <TableHead class="text-right">Amount</TableHead>
-                                        <TableHead class="text-center">Date</TableHead>
-                                        <TableHead>Details</TableHead>
+                                        <TableCell class="font-medium">{invoice.invoice}</TableCell>
+                                        <TableCell
+                                            class={invoice.paymentStatus === 'Paid' ? 'ok-status' : invoice.paymentStatus === 'Pending' ? 'waiting-status' : "ko-status"}>{invoice.paymentStatus}</TableCell>
+                                        <TableCell>{invoice.paymentMethod}</TableCell>
+                                        <TableCell class="text-right">{invoice.totalAmount}</TableCell>
+                                        <TableCell class="text-center">{invoice.date}</TableCell>
+                                        <TableCell>
+                                            <Button variant="outline"
+                                                    class={"invoice-details-button"}
+                                                    onClick={
+                                                        () => goToInvoiceDetails(invoice.invoice)
+                                                    }>Invoice details</Button>
+                                        </TableCell>
                                     </TableRow>
-                                </TableHeader>
-                                <TableBody>
-                                    <For each={invoices}>
-                                        {(invoice) => (
-                                            <TableRow>
-                                                <TableCell class="font-medium">{invoice.invoice}</TableCell>
-                                                <TableCell
-                                                    class={invoice.paymentStatus === 'Paid' ? 'ok-status' : invoice.paymentStatus === 'Pending' ? 'waiting-status' : "ko-status"}>{invoice.paymentStatus}</TableCell>
-                                                <TableCell>{invoice.paymentMethod}</TableCell>
-                                                <TableCell class="text-right">{invoice.totalAmount}</TableCell>
-                                                <TableCell class="text-center">{invoice.date}</TableCell>
-                                                <TableCell>
-                                                    <Button variant="outline"
-                                                            class={"invoice-details-button"}
-                                                            onClick={
-                                                                () => goToInvoiceDetails(invoice.invoice)
-                                                            }>Invoice details</Button>
-                                                </TableCell>
-                                            </TableRow>
-                                        )}
-                                    </For>
-                                </TableBody>
-                            </Table>
-                        </CardContent>
-                    </Card>
+                                )}
+                            </For>
+                        </TableBody>
+                        <TableFooter class={"table-footer"}>
+                            <TableRow>
+                                <TableCell colSpan={6}>
+                                </TableCell>
+                            </TableRow>
+                        </TableFooter>
+                    </Table>
+                    <Pagination
+                        count={Math.ceil(data().length / 5)}
+                        fixedItems
+                        onPageChange={updateDisplayableItems}
+                        itemComponent={(props) => <PaginationItem page={props.page}>{props.page}</PaginationItem>}
+                        ellipsisComponent={() => <PaginationEllipsis/>}
+                    >
+                        <PaginationPrevious/>
+                        <PaginationItems/>
+                        <PaginationNext/>
+                    </Pagination>
                 </Col>
                 <Card>
                     <CardHeader>
-                        <CardTitle>Title</CardTitle>
+                        <CardTitle>Products</CardTitle>
                     </CardHeader>
-                    <CardContent>KPI 2</CardContent>
+                    <CardContent>
+                        <Accordion multiple={false} collapsible>
+                            {data().map((item: any) => (
+                                <AccordionItem value={`item-${item.product_id}`}>
+                                    <AccordionTrigger>{item.name} </AccordionTrigger>
+                                    <AccordionContent>
+                                        <div
+                                            class="mb-4 grid grid-cols-[25px_1fr] items-start pb-4 last:mb-0 last:pb-0">
+                                            <div class="space-y-1">
+                                                <p class="text-sm font-medium leading-none">{item.brand}</p>
+                                                <p class="text-sm text-muted-foreground">Marque</p>
+                                            </div>
+                                        </div>
+                                        <div
+                                            class="mb-4 grid grid-cols-[25px_1fr] items-start pb-4 last:mb-0 last:pb-0">
+                                            <div class="space-y-1">
+                                                <p>{item.description}</p>
+                                                <p class="text-sm text-muted-foreground">Description</p>
+                                            </div>
+                                        </div>
+                                        <div
+                                            class="mb-4 grid grid-cols-[25px_1fr] items-start pb-4 last:mb-0 last:pb-0">
+                                            <div class="space-y-1">
+                                                <p>{item.price} €</p>
+                                                <p class="text-sm text-muted-foreground">Prix</p>
+                                            </div>
+                                        </div>
+                                        <div
+                                            class="mb-4 grid grid-cols-[25px_1fr] items-start pb-4 last:mb-0 last:pb-0">
+                                            <div class="space-y-1">
+                                                <p>{item.category}</p>
+                                                <p class="text-sm text-muted-foreground">Catégorie</p>
+                                            </div>
+                                        </div>
+                                        <div
+                                            class="mb-4 grid grid-cols-[25px_1fr] items-start pb-4 last:mb-0 last:pb-0">
+                                            <div class="space-y-1">
+                                                <div
+                                                    class={"stars-display"}>{iconsToPlace(Math.floor(item.rating)).map(meh => meh)}</div>
+                                                <p class="text-sm text-muted-foreground">Note moyenne des
+                                                    utilisateurs</p>
+                                            </div>
+                                        </div>
+                                    </AccordionContent>
+                                </AccordionItem>
+                            ))}
+                        </Accordion>
+                    </CardContent>
                 </Card>
                 <Col>
                     <Card>

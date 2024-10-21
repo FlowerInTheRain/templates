@@ -9,36 +9,36 @@ export default function SendEmailDialog(props: {
     updateEmail: (e: string) => void,
     sendEmail: () => void
 }) {
-    return(
+    return (
         <Dialog>
-        <DialogTrigger as={Button<"button">} class={"w-full"}>Send By Email</DialogTrigger>
-        <DialogContent class="sm:max-w-[425px]">
-            <DialogHeader>
-                <DialogTitle>{displayText.mailDialogTitle}</DialogTitle>
-            </DialogHeader>
-            <div class="grid gap-4 py-4">
-                <TextField value={props.recipient}
-                           validationState={props.recipient.length > 4 && formatters.regexEmail.exec(props.recipient) ? "valid" : "invalid"}
-                           onChange={props.updateEmail}>
-                    <TextFieldLabel for="email" class={"input-error-message"}>Recipient</TextFieldLabel>
-                    <TextFieldErrorMessage class={"input-error-message"}>
-                        {displayText.mailDialogError}
-                    </TextFieldErrorMessage>
-                    <TextFieldInput id={"email"}
-                                    class="col-span-3" type="email"
-                                    onKeyPress={(e: KeyboardEvent) => {
-                                        if (e.key === 'Enter' && formatters.regexEmail.exec(props.recipient)) {
-                                            props.sendEmail();
-                                        }
-                                    }}
-                    />
-                </TextField>
-
-            </div>
-            <DialogFooter>
-                <Button type="submit" class={"w-full"} onClick={props.sendEmail}>{displayText.mailDialogSubmit}</Button>
-            </DialogFooter>
-        </DialogContent>
-    </Dialog>
+            <DialogTrigger as={Button<"button">} class={"w-full"}>Send By Email</DialogTrigger>
+            <DialogContent class="sm:max-w-[425px]">
+                <DialogHeader>
+                    <DialogTitle>{displayText.mailDialogTitle}</DialogTitle>
+                </DialogHeader>
+                <div class="grid gap-4 py-4">
+                    <TextField value={props.recipient}
+                               validationState={props.recipient.length > 4 && formatters.regexEmail.exec(props.recipient) ? "valid" : "invalid"}
+                               onChange={props.updateEmail}>
+                        <TextFieldLabel for="email" class={"input-error-message"}>Recipient</TextFieldLabel>
+                        <TextFieldErrorMessage class={"input-error-message"}>
+                            {displayText.mailDialogError}
+                        </TextFieldErrorMessage>
+                        <TextFieldInput id={"email"}
+                                        class="col-span-3" type="email"
+                                        onKeyPress={(e: KeyboardEvent) => {
+                                            if (e.key === 'Enter' && formatters.regexEmail.exec(props.recipient)) {
+                                                props.sendEmail();
+                                            }
+                                        }}
+                        />
+                    </TextField>
+                </div>
+                <DialogFooter>
+                    <Button type="submit" class={"w-full"}
+                            onClick={props.sendEmail}>{displayText.mailDialogSubmit}</Button>
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
     );
 }

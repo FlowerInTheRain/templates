@@ -8,7 +8,6 @@ import displayText from "../../constants/display-text.ts";
 export function AccountMenu(props: { updateTheme: (e: string) => void, themeName: () => string }) {
     const [showGitLog, setShowGitLog] = createSignal(false)
     const [showHistory, setShowHistory] = createSignal(false)
-    console.log(props.themeName())
     return (
         <DropdownMenu>
             <DropdownMenu.Trigger class="dropdown-menu__trigger">
