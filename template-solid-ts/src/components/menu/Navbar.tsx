@@ -3,7 +3,7 @@ import {showSuccessToaster, showWarningToaster} from "../ui/toast-utils.ts";
 import displayText from "../../constants/display-text.ts";
 import {AccountMenu} from "./AccountMenu.tsx";
 import {setAppStore} from "../../stores/AppStore.ts";
-import {useColorMode} from "@kobalte/core";
+import {ConfigColorMode, useColorMode} from "@kobalte/core";
 import type { Orientation } from "@kobalte/utils";
 
 export default function BasicAppBar(props: { themeName: () => string, setThemeName: (e: string) => void }) {
@@ -12,17 +12,14 @@ export default function BasicAppBar(props: { themeName: () => string, setThemeNa
     const updateTheme = (theme: string) => {
         if (theme === displayText.themeNameDark) {
             props.setThemeName(displayText.themeNameDark)
-            showWarningToaster(displayText.toasterUpdateThemeTitle, displayText.toasterUpdateThemeDarkContent
-            );
-            // @ts-ignore
-            setColorMode(displayText.themeNameDark)
+            setColorMode(displayText.themeNameDark as ConfigColorMode)
             setAppStore("theme", displayText.themeNameDark)
+            showWarningToaster(displayText.toasterUpdateThemeTitle, displayText.toasterUpdateThemeDarkContent);
         } else {
-            showSuccessToaster(displayText.toasterUpdateThemeTitle, displayText.toasterUpdateThemeLightContent);
             props.setThemeName(displayText.themeNameLight)
-            // @ts-ignore
-            setColorMode(displayText.themeNameLight)
+            setColorMode(displayText.themeNameLight as ConfigColorMode)
             setAppStore("theme", displayText.themeNameLight)
+            showSuccessToaster(displayText.toasterUpdateThemeTitle, displayText.toasterUpdateThemeLightContent);
         }
     }
 
@@ -31,7 +28,6 @@ export default function BasicAppBar(props: { themeName: () => string, setThemeNa
             <NavigationMenu orientation={displayText.horizontal as Orientation} class="navigation-menu__root">
                 <NavigationMenu.Menu>
                     <NavigationMenu.Item
-
                         class="navigation-menu__trigger"
                         href="/"
                     >Home

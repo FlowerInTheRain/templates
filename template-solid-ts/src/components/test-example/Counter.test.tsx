@@ -5,12 +5,14 @@ import { Counter } from "./Counter"
 
 const user = userEvent.setup()
 
-test("increments value", async () => {
-    const { getByRole } = render(() => <Counter />)
-    const counter = getByRole('button')
-    // @ts-ignore
-    expect(counter).toHaveTextContent("1")
-    await user.click(counter)
-    // @ts-ignore
-    expect(counter).toHaveTextContent("2")
+test("increment then decrement value", async () => {
+    const { container } = render(() => <Counter />)
+    const counter = container.querySelector<HTMLSpanElement>("#display")!
+    const increment = container.querySelector<HTMLButtonElement>("#increment")!
+    const decrement = container.querySelector<HTMLButtonElement>("#decrement")!
+    expect(counter.textContent).equals("1")
+    await user.click(increment)
+    expect(counter.textContent).equals("2")
+    await user.click(decrement)
+    expect(counter.textContent).equals("1")
 })
