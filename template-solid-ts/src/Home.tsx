@@ -150,10 +150,14 @@ function Home() {
             setProducts(res.data)
         }
     });
+    const displayDecimalIcon = (decimal: number) => {
+        return FilledStarIcon(Math.round(decimal*100))
+    }
+
     const iconsToPlace = (amount: number) => {
         let res = [];
         for (let i = 0; i < amount; i++) {
-            res.push(<FilledStarIcon></FilledStarIcon>);
+            res.push(FilledStarIcon(100));
         }
         return res;
     }
@@ -233,9 +237,9 @@ function Home() {
                         <CardContent>
                             <Accordion multiple={false} collapsible>
                                 <For each={products()} fallback={<div>Loading...</div>}>
-                                    {(item: any, index) => (
+                                    {(item: any) => (
                                         <div>
-                                            <AccordionItem value={`item-${index}`}>
+                                            <AccordionItem value={`item-${item.product_id}`}>
                                                 <AccordionTrigger>{item.name} </AccordionTrigger>
                                                 <AccordionContent>
                                                     <div
@@ -270,9 +274,17 @@ function Home() {
                                                         class="mb-4 grid grid-cols-[25px_1fr] items-start pb-4 last:mb-0 last:pb-0">
                                                         <div class="space-y-1">
                                                             <div
-                                                                class={"stars-display"}>{iconsToPlace(Math.floor(item.rating)).map(meh => meh)}</div>
+                                                                class={"stars-display"}>
+                                                                {iconsToPlace(Math.floor(item.rating)).map(meh => {
+
+                                                                    return meh
+                                                                })}
+                                                                {
+                                                                    displayDecimalIcon(item.rating - Math.floor(item.rating))
+                                                                }
+                                                            </div>
                                                             <p class="text-sm text-muted-foreground">Note moyenne des
-                                                                utilisateurs</p>
+                                                                utilisateurs : {item.rating}</p>
                                                         </div>
                                                     </div>
                                                 </AccordionContent>

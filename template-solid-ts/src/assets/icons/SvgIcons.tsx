@@ -49,12 +49,23 @@ const CheckedIcon = () => {
     )
 }
 
-const FilledStarIcon = () => {
-   return (<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" fill="#fdbb2d" width={35}>
-           <path
-               d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z"></path>
-       </svg>
-   );
+const FilledStarIcon = (offset: number) => {
+    console.log(offset)
+    return (
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 25 25"
+             height="40px" width="40px">
+            <defs>
+
+                <linearGradient id={`g${offset}`} x1="0" y1="0" x2="1" y2="0">
+                    <stop id="stop1" stop-color="#FFBF00" offset={`${offset}%`}/>
+                    <stop id="stop2" stop-color="transparent" offset={`${offset}%`}/>
+                </linearGradient>
+            </defs>
+            <path style={`fill:url(#g${offset})`}
+                  d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006Z"
+                  clip-rule="evenodd"></path>
+        </svg>
+    );
 }
 export {
     DownloadIcon,
