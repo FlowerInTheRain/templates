@@ -18,8 +18,6 @@ import {useNavigate} from "@solidjs/router";
 import dayjs from 'dayjs';
 import formatters from "./constants/formatters.ts";
 import {getMockData} from "./services/FakeService.ts";
-import {Accordion, AccordionContent, AccordionItem, AccordionTrigger} from "./components/ui/accordion.tsx";
-import {FilledStarIcon} from "./assets/icons/SvgIcons.tsx";
 import {
     Pagination,
     PaginationEllipsis,
@@ -28,6 +26,7 @@ import {
     PaginationNext,
     PaginationPrevious
 } from "./components/ui/pagination.tsx";
+import ProductSummary from "./components/products/ProductsSummary.tsx";
 
 const invoices = [
     {
@@ -148,19 +147,10 @@ function Home() {
         const res = await getMockData()
         if (res && res.status === 200) {
             setProducts(res.data)
+            console.log(products())
         }
     });
-    const displayDecimalIcon = (decimal: number) => {
-        return FilledStarIcon(Math.round(decimal*100))
-    }
 
-    const iconsToPlace = (amount: number) => {
-        let res = [];
-        for (let i = 0; i < amount; i++) {
-            res.push(FilledStarIcon(100));
-        }
-        return res;
-    }
     const updateDisplayableItems = (index: number) => {
         setMaxIndex(index * 5)
     }
@@ -170,7 +160,6 @@ function Home() {
             <Grid cols={1} colsMd={2} colsLg={3} class="w-full gap-2">
                 <Col span={1} spanLg={2}>
                     <Card>
-
                         {invoices.length > 5 &&
                             <Pagination style={{}} class={"pagination"}
                                         count={Math.ceil(invoices.length / 5)}
@@ -226,75 +215,9 @@ function Home() {
                             </TableFooter>
                         </Table>
                     </Card>
-
                 </Col>
                 <Col>
-
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>Products</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <Accordion multiple={false} collapsible>
-                                <For each={products()} fallback={<div>Loading...</div>}>
-                                    {(item: any) => (
-                                        <div>
-                                            <AccordionItem value={`item-${item.product_id}`}>
-                                                <AccordionTrigger>{item.name} </AccordionTrigger>
-                                                <AccordionContent>
-                                                    <div
-                                                        class="mb-4 grid grid-cols-[25px_1fr] items-start pb-4 last:mb-0 last:pb-0">
-                                                        <div class="space-y-1">
-                                                            <p class="text-sm font-medium leading-none">{item.brand}</p>
-                                                            <p class="text-sm text-muted-foreground">Marque</p>
-                                                        </div>
-                                                    </div>
-                                                    <div
-                                                        class="mb-4 grid grid-cols-[25px_1fr] items-start pb-4 last:mb-0 last:pb-0">
-                                                        <div class="space-y-1">
-                                                            <p>{item.description}</p>
-                                                            <p class="text-sm text-muted-foreground">Description</p>
-                                                        </div>
-                                                    </div>
-                                                    <div
-                                                        class="mb-4 grid grid-cols-[25px_1fr] items-start pb-4 last:mb-0 last:pb-0">
-                                                        <div class="space-y-1">
-                                                            <p>{item.price} €</p>
-                                                            <p class="text-sm text-muted-foreground">Prix</p>
-                                                        </div>
-                                                    </div>
-                                                    <div
-                                                        class="mb-4 grid grid-cols-[25px_1fr] items-start pb-4 last:mb-0 last:pb-0">
-                                                        <div class="space-y-1">
-                                                            <p>{item.category}</p>
-                                                            <p class="text-sm text-muted-foreground">Catégorie</p>
-                                                        </div>
-                                                    </div>
-                                                    <div
-                                                        class="mb-4 grid grid-cols-[25px_1fr] items-start pb-4 last:mb-0 last:pb-0">
-                                                        <div class="space-y-1">
-                                                            <div
-                                                                class={"stars-display"}>
-                                                                {iconsToPlace(Math.floor(item.rating)).map(meh => {
-
-                                                                    return meh
-                                                                })}
-                                                                {
-                                                                    displayDecimalIcon(item.rating - Math.floor(item.rating))
-                                                                }
-                                                            </div>
-                                                            <p class="text-sm text-muted-foreground">Note moyenne des
-                                                                utilisateurs : {item.rating}</p>
-                                                        </div>
-                                                    </div>
-                                                </AccordionContent>
-                                            </AccordionItem>
-                                        </div>
-                                    )}
-                                </For>
-                            </Accordion>
-                        </CardContent>
-                    </Card>
+                    <ProductSummary products={products}></ProductSummary>
                 </Col>
                 <Col>
                     <Card>

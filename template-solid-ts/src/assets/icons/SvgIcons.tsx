@@ -49,28 +49,48 @@ const CheckedIcon = () => {
     )
 }
 
-const FilledStarIcon = (offset: number) => {
-    console.log(offset)
+const FilledStarIcon = () => {
+    return (
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 25 25"
+             height="40px" width="40px" color={"#FFBF00"}>
+            <path style={`fill:#FFBF00`}
+                  d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006Z"
+                  clip-rule="evenodd"></path>
+        </svg>
+    );
+}
+
+const GradientStarIcon = ( id: number, offset: number) => {
     return (
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 25 25"
              height="40px" width="40px">
             <defs>
 
-                <linearGradient id={`g${offset}`} x1="0" y1="0" x2="1" y2="0">
+                <linearGradient id={`g-${id}`} x1="0" y1="0" x2="1" y2="0">
                     <stop id="stop1" stop-color="#FFBF00" offset={`${offset}%`}/>
-                    <stop id="stop2" stop-color="transparent" offset={`${offset}%`}/>
+                    <stop id="stop2" stop-color="transparent"/>
                 </linearGradient>
             </defs>
-            <path style={`fill:url(#g${offset})`}
+            <path style={`fill:url(#g-${id})`}
                   d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006Z"
                   clip-rule="evenodd"></path>
         </svg>
     );
+}
+
+const HomeIcon = () => {
+    return (<svg stroke-width="0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024"
+         style="overflow: visible; color: #0284c7;" height="1em" width="1em" fill={"#0284c7"}>
+        <path
+            d="M946.5 505 534.6 93.4a31.93 31.93 0 0 0-45.2 0L77.5 505c-12 12-18.8 28.3-18.8 45.3 0 35.3 28.7 64 64 64h43.4V908c0 17.7 14.3 32 32 32H448V716h112v224h265.9c17.7 0 32-14.3 32-32V614.3h43.4c17 0 33.3-6.7 45.3-18.8 24.9-25 24.9-65.5-.1-90.5z"></path>
+    </svg>);
 }
 export {
     DownloadIcon,
     LightModeIcon,
     DarkModeIcon,
     CheckedIcon,
-    FilledStarIcon
+    FilledStarIcon,
+    GradientStarIcon,
+    HomeIcon
 }

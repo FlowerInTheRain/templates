@@ -5,6 +5,7 @@ import {AccountMenu} from "./AccountMenu.tsx";
 import {setAppStore} from "../../stores/AppStore.ts";
 import {ConfigColorMode, useColorMode} from "@kobalte/core";
 import type { Orientation } from "@kobalte/utils";
+import {HomeIcon} from "../../assets/icons/SvgIcons.tsx";
 
 export default function BasicAppBar(props: { themeName: () => string, setThemeName: (e: string) => void }) {
     const {setColorMode} = useColorMode()
@@ -30,13 +31,14 @@ export default function BasicAppBar(props: { themeName: () => string, setThemeNa
     return (
         <>
             <NavigationMenu orientation={displayText.horizontal as Orientation} class="navigation-menu__root">
-                <NavigationMenu.Menu>
-                    <NavigationMenu.Item
-                        class="navigation-menu__trigger"
-                        href="/"
-                    >Home
-                    </NavigationMenu.Item>
-                </NavigationMenu.Menu>
+                <NavigationMenu.Trigger
+                    class="navigation-menu__trigger"
+                    as="a"
+                    href="/"
+                    target="_blank"
+                >
+                    <HomeIcon/> Home
+                </NavigationMenu.Trigger>
                 <NavigationMenu.Menu>
                     <NavigationMenu.Trigger class="navigation-menu__trigger">
                         {displayText.menuItemOne}{" "}
