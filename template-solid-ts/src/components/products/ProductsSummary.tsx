@@ -70,11 +70,9 @@ export default function ProductSummary(props: { products: () => any }) {
                                                         {
                                                             displayDecimalIcon(item.product_id, item.rating - Math.floor(item.rating))
                                                         }
-                                                        <p class="text-sm text-muted-foreground">{item.reviews.length} avis</p>
+                                                        <p class="text-sm text-muted-foreground">{item.rating} ({item.reviews.length} avis)</p>
 
                                                     </div>
-                                                    <p class="text-sm text-muted-foreground">Note moyenne des
-                                                        utilisateurs : {item.rating}</p>
                                                 </div>
                                             </div>
                                         </AccordionContent>

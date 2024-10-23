@@ -2,31 +2,12 @@ import './App.css'
 import {Card, CardContent, CardHeader, CardTitle} from "./components/ui/card"
 import {Col, Grid} from "./components/ui/grid"
 import {Flex} from "./components/ui/flex.tsx";
-import {createSignal, For, onMount} from "solid-js"
-import {
-    Table,
-    TableBody,
-    TableCaption,
-    TableCell,
-    TableFooter,
-    TableHead,
-    TableHeader,
-    TableRow
-} from "./components/ui/table"
-import {Button} from "./components/ui/button.tsx";
-import {useNavigate} from "@solidjs/router";
+import {createSignal, onMount} from "solid-js"
 import dayjs from 'dayjs';
 import formatters from "./constants/formatters.ts";
 import {getMockData} from "./services/FakeService.ts";
-import {
-    Pagination,
-    PaginationEllipsis,
-    PaginationItem,
-    PaginationItems,
-    PaginationNext,
-    PaginationPrevious
-} from "./components/ui/pagination.tsx";
 import ProductSummary from "./components/products/ProductsSummary.tsx";
+import InvoiceSummary from "./components/invoices/InvoicesSummary.tsx";
 
 const invoices = [
     {
@@ -138,83 +119,21 @@ const invoices = [
 
 
 function Home() {
-    const nav = useNavigate();
     const [products, setProducts] = createSignal([])
-    const goToInvoiceDetails = (reference: string) => {
-        nav(`/invoice-details/${reference}`)
-    };
+
     onMount(async () => {
         const res = await getMockData()
         if (res && res.status === 200) {
             setProducts(res.data)
-            console.log(products())
         }
     });
 
-    const updateDisplayableItems = (index: number) => {
-        setMaxIndex(index * 5)
-    }
-    const [maxIndex, setMaxIndex] = createSignal(5);
+
     return (
         <Flex class={"app-content"}>
             <Grid cols={1} colsMd={2} colsLg={3} class="w-full gap-2">
                 <Col span={1} spanLg={2}>
-                    <Card>
-                        {invoices.length > 5 &&
-                            <Pagination style={{}} class={"pagination"}
-                                        count={Math.ceil(invoices.length / 5)}
-                                        fixedItems
-                                        onPageChange={updateDisplayableItems}
-                                        itemComponent={(props) => <PaginationItem
-                                            page={props.page}>{props.page}</PaginationItem>}
-                                        ellipsisComponent={() => <PaginationEllipsis/>}
-                            >
-                                <PaginationPrevious/>
-                                <PaginationItems/>
-                                <PaginationNext/>
-                            </Pagination>
-                        }
-                        <Table>
-                            <TableCaption>A list of your recent invoices.</TableCaption>
-                            <TableHeader>
-                                <TableRow>
-                                    <TableHead class="w-[100px]">Invoice</TableHead>
-                                    <TableHead>Status</TableHead>
-                                    <TableHead>Method</TableHead>
-                                    <TableHead class="text-right">Amount</TableHead>
-                                    <TableHead class="text-center">Date</TableHead>
-                                    <TableHead>Details</TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                <For each={invoices.slice(maxIndex() - 5, maxIndex())}>
-                                    {(invoice) => (
-                                        <TableRow>
-                                            <TableCell class="font-medium">{invoice.invoice}</TableCell>
-                                            <TableCell
-                                                class={invoice.paymentStatus === 'Paid' ? 'ok-status' : invoice.paymentStatus === 'Pending' ? 'waiting-status' : "ko-status"}>{invoice.paymentStatus}</TableCell>
-                                            <TableCell>{invoice.paymentMethod}</TableCell>
-                                            <TableCell class="text-right">{invoice.totalAmount}</TableCell>
-                                            <TableCell class="text-center">{invoice.date}</TableCell>
-                                            <TableCell>
-                                                <Button variant="outline"
-                                                        class={"invoice-details-button"}
-                                                        onClick={
-                                                            () => goToInvoiceDetails(invoice.invoice)
-                                                        }>Invoice details</Button>
-                                            </TableCell>
-                                        </TableRow>
-                                    )}
-                                </For>
-                            </TableBody>
-                            <TableFooter class={"table-footer"}>
-                                <TableRow>
-                                    <TableCell colSpan={6}>
-                                    </TableCell>
-                                </TableRow>
-                            </TableFooter>
-                        </Table>
-                    </Card>
+                    <InvoiceSummary invoices={invoices}/>
                 </Col>
                 <Col>
                     <ProductSummary products={products}></ProductSummary>
