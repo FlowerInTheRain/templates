@@ -630,7 +630,7 @@ nav {
 }
 
 
-.ok-status{
+.paid-status{
     color: forestgreen;
 
     font-weight:800;
@@ -638,14 +638,14 @@ nav {
 
 
 
-.ko-status{
+.unpaid-status{
     color: #9f1e22;
     font-weight:800;
 
 }
 
 
-.waiting-status{
+.pending-status{
     color: darkorange;
     font-weight:800;
 

@@ -35,7 +35,6 @@ export default function BasicAppBar(props: { themeName: () => string, setThemeNa
                     class="navigation-menu__trigger"
                     as="a"
                     href="/"
-                    target="_blank"
                 >
                     <HomeIcon/> Home
                 </NavigationMenu.Trigger>

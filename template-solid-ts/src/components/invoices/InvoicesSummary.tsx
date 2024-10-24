@@ -30,22 +30,19 @@ export default function InvoiceSummary(props: {invoices: any}){
     const updateDisplayableItems = (index: number) => {
         setMaxIndex(index * 5)
     }
-    const goToInvoiceDetails = (reference: string) => {
-        nav(`/invoice-details/${reference}`)
+    const goToInvoiceDetails = (invoice: any) => {
+        nav(`/invoice-details/${invoice.invoice}`, {state: invoice})
     };
     return (
         <Card>
-
             <Table>
                 <TableCaption>A list of your recent invoices.</TableCaption>
                 <TableHeader>
                     <TableRow>
                         <TableHead class="w-[100px]">Invoice</TableHead>
                         <TableHead>Status</TableHead>
-                        <TableHead>Method</TableHead>
                         <TableHead class="text-right">Amount</TableHead>
-                        <TableHead class="text-center">Date</TableHead>
-                        <TableHead>Details</TableHead>
+                        <TableHead class="text-right">Details</TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -54,15 +51,13 @@ export default function InvoiceSummary(props: {invoices: any}){
                             <TableRow>
                                 <TableCell class="font-medium">{invoice.invoice}</TableCell>
                                 <TableCell
-                                    class={invoice.paymentStatus === 'Paid' ? 'ok-status' : invoice.paymentStatus === 'Pending' ? 'waiting-status' : "ko-status"}>{invoice.paymentStatus}</TableCell>
-                                <TableCell>{invoice.paymentMethod}</TableCell>
+                                    class={`${invoice.paymentStatus.toLowerCase()}-status`}>{invoice.paymentStatus}</TableCell>
                                 <TableCell class="text-right">{invoice.totalAmount}</TableCell>
-                                <TableCell class="text-center">{invoice.date}</TableCell>
-                                <TableCell>
+                                <TableCell class="text-right">
                                     <Button variant="outline"
                                             class={"invoice-details-button"}
                                             onClick={
-                                                () => goToInvoiceDetails(invoice.invoice)
+                                                () => goToInvoiceDetails(invoice)
                                             }>Invoice details</Button>
                                 </TableCell>
                             </TableRow>
