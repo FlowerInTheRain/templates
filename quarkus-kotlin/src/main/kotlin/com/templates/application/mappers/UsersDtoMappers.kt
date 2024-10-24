@@ -12,6 +12,8 @@ import org.mapstruct.MappingConstants
 interface UsersDtoMappers {
     @Mapping(target = "reference", ignore = true)
     @Mapping(target = "type", ignore = true)
+    @Mapping(target = "verificationCode", ignore = true)
+    @Mapping(target = "verificationCodeTimestamp", ignore = true)
     fun fromCreationRequest(createUserRequest: CreateUserRequest):CreateUserCommand
 
     fun toCreationResponse(userCreationInformations: UserCreationInformations):CreateUserResponse

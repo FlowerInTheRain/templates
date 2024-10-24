@@ -1,6 +1,7 @@
 package com.templates.persistence
 
 import jakarta.persistence.*
+import java.sql.Timestamp
 
 @Entity
 @Table(name = "users")
@@ -26,4 +27,8 @@ class MyKotlinEntity {
     var type: String? = null
     @Column(name = "phone_number", columnDefinition = "varchar(12)", unique = true, nullable = false)
     var phoneNumber: String? = null
+    @Column(name = "verification_code", columnDefinition = "bpchar(6)")
+    var verificationCode: String? = null
+    @Column(name = "verification_code_timestamp", columnDefinition = "TIMESTAMP")
+    var verificationCodeTimestamp: Timestamp? = null
 }

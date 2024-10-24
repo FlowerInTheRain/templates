@@ -17,6 +17,7 @@ import jakarta.enterprise.context.ApplicationScoped
 import jakarta.enterprise.inject.Default
 import jakarta.inject.Inject
 import org.jboss.logging.Logger
+import java.sql.Timestamp
 
 
 @ApplicationScoped
@@ -45,6 +46,9 @@ class CreateUsers : CreateUsersIn {
             val userToken = jwtTokenGenerator.getToken(user.email,UserTypes
                 .CLIENT.name)
             val verificationCode = OtpGenerator.generateCode()
+            user.verificationCode = verificationCode
+            user.verificationCodeTimestamp = Timestamp(System.currentTimeMillis())
+            // TODO("Save user in DB")
             val content = mailer.generateOtpEmail(user.firstName, verificationCode)
             mailer.sendHtmlEmail(user.email, content)
             LOG.info("OTP verification Mail sent to user")
