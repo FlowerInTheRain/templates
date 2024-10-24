@@ -13,6 +13,6 @@ object UUIDGenerator {
         return newRandomBusinessReference
     }
     fun getNewUUID(): String {
-        return UUIDFormatter.formatUUIDSequence(generateUUID(),true, "")
+        return UUIDFormatter.formatUUIDSequence(generateUUID(), "")
     }
 }

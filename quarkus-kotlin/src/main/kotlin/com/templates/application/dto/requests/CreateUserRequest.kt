@@ -3,7 +3,7 @@ package com.templates.application.dto.requests
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class UserCreationRequest(
+data class CreateUserRequest(
     val firstName: String,
     val lastName: String,
     val email: String,

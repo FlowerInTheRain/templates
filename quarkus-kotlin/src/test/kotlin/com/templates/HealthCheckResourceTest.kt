@@ -17,4 +17,12 @@ class HealthCheckResourceTest {
             .body(`is`("Application is up and running"))
     }
 
+    @Test
+    fun testJwtEndpoint() {
+        given()
+            .`when`().get("/healthcheck/secured")
+            .then()
+            .statusCode(401)
+    }
+
 }
