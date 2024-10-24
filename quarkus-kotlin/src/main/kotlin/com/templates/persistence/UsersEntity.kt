@@ -5,7 +5,7 @@ import java.sql.Timestamp
 
 @Entity
 @Table(name = "users")
-class MyKotlinEntity {
+class UsersEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "users_generator")
     @SequenceGenerator(name = "users_generator", sequenceName = "users_seq", allocationSize = 1)

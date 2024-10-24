@@ -44,4 +44,4 @@ nb-configuration.xml
 # TLS Certificates
 .certs/
 
-./src/main/resources/*.pem
+src/main/resources/*.pem

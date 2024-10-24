@@ -1,2 +1,4 @@
 .idea
 templates.iml
+
+quarkus-kotlin/src/main/resources/*.pem
