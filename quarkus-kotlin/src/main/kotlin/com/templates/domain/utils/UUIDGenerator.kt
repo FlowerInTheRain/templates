@@ -1,3 +1,4 @@
+import com.petpals.shared.entities.uuid.UUIDFormatter
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.util.*
@@ -10,5 +11,8 @@ object UUIDGenerator {
         val newRandomBusinessReference = UUID.randomUUID()
         LOGGER.info("UUID base Reference $newRandomBusinessReference Successfully generated.")
         return newRandomBusinessReference
+    }
+    fun getNewUUID(): String {
+        return UUIDFormatter.formatUUIDSequence(generateUUID(),true, "")
     }
 }

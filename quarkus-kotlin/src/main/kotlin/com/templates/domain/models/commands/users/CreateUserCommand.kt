@@ -6,6 +6,6 @@ class CreateUserCommand(
     val email: String,
     var password: String,
     val phoneNumber: String,
-    var reference: String,
-    var type: String
+    var reference: String? = null,
+    var type: String ? = null
 )

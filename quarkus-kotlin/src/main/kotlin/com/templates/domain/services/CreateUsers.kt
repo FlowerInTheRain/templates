@@ -1,8 +1,10 @@
 package com.templates.domain.services
 
-import UUIDGenerator
+import UUIDGenerator.getNewUUID
+import com.password4j.Hash
 import com.password4j.Password
-import com.petpals.shared.entities.uuid.UUIDFormatter
+import com.templates.domain.errors.ApplicationException
+import com.templates.domain.errors.ApplicationExceptionsEnum
 import com.templates.domain.models.commands.users.CreateUserCommand
 import com.templates.domain.models.users.UserTypes
 import com.templates.domain.ports.`in`.CreateUsersIn
@@ -15,12 +17,20 @@ class CreateUsers : CreateUsersIn {
 
     override fun createUser(user: CreateUserCommand) {
         user.type = UserTypes.CLIENT.name
-        user.reference = UUIDFormatter.formatUUIDSequence(UUIDGenerator.generateUUID(),true, "")
-        val hash = Password.hash(user.password).addRandomSalt().withBcrypt()
-        val salt = hash.salt
+        user.reference = getNewUUID()
+        val preHashPW = user.password
+        val hash = hashWithBCrypt(preHashPW)
         user.password = hash.result
-        LOG.info(user.toString())
-        LOG.info(salt.toString())
+        if(Password.check(preHashPW, hash.result).withBcrypt()){
+            LOG.info("Successfully hashed PW")
+        } else {
+            throw ApplicationException(ApplicationExceptionsEnum.ERROR_VALIDATING_PASSWORD_HASH)
+        }
         TODO("Not yet implemented")
     }
+
+    fun hashWithBCrypt(password: String): Hash {
+        return Password.hash(password).withBcrypt()
+    }
+
 }
