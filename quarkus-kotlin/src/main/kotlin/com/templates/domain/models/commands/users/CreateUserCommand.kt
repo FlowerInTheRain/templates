@@ -5,7 +5,7 @@ import java.sql.Timestamp
 class CreateUserCommand(
     val firstName: String,
     val lastName: String,
-    val email: String,
+    val mail: String,
     var password: String,
     val phoneNumber: String,
     var reference: String? = null,
@@ -14,6 +14,6 @@ class CreateUserCommand(
     var verificationCodeTimestamp:  Timestamp? = null
 ) {
     override fun toString(): String {
-        return "CreateUserCommand(firstName='$firstName', lastName='$lastName', email='$email', password='$password', phoneNumber='$phoneNumber', reference=$reference, type=$type)"
+        return "CreateUserCommand(firstName='$firstName', lastName='$lastName', email='$mail', password='$password', phoneNumber='$phoneNumber', reference=$reference, type=$type)"
     }
 }

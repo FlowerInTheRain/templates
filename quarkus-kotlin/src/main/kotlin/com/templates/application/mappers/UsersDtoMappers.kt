@@ -2,8 +2,11 @@ package com.templates.application.mappers
 
 import com.templates.application.dto.requests.CreateUserRequest
 import com.templates.application.dto.responses.CreateUserResponse
+import com.templates.application.dto.responses.UserLoginResponse
 import com.templates.domain.models.commands.users.CreateUserCommand
-import com.templates.domain.models.users.UserCreationInformations
+import com.templates.domain.models.users.User
+import com.templates.domain.models.users.UserBasicInformations
+import com.templates.domain.models.users.UserLoggedIn
 import org.mapstruct.Mapper
 import org.mapstruct.Mapping
 import org.mapstruct.MappingConstants
@@ -16,5 +19,7 @@ interface UsersDtoMappers {
     @Mapping(target = "verificationCodeTimestamp", ignore = true)
     fun fromCreationRequest(createUserRequest: CreateUserRequest):CreateUserCommand
 
-    fun toCreationResponse(userCreationInformations: UserCreationInformations):CreateUserResponse
+    fun toCreationResponse(userBasicInformations: UserBasicInformations):CreateUserResponse
+    fun toLoginResponse(user: UserLoggedIn): UserLoginResponse
+
 }

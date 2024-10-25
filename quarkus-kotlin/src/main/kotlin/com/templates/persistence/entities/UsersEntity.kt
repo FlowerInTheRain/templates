@@ -1,4 +1,4 @@
-package com.templates.persistence
+package com.templates.persistence.entities
 
 import jakarta.persistence.*
 import java.sql.Timestamp
@@ -18,7 +18,7 @@ class UsersEntity {
     var lastName: String? = null
     @Column(name = "mail", columnDefinition = "varchar(90)", nullable = false, unique = true)
     var mail: String? = null
-    @Column(name = "password", columnDefinition = "varchar(25)", nullable = false)
+    @Column(name = "password", columnDefinition = "varchar(150)", nullable = false)
     var password: String? = null
 
     @Column(name = "reference", columnDefinition = "bpchar(32)", nullable = false, unique = true, updatable = false)
@@ -31,4 +31,10 @@ class UsersEntity {
     var verificationCode: String? = null
     @Column(name = "verification_code_timestamp", columnDefinition = "TIMESTAMP")
     var verificationCodeTimestamp: Timestamp? = null
+
+    override fun toString(): String {
+        return "UsersEntity(id=$id, firstName=$firstName, lastName=$lastName, mail=$mail, password=$password, reference=$reference, type=$type, phoneNumber=$phoneNumber, verificationCode=$verificationCode, verificationCodeTimestamp=$verificationCodeTimestamp)"
+    }
+
+
 }

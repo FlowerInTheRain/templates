@@ -13,9 +13,9 @@ class JwtTokenGenerator {
     @field:ConfigProperty(name = "claims.origin")
     lateinit var origin: String
 
-    fun getToken(email: String?, userType: String): String {
+    fun getToken(mail: String?, userType: String): String {
         return Jwt.issuer(issuer)
-            .upn(email)
+            .upn(mail)
             .groups(HashSet(listOf(userType)))
             .expiresAt(Instant.now().plus(14, ChronoUnit.DAYS))
             .claim(Claims.address.name, origin)

@@ -8,6 +8,7 @@ import jakarta.annotation.security.PermitAll
 import jakarta.enterprise.context.RequestScoped
 import jakarta.enterprise.inject.Default
 import jakarta.inject.Inject
+import jakarta.validation.Valid
 import jakarta.ws.rs.*
 import jakarta.ws.rs.core.MediaType
 import org.jboss.logging.Logger
@@ -28,11 +29,10 @@ class CreateUsersResource {
     lateinit var usersDtoMappers: UsersDtoMappers
 
     @POST
-    @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ResponseStatus(CREATED)
     @PermitAll
-    fun createUser(creationRequest: CreateUserRequest): CreateUserResponse {
+    fun createUser(@Valid creationRequest: CreateUserRequest): CreateUserResponse {
         val mappedRequest = usersDtoMappers.fromCreationRequest(creationRequest)
         LOG.info(String.format("Creating user %s %s", mappedRequest.firstName, mappedRequest.lastName))
         val userCreationInformations = createUsersIn.createUser(mappedRequest)

@@ -1,12 +1,18 @@
 package com.templates.application.dto.responses
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class UserLoginResponse(
-    val token: String,
     val firstName: String,
     val lastName: String,
-    val email: String,
-    val password: String,
-    val reference:String,
-    val type:String,
-    val phoneNumber:String
-)
+    val mail: String,
+    val phoneNumber: String,
+    val reference: String,
+    val type: String,
+    val token:String
+){
+    override fun toString(): String {
+        return "UserLoginResponse(firstName='$firstName', lastName='$lastName', mail='$mail', phoneNumber='$phoneNumber', reference='$reference', type='$type', token='$token')"
+    }
+}
