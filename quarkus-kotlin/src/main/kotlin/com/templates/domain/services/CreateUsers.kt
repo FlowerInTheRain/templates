@@ -1,17 +1,17 @@
 package com.templates.domain.services
 
 import JwtTokenGenerator
-import UUIDGenerator.getNewUUID
-import com.password4j.Hash
-import com.password4j.Password
 import com.templates.domain.errors.ApplicationException
 import com.templates.domain.errors.ApplicationExceptionsEnum
 import com.templates.domain.models.commands.users.CreateUserCommand
 import com.templates.domain.models.users.UserBasicInformations
 import com.templates.domain.models.users.UserTypes
+import com.templates.domain.ports.`in`.AzureStorageIn
 import com.templates.domain.ports.`in`.CreateUsersIn
 import com.templates.domain.ports.out.CreateUsersOut
+import com.templates.domain.services.PasswordUtils.hashWithBCrypt
 import com.templates.domain.utils.OtpGenerator
+import com.templates.domain.utils.UUIDGenerator.getNewUUID
 import jakarta.enterprise.context.ApplicationScoped
 import jakarta.enterprise.inject.Default
 import jakarta.inject.Inject
@@ -31,34 +31,34 @@ class CreateUsers : CreateUsersIn {
     @Inject
     @field:Default
     lateinit var createUsersOut: CreateUsersOut
+    @Inject
+    @field:Default
+    lateinit var azureStorageIn: AzureStorageIn
+
     override fun createUser(user: CreateUserCommand):UserBasicInformations {
         val userType = UserTypes.CLIENT.name
         val userReference = getNewUUID()
         val preHashPW = user.password
-
+        val verificationCode = OtpGenerator.generateCode()
+        val content = mailer.generateOtpEmail(user.firstName, verificationCode)
 
         user.type = userType
         user.reference = userReference
 
         verifyCreateUserInputs(preHashPW, user)
         val hash = hashWithBCrypt(preHashPW)
-        val verificationCode = OtpGenerator.generateCode()
         user.password = hash.result
+
         val userToken = jwtTokenGenerator.getToken(user.mail,UserTypes
             .CLIENT.name)
+
         user.verificationCode = verificationCode
         user.verificationCodeTimestamp = Timestamp(System.currentTimeMillis())
-        val content = mailer.generateOtpEmail(user.firstName, verificationCode)
+        azureStorageIn.createContainerForUser(user.phoneNumber)
         //mailer.sendHtmlEmail(user.mail, content)
         LOG.info("OTP verification Mail sent to user")
         createUsersOut.addUser(user)
        return UserBasicInformations(userType, userReference, userToken)
-    }
-
-
-
-    fun hashWithBCrypt(password: String): Hash {
-        return Password.hash(password).withBcrypt()
     }
 
     fun verifyCreateUserInputs(preHashPW: String, user: CreateUserCommand):Unit{

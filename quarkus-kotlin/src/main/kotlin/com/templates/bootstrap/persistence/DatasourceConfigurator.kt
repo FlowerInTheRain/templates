@@ -28,13 +28,13 @@ class DatasourceConfigurator(
     var transactionSynchronizationRegistry: TransactionSynchronizationRegistry
 ) :
     TenantConnectionResolver {
-    @field:ConfigProperty(name = "azure.tenantid")
+    @field:ConfigProperty(name = "azure.tenant-id")
     lateinit var tenantId: String
 
     @field:ConfigProperty(name = "azure.tenant.token")
     lateinit var secret: String
 
-    @field:ConfigProperty(name = "azure.clientid")
+    @field:ConfigProperty(name = "azure.client-id")
     lateinit var clientId: String
 
     @field:ConfigProperty(name = "azure.vault.url")

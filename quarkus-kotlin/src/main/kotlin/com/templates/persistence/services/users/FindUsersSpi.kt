@@ -19,13 +19,13 @@ class FindUsersSpi:FindUserOut {
     @Inject
     @field:Default
     lateinit var usersRepository: UsersRepository
+
     @Inject
     @field:Default
     lateinit var usersEntityMapper: UsersEntityMapper
 
     override fun findByIdentifier(identifier: String): User {
         val userEntity = usersRepository.findByIdentifier(identifier).orElseThrow { ApplicationException(ApplicationExceptionsEnum.ERROR) }
-
         return usersEntityMapper.fromEntityToUser(userEntity)
     }
 }

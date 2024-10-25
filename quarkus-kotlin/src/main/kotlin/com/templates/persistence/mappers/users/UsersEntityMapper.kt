@@ -9,7 +9,7 @@ import org.mapstruct.MappingConstants
 @Mapper(componentModel = MappingConstants.ComponentModel.JAKARTA)
 interface UsersEntityMapper {
     fun fromCreateUserToEntity(createUserCommand: CreateUserCommand): UsersEntity
-
     fun fromEntityToUser(usersEntity: UsersEntity): User
+    fun fromUserToEntity(user: User): UsersEntity
 
 }

@@ -1,4 +1,4 @@
-package com.petpals.shared.entities.uuid
+package com.templates.domain.utils
 
 import jakarta.validation.constraints.NotNull
 import org.slf4j.Logger

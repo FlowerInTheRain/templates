@@ -11,7 +11,6 @@ import java.awt.PageAttributes
 class ApplicationExceptionsHandler : ExceptionMapper<ApplicationException> {
     override fun toResponse(e: ApplicationException): Response {
         val errorResponse = ErrorResponse(e.origin, e.message)
-
         return Response.status(Response.Status.fromStatusCode(e.statusCode))
             .entity(errorResponse).build()
     }

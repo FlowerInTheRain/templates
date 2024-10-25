@@ -20,8 +20,8 @@ class AzureConfigSourceFactory : ConfigSourceFactory {
 		val conf = mutableMapOf<String, String>()
 
 		if (caregiversApiKey == null || caregiversApiKey.value == null) {
-			val clientId = context.getValue("azure.clientid")?.value
-			val tenantId = context.getValue("azure.tenantid")?.value
+			val clientId = context.getValue("azure.client-id")?.value
+			val tenantId = context.getValue("azure.tenant-id")?.value
 			val secret = context.getValue("azure.tenant.token")?.value
 			val vaultUrl = context.getValue("azure.vault.url")?.value
 

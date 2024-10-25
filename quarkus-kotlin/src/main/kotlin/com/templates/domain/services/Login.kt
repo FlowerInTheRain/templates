@@ -17,9 +17,11 @@ import org.jboss.logging.Logger
 @ApplicationScoped
 class Login(@field:Inject var jwtTokenGenerator: JwtTokenGenerator) : LoginIn {
     val LOG: Logger = Logger.getLogger(Login::class.java)
+
     @Inject
     @field:Default
     lateinit var findUserOut: FindUserOut
+
     @Inject
     @field:Default
     lateinit var usersMappers: UsersMappers

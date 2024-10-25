@@ -11,7 +11,9 @@ class CreateUserCommand(
     var reference: String? = null,
     var type: String ? = null,
     var verificationCode: String ? = null,
-    var verificationCodeTimestamp:  Timestamp? = null
+    var verificationCodeTimestamp:  Timestamp? = null,
+    var profilePicUrl: String? = null,
+    var accountVerified: Boolean = false,
 ) {
     override fun toString(): String {
         return "CreateUserCommand(firstName='$firstName', lastName='$lastName', email='$mail', password='$password', phoneNumber='$phoneNumber', reference=$reference, type=$type)"

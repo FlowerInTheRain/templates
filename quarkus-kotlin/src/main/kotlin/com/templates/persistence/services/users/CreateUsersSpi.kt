@@ -27,6 +27,7 @@ class CreateUsersSpi : CreateUsersOut {
     @Inject
     @field:Default
     lateinit var usersRepository: UsersRepository
+
     @Inject
     @field:Default
     lateinit var usersEntityMapper: UsersEntityMapper

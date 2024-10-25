@@ -12,5 +12,7 @@ class User(
     val reference: String,
     val type: String,
     var verificationCode: String? = null,
-    var verificationCodeTimestamp: Timestamp? = null
+    var verificationCodeTimestamp: Timestamp? = null,
+    var profilePicture: String? = null,
+    val accountVerified: Boolean? = false,
 )

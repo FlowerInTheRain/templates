@@ -1,0 +1,48 @@
+package com.templates.application.controllers
+
+import com.templates.application.dto.responses.UpdateProfilePictureResponse
+import com.templates.domain.ports.`in`.AzureStorageIn
+import jakarta.annotation.security.RolesAllowed
+import jakarta.enterprise.context.RequestScoped
+import jakarta.enterprise.inject.Default
+import jakarta.inject.Inject
+import jakarta.ws.rs.Consumes
+import jakarta.ws.rs.POST
+import jakarta.ws.rs.Path
+import jakarta.ws.rs.core.MediaType
+import org.eclipse.microprofile.jwt.JsonWebToken
+import org.eclipse.microprofile.openapi.annotations.enums.SchemaType
+import org.eclipse.microprofile.openapi.annotations.media.Schema
+import org.eclipse.microprofile.openapi.annotations.security.SecurityRequirement
+import org.jboss.resteasy.reactive.ResponseStatus
+import org.jboss.resteasy.reactive.RestForm
+import org.jboss.resteasy.reactive.RestResponse.StatusCode.ACCEPTED
+import org.jboss.resteasy.reactive.multipart.FileUpload
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
+
+@Path("/profile-pictures")
+@RequestScoped
+class ProfilePicturesResource {
+    private val LOGGER: Logger = LoggerFactory.getLogger(ProfilePicturesResource::class.java.name)
+
+    @Inject
+    @field:Default
+    lateinit var jwt: JsonWebToken
+    @Inject
+    @field:Default
+    lateinit var azureStorageIn: AzureStorageIn
+
+    @POST
+    @Path("/update-profile-picture/client")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @ResponseStatus(ACCEPTED)
+    @RolesAllowed("CLIENT")
+    @SecurityRequirement(name = "bearer")
+    fun updateClientProfilePicture( @Schema(type = SchemaType.STRING, format = "binary") @RestForm("image")  rc:
+                                    FileUpload
+    ): UpdateProfilePictureResponse {
+        val userMail = jwt.name
+        return UpdateProfilePictureResponse(azureStorageIn.updateProfilePicture(userMail, rc))
+    }
+}
