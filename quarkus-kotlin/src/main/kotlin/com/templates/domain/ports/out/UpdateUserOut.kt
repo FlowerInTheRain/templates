@@ -1,7 +1,6 @@
 package com.templates.domain.ports.out
 
-import com.templates.domain.models.users.User
 
 interface UpdateUserOut {
-    fun updateUser(user: User)
+    fun updateUserProfilePicture(mail: String, profilePictureUrl: String)
 }

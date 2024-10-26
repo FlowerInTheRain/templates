@@ -42,10 +42,6 @@ class AzureStorage : AzureStorageIn {
 
     @Inject
     @field:Default
-    lateinit var findUserOut: FindUserOut
-
-    @Inject
-    @field:Default
     lateinit var updateUserOut: UpdateUserOut
 
     var blobServiceClient: BlobServiceClient? = null
@@ -63,29 +59,24 @@ class AzureStorage : AzureStorageIn {
             .buildClient()
     }
 
-    override fun updateProfilePicture(mail: String, file: FileUpload): String {
-        val user = findUserOut.findByIdentifier(mail)
-        val containerName = String.format(FORMATTER, user.phoneNumber)
-        val filePath = file.filePath().toString()
+    override fun updateProfilePicture(mail: String, phoneNumber:String, file: FileUpload): String {
+        LOGGER.info(phoneNumber)
+        val containerName = String.format(FORMATTER, phoneNumber)
         val fileName: String = file.fileName()
         try {
             val containerClient: BlobContainerClient = blobServiceClient!!.getBlobContainerClient(containerName)
-            val client: BlobClient = containerClient.getBlobClient(fileName)
-            blobServiceClient!!.listBlobContainers().forEach { item ->
-                blobServiceClient!!.deleteBlobContainer(
-                    item
-                        .name
-                )
+            containerClient.listBlobs().forEach{ blob ->
+                containerClient.getBlobClient(blob.name).delete()
             }
-            client.upload(
-                filePath.byteInputStream()
+            val client: BlobClient = containerClient.getBlobClient(fileName)
+            client.uploadFromFile(
+                file.filePath().toString()
             )
             val profilePictureUrl = client.blobUrl
-            user.profilePicture = profilePictureUrl
-            updateUserOut.updateUser(user)
+            updateUserOut.updateUserProfilePicture(mail, profilePictureUrl)
             return profilePictureUrl
         } catch (e: Exception) {
-            LOGGER.info(e.message)
+            LOGGER.info(e.toString())
             throw ApplicationException(ApplicationExceptionsEnum.ERROR)
         }
     }
