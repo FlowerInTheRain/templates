@@ -54,11 +54,11 @@ class CreateUsers : CreateUsersIn {
 
         user.verificationCode = verificationCode
         user.verificationCodeTimestamp = Timestamp(System.currentTimeMillis())
+        createUsersOut.addUser(user)
         azureStorageIn.createContainerForUser(user.phoneNumber)
         //mailer.sendHtmlEmail(user.mail, content)
         LOG.info("OTP verification Mail sent to user")
-        createUsersOut.addUser(user)
-       return UserBasicInformations(userType, userReference, userToken)
+       return UserBasicInformations(userType, userReference, userToken, false)
     }
 
     fun verifyCreateUserInputs(preHashPW: String, user: CreateUserCommand):Unit{

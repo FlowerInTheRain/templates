@@ -74,7 +74,6 @@ class AzureStorage : AzureStorageIn {
             )
             val profilePictureUrl = client.blobUrl
             updateUserOut.updateUserProfilePicture(mail, profilePictureUrl)
-            /** lol */
             return profilePictureUrl
         } catch (e: Exception) {
             LOGGER.info(e.toString())

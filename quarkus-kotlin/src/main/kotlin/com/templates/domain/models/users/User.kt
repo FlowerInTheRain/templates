@@ -13,6 +13,10 @@ class User(
     val type: String,
     var verificationCode: String? = null,
     var verificationCodeTimestamp: Timestamp? = null,
-    var profilePicture: String? = null,
-    val accountVerified: Boolean? = false,
-)
+    val profilePicture: String? = null,
+    val accountVerifiedStatus: Boolean? = false,
+){
+    override fun toString(): String {
+        return "User(id=$id, firstName='$firstName', lastName='$lastName', mail='$mail', password='$password', phoneNumber='$phoneNumber', reference='$reference', type='$type', verificationCode=$verificationCode, verificationCodeTimestamp=$verificationCodeTimestamp, profilePicture=$profilePicture, accountVerifiedStatus=$accountVerifiedStatus)"
+    }
+}

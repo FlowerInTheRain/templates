@@ -12,9 +12,9 @@ data class UserLoginResponse(
     val type: String,
     val token:String,
     val profilePicture: String? = null,
-    val accountVerified: Boolean,
+    val accountVerifiedStatus: Boolean,
 ){
     override fun toString(): String {
-        return "UserLoginResponse(firstName='$firstName', lastName='$lastName', mail='$mail', phoneNumber='$phoneNumber', reference='$reference', type='$type', token='$token')"
+        return "UserLoginResponse(firstName='$firstName', lastName='$lastName', mail='$mail', phoneNumber='$phoneNumber', reference='$reference', type='$type', token='$token', profilePicture=$profilePicture, accountVerifiedStatus=$accountVerifiedStatus)"
     }
 }
