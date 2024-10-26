@@ -6,7 +6,8 @@ const [appStore, setAppStore] = makePersisted(createStore<StoreContent>({
     token: null,
     isLogged: false,
     user: null,
-    theme: 'light'
+    theme: 'light',
+    profilePicture:''
 }), {name: "app-data"});
 
 

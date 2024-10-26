@@ -8,4 +8,11 @@ const axiosInstance = axios.create(
         },
     }
 )
-export default axiosInstance;
+
+const addAuthorizationHeader = (token: string) => {
+    axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+}
+export {
+    axiosInstance,
+    addAuthorizationHeader
+}

@@ -5,6 +5,7 @@ interface StoreContent {
     isLogged: boolean;
     user: User | null;
     theme: string;
+    profilePicture: string;
 }
 
 export type {

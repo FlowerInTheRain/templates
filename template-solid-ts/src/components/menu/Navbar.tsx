@@ -4,8 +4,7 @@ import displayText from "../../constants/display-text.ts";
 import {AccountMenu} from "./AccountMenu.tsx";
 import {setAppStore} from "../../stores/AppStore.ts";
 import {ConfigColorMode, useColorMode} from "@kobalte/core";
-import type { Orientation } from "@kobalte/utils";
-import {HomeIcon} from "../../assets/icons/SvgIcons.tsx";
+import type {Orientation} from "@kobalte/utils";
 
 export default function BasicAppBar(props: { themeName: () => string, setThemeName: (e: string) => void }) {
     const {setColorMode} = useColorMode()
@@ -36,7 +35,7 @@ export default function BasicAppBar(props: { themeName: () => string, setThemeNa
                     as="a"
                     href="/"
                 >
-                    <HomeIcon/> Home
+                    Home
                 </NavigationMenu.Trigger>
                 <NavigationMenu.Menu>
                     <NavigationMenu.Trigger class="navigation-menu__trigger">

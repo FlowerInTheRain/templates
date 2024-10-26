@@ -6,28 +6,32 @@ import {CheckedIcon, DarkModeIcon, LightModeIcon} from "../../assets/icons/SvgIc
 import displayText from "../../constants/display-text.ts";
 import {appStore} from "../../stores/AppStore.ts";
 
-export function AccountMenu(props: { updateTheme: (e: string) => void, themeName: () => string, logIn: () => void}) {
+export function AccountMenu(props: { updateTheme: (e: string) => void, themeName: () => string, logIn: () => void }) {
     const [showGitLog, setShowGitLog] = createSignal(false)
     const [showHistory, setShowHistory] = createSignal(false)
+
     return (
+
         <DropdownMenu>
             <DropdownMenu.Trigger class="dropdown-menu__trigger">
                 <Avatar>
-                    <AvatarImage src="https://github.com/sek-consulting.png" height={15} width={15}/>
-                    <AvatarFallback>EK</AvatarFallback>
+                    <AvatarImage src={appStore.profilePicture} height={15} width={15}/>
+                    <AvatarFallback>Me</AvatarFallback>
                 </Avatar>
             </DropdownMenu.Trigger>
             <DropdownMenu.Portal>
                 <DropdownMenu.Content class="dropdown-menu__content">
-                    { appStore.token === null ?
+                    {appStore.token === null ?
                         <DropdownMenu.Item class="dropdown-menu__item" onClick={props.logIn}>
                             Connexion
                         </DropdownMenu.Item>
-                        :null
+                        : null
                     }
 
-                    <DropdownMenu.Item class="dropdown-menu__item">
-                        Profil
+                    <DropdownMenu.Item class="dropdown-menu__item" as={"a"} href={"/profile"} onClick={() => {
+                        console.log("click")
+                    }}>
+                            Profil
                     </DropdownMenu.Item>
                     <DropdownMenu.Item class="dropdown-menu__item" disabled>
                         Update Project <div class="dropdown-menu__item-right-slot">⌘+T</div>
@@ -95,7 +99,8 @@ export function AccountMenu(props: { updateTheme: (e: string) => void, themeName
                                     <LightModeIcon/>
                                 </div>
                             </DropdownMenu.RadioItem>
-                            <DropdownMenu.RadioItem class="dropdown-menu__radio-item" value={displayText.themeNameDark}>
+                            <DropdownMenu.RadioItem class="dropdown-menu__radio-item"
+                                                    value={displayText.themeNameDark}>
                                 <DropdownMenu.ItemIndicator class="dropdown-menu__item-indicator">
                                     <CheckedIcon/>
                                 </DropdownMenu.ItemIndicator>

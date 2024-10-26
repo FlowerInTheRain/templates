@@ -10,6 +10,7 @@ import {appStore} from "./stores/AppStore.ts";
 import InvoiceDetail from "./components/invoices/InvoiceDetails.tsx";
 import {Toaster} from "./components/ui/toast.tsx";
 import ErrorPage from "./components/error/404.tsx";
+import Profile from "./components/profile/Profile.tsx";
 
 
 const root = document.getElementById('root')
@@ -29,6 +30,7 @@ render(() => (
         </ColorModeProvider>
         <Router>
             <Route path="/" component={Home}/>
+            <Route path="/profile" component={Profile}/>
             <Route
                 path="/invoice-details/:reference"
                 component={InvoiceDetail}

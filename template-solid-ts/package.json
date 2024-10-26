@@ -10,6 +10,7 @@
     "test": "vitest"
   },
   "dependencies": {
+    "@corvu/drawer": "^0.2.2",
     "@kobalte/core": "^0.13.7",
     "@nanostores/solid": "^0.5.0",
     "@solid-primitives/storage": "^4.2.1",
