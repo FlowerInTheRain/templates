@@ -38,8 +38,8 @@ export default function Profile() {
             showErrorToaster("Type de fichier non supporté.", "Seuls les fichiers images et gif (PNG/JPG/GIF) sont autorisés en tant que photo de profil")
         }
     }
-    let ref: HTMLImageElement;
-    let refUpdatePtofilePicturTrigger: HTMLImageElement;
+    let refProfilePicturePreview: HTMLImageElement;
+    let refUpdateProfilePictureTrigger: HTMLImageElement;
 
     return (
         <Flex class={"app-content"}>
@@ -49,7 +49,7 @@ export default function Profile() {
 
                         <Drawer>
                             { /** @ts-ignore */}
-                            <DrawerTrigger ref={refUpdatePtofilePicturTrigger}
+                            <DrawerTrigger ref={refUpdateProfilePictureTrigger}
                                            as={"img"} src={appStore.profilePicture} width="150px" height="150px"
                                            class={"size-32 shrink-0 overflow-hidden rounded-full"}
                                            style={{margin: "12px"}}>
@@ -59,7 +59,7 @@ export default function Profile() {
                                 position: "absolute",
                                 cursor: "pointer",
                             }}
-                                 onClick={() => refUpdatePtofilePicturTrigger.click()}>
+                                 onClick={() => refUpdateProfilePictureTrigger.click()}>
                                 <Tooltip>
                                     <TooltipTrigger>
                                         <EditIcon/>
@@ -81,13 +81,13 @@ export default function Profile() {
                                         class={"relative flex size-28 shrink-0 overflow-hidden rounded-full items-center justify-center"}
                                         style={{"margin": "0 auto"}}>
                                         {/** @ts-ignore */}
-                                        <img id={"preview"} alt={"Preview"} ref={ref}/>
+                                        <img id={"preview"} alt={"Preview"} ref={refProfilePicturePreview}/>
 
                                     </span>
                                             <input type={"file"} name="file" id={"file"}
                                                    style={{visibility: "hidden"}}
                                                    onChange={(e) => {
-                                                       ref.src = URL.createObjectURL(e.target.files![0])
+                                                       refProfilePicturePreview.src = URL.createObjectURL(e.target.files![0])
                                                    }}/>
                                             <Button variant={"ghost"}
                                                     onClick={() => document.getElementById("file")!.click()}><DownloadIcon/>Sélectionner
