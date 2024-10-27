@@ -1,7 +1,9 @@
 interface User {
-    email: string | null;
-    phoneNumber: string | null;
-    reference:string|null;
+    mail: string;
+    phoneNumber: string;
+    reference:string;
+    type: string;
+    accountVerifiedStatus: boolean;
 }
 
 export type {

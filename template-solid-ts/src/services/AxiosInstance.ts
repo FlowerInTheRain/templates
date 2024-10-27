@@ -9,10 +9,26 @@ const axiosInstance = axios.create(
     }
 )
 
+const axiosInstance2 = axios.create(
+    {
+        baseURL: "https://fake-store-api.mock.beeceptor.com",
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    }
+)
+
 const addAuthorizationHeader = (token: string) => {
     axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 }
+
+
+const removeAuthorizationHeader = () => {
+    delete axiosInstance.defaults.headers.common['Authorization'];
+}
 export {
     axiosInstance,
-    addAuthorizationHeader
+    axiosInstance2,
+    addAuthorizationHeader,
+    removeAuthorizationHeader
 }

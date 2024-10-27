@@ -24,7 +24,6 @@ export default function BasicAppBar(props: { themeName: () => string, setThemeNa
     }
 
     const login = () => {
-        setAppStore("token", "123456789")
     }
 
     return (
