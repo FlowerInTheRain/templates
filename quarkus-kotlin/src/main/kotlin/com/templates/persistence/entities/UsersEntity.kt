@@ -1,6 +1,7 @@
 package com.templates.persistence.entities
 
 import jakarta.persistence.*
+import jakarta.validation.Constraint
 import java.sql.Timestamp
 
 @Entity

@@ -14,6 +14,7 @@ import jakarta.inject.Inject
 import jakarta.persistence.LockModeType
 import jakarta.transaction.Transactional
 import org.jboss.logging.Logger
+import java.sql.Timestamp
 
 @ApplicationScoped
 class UpdateUsersSpi:UpdateUserOut {
@@ -34,4 +35,31 @@ class UpdateUsersSpi:UpdateUserOut {
         }
         LOG.info(String.format("User %s was updated", inDb.reference))
     }
+
+    @Transactional
+    override fun approveUserAccount(mail: String) {
+        val inDb = usersRepository.find("mail", mail).withLock<UsersEntity>( LockModeType.PESSIMISTIC_READ)
+            .firstResult<UsersEntity>()
+        if (inDb != null) {
+            inDb.accountVerifiedStatus = true
+        } else {
+            throw ApplicationException(ApplicationExceptionsEnum.ERROR)
+        }
+        LOG.info(String.format("User %s was updated", inDb.reference))
+    }
+
+    @Transactional
+    override fun putNewOtpCode(mail: String, newOtp: String, newOtpTimestamp: Timestamp) {
+        val inDb = usersRepository.find("mail", mail).withLock<UsersEntity>( LockModeType.PESSIMISTIC_READ)
+            .firstResult<UsersEntity>()
+        if (inDb != null) {
+            inDb.verificationCode = newOtp
+            inDb.verificationCodeTimestamp = newOtpTimestamp
+        } else {
+            throw ApplicationException(ApplicationExceptionsEnum.ERROR)
+        }
+        LOG.info(String.format("User %s was updated", inDb.reference))
+    }
+
+
 }

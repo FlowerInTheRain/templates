@@ -17,9 +17,9 @@ import org.slf4j.LoggerFactory
 @ApplicationScoped
 class CreateUsersSpi : CreateUsersOut {
     companion object {
-        const val MAIL_KEY = "users_mail_key"
-        const val PHONE_KEY = "users_phone_number_key"
-        const val REFERENCE_KEY = "users_reference_key"
+        const val MAIL_KEY = "uq_user_mail"
+        const val PHONE_KEY = "uq_user_phone"
+        const val REFERENCE_KEY = "uq_user_reference"
 
     }
     private val LOGGER: Logger = LoggerFactory.getLogger(CreateUsersSpi::class.java.name)
@@ -40,6 +40,8 @@ class CreateUsersSpi : CreateUsersOut {
             usersRepository.flush()
         } catch (e: ConstraintViolationException) {
             LOGGER.error("Error while adding user : {}", e.message)
+            LOGGER.error("Error while adding user : {}", e.constraintName)
+
             if (e.constraintName.equals(MAIL_KEY)) {
                 throw ApplicationException(ApplicationExceptionsEnum.CREATE_USER_DUPLICATE_MAIL)
             } else if (e.constraintName.equals(PHONE_KEY)) {

@@ -25,7 +25,7 @@ class FindUsersSpi:FindUserOut {
     lateinit var usersEntityMapper: UsersEntityMapper
 
     override fun findByIdentifier(identifier: String): User {
-        val userEntity = usersRepository.findByIdentifier(identifier).orElseThrow { ApplicationException(ApplicationExceptionsEnum.ERROR) }
+        val userEntity = usersRepository.findByIdentifier(identifier).orElseThrow { ApplicationException(ApplicationExceptionsEnum.LOGIN_USER_NOT_FOUND) }
         LOGGER.info(userEntity.toString())
         val user = usersEntityMapper.fromEntityToUser(userEntity)
         LOGGER.info(user.toString())

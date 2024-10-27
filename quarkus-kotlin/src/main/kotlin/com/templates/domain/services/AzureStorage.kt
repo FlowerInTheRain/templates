@@ -60,7 +60,6 @@ class AzureStorage : AzureStorageIn {
     }
 
     override fun updateProfilePicture(mail: String, phoneNumber:String, file: FileUpload): String {
-        LOGGER.info(phoneNumber)
         val containerName = String.format(FORMATTER, phoneNumber)
         val fileName: String = file.fileName()
         try {
@@ -74,6 +73,7 @@ class AzureStorage : AzureStorageIn {
             )
             val profilePictureUrl = client.blobUrl
             updateUserOut.updateUserProfilePicture(mail, profilePictureUrl)
+            LOGGER.info("Profile picture updated : $profilePictureUrl")
             return profilePictureUrl
         } catch (e: Exception) {
             LOGGER.info(e.toString())
