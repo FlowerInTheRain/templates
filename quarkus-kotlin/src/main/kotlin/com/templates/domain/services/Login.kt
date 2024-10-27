@@ -31,8 +31,8 @@ class Login(@field:Inject var jwtTokenGenerator: JwtTokenGenerator) : LoginIn {
         LOG.info(user.toString())
         if(verifyPassword(password, user.password)) {
             LOG.info("Login successful")
-            val jwtToken = jwtTokenGenerator.getToken(user.mail, UserTypes.CLIENT.name)
-            return usersMappers.fromUsersToUsersLoggedIn(user, jwtToken)
+            val jwToken = jwtTokenGenerator.getToken(user.mail, UserTypes.CLIENT.name)
+            return usersMappers.fromUsersToUsersLoggedIn(user, jwToken)
         } else {
             throw ApplicationException(ApplicationExceptionsEnum.ERROR_VALIDATING_PASSWORD_HASH)
         }

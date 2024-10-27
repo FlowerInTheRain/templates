@@ -7,5 +7,5 @@ import org.mapstruct.MappingConstants
 
 @Mapper(componentModel = MappingConstants.ComponentModel.JAKARTA)
 interface UsersMappers {
-    fun fromUsersToUsersLoggedIn(user: User, token: String): UserLoggedIn
+    fun fromUsersToUsersLoggedIn(user: User, jwToken: String): UserLoggedIn
 }

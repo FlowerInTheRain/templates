@@ -35,8 +35,7 @@ class ConnexionResource {
     @PermitAll
     fun clientLogin(loginRequest: LoginRequest): UserLoginResponse {
         val loggedIn = loginIn.clientLogin(loginRequest.identifier, loginRequest.password)
-        LOG.info(loggedIn.toString())
-        LOG.info("tamere")
+        LOG.info(String.format("Logging user %s", loginRequest.identifier))
        return  usersDtoMappers.toLoginResponse(loggedIn)
     }
 }

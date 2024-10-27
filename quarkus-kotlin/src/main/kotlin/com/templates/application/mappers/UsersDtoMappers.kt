@@ -4,7 +4,6 @@ import com.templates.application.dto.requests.CreateUserRequest
 import com.templates.application.dto.responses.CreateUserResponse
 import com.templates.application.dto.responses.UserLoginResponse
 import com.templates.domain.models.commands.users.CreateUserCommand
-import com.templates.domain.models.users.User
 import com.templates.domain.models.users.UserBasicInformations
 import com.templates.domain.models.users.UserLoggedIn
 import org.mapstruct.Mapper
