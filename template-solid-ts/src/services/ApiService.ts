@@ -24,26 +24,25 @@ const updateProfilePic = async (request: any) => {
     }
 }
 const signIn = async (signInRequest: any) => {
-    try {
-        return await AxiosInstance.post("/users-create",signInRequest)
-    } catch (error) {
-        mapErrors(error as AxiosError);
-    }
+    return await AxiosInstance.post("/users-create",signInRequest)
 }
 
 const logIn = async (logInRequest: any) => {
-    try {
-        return await AxiosInstance.post("/connection/login/client",logInRequest)
-    } catch (error) {
-        mapErrors(error as AxiosError);
-    }
+    return await AxiosInstance.post("/connection/login/client",logInRequest)
+}
+
+const createNewOtpCode = async () => {
+    return await AxiosInstance.put("/verify-account/new-otp")
+}
+
+const verifyUserAccount = async (otpRequest: any) => {
+    return await AxiosInstance.put("/verify-account/client", otpRequest)
 }
 
 const mapErrors= (error:AxiosError) => {
     if(error.code === "ERR_NETWORK"){
         return showErrorToaster("Erreur réseau", "Veuillez vérifier votre connexion à internet");
     }
-    console.log(error)
 }
 
 export {
@@ -51,5 +50,7 @@ export {
     mapErrors,
     updateProfilePic,
     signIn,
-    logIn
+    logIn,
+    createNewOtpCode,
+    verifyUserAccount
 }

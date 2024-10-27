@@ -9,7 +9,7 @@ import {
 } from "../ui/drawer.tsx";
 import {Button} from "../ui/button.tsx";
 import {DownloadIcon, EditIcon, MailIcon, PhoneIcon, VerifiedIcon} from "../../assets/icons/SvgIcons.tsx";
-import {updateProfilePic} from "../../services/FakeService.ts";
+import {updateProfilePic} from "../../services/ApiService.ts";
 import {appStore, setAppStore} from "../../stores/AppStore.ts";
 import {showErrorToaster, showSuccessToaster} from "../ui/toast-utils.ts";
 import {Flex} from "../ui/flex.tsx";

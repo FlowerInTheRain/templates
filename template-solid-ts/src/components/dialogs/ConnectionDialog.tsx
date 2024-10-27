@@ -6,8 +6,8 @@ import {Button} from "../ui/button.tsx";
 import {createSignal} from "solid-js";
 import {showErrorToaster, showSuccessToaster} from "../ui/toast-utils.ts";
 import {Switch, SwitchControl, SwitchDescription, SwitchThumb} from "../ui/switch.tsx";
-import {logIn, signIn} from "../../services/FakeService.ts";
-import {setAppStore} from "../../stores/AppStore.ts";
+import {logIn, signIn} from "../../services/ApiService.ts";
+import {appStore, setAppStore} from "../../stores/AppStore.ts";
 import {addAuthorizationHeader} from "../../services/AxiosInstance.ts";
 
 interface SignInForm {
@@ -39,41 +39,47 @@ export default function ConnectionDialog(props: { setDialogOpen: (e: boolean) =>
     let refSignInInputVerifyPassword;
 
     const checkSignInForm = async () => {
-        console.log(signInForm())
         if(signInForm().password !== signInForm().verifyPassword){
-            return showErrorToaster("Échec de validation du formulaire", "Les mots de passe ne correspondent pas")
+            showErrorToaster("Échec de validation du formulaire", "Les mots de passe ne correspondent pas")
+            return
         }
-        if(!signInForm().password.match("^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[!?\\$_])[A-Za-z\\d!?\\$_]{8,}$")){
-            return showErrorToaster("Échec de validation du formulaire", "Mot de passe invalide, le mot de passe doit comporter au moins 8 caractères et contenir un chiffre, une lettre minuscule, une lettre majuscule et un caractère spécial (! ou ?)")
+        if(!/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!?\$_])[A-Za-z\d!?\$_]{8,}$/.exec(signInForm().password)){
+            showErrorToaster("Échec de validation du formulaire", "Mot de passe invalide, le mot de passe doit comporter au moins 8 caractères et contenir un chiffre, une lettre minuscule, une lettre majuscule et un caractère spécial (! ou ?)")
+            return
         }
 
         if(signInForm().firstName.length < 3 && signInForm().lastName.length < 3){
-            return showErrorToaster("Échec de validation du formulaire","Vous devez fournir un nom et un prénom")
+            showErrorToaster("Échec de validation du formulaire","Vous devez fournir un nom et un prénom")
+            return
         }
         let request = signInForm();
         delete request.verifyPassword
-        signIn(request)
-            .then((response) => {
-                setAppStore("token", response?.data.token)
-                setAppStore("user", {
-                    reference: response?.data.reference,
-                    phoneNumber: signInForm().phoneNumber,
-                    mail: signInForm().mail,
-                    type: response?.data.type,
-                    accountVerifiedStatus: response?.data.accountVerifiedStatus
-                })
-                addAuthorizationHeader(response?.data.token)
-                showSuccessToaster("Inscription réussie", `Bienvenue ${signInForm().firstName} ${signInForm().lastName}`)
+        const response = await signIn(request)
+        try {
+            setAppStore("token", response?.data.jwToken)
+            setAppStore("user", {
+                reference: response?.data.reference,
+                phoneNumber: signInForm().phoneNumber,
+                mail: signInForm().mail,
+                type: response?.data.type,
+                accountVerifiedStatus: response?.data.accountVerifiedStatus
             })
-            .catch((error) => {
-                console.log(error);
-            })
+            addAuthorizationHeader(appStore.token!)
+            showSuccessToaster("Inscription réussie", `Bienvenue ${signInForm().firstName} ${signInForm().lastName}`)
+            props.setDialogOpen(false)
+        } catch (error){
+            console.log(error)
+            showErrorToaster("Echec de l'inscription","Adresse mail déjà enregistrée")
+        }
+
+
     }
 
-    const sendLoginForm = () => {
+    const sendLoginForm = async () => {
         let request = loginForm();
-        logIn(request).then((response) => {
-            setAppStore("token", response?.data.token)
+        try {
+            const response = await logIn(request)
+            setAppStore("token", response?.data.jwToken)
             setAppStore("user", {
                 reference: response?.data.reference,
                 phoneNumber: response?.data.phoneNumber,
@@ -82,16 +88,21 @@ export default function ConnectionDialog(props: { setDialogOpen: (e: boolean) =>
                 accountVerifiedStatus: response?.data.accountVerifiedStatus
             })
             setAppStore("profilePicture", response?.data.profilePicture)
-            addAuthorizationHeader(response?.data.token)
+            addAuthorizationHeader(appStore.token!)
             showSuccessToaster("Connexion réussie", `Bonjour ${response?.data.firstName} ${response?.data.lastName}`)
-
-        })
+            props.setDialogOpen(false)
+        } catch (error: any) {
+            if(error.response.data.message === "User not found") {
+                showErrorToaster("Échec de la connexion","Utilisateur non reconnu")
+            } else {
+                showErrorToaster("Échec de la connexion","Une erreur inconnue est apparue, veuillez réessayer plus tard")
+            }
+        }
 
     }
 
     return (
         <Dialog open={props.dialogOpen()} onOpenChange={(e: any) => {
-            console.log(e)
             props.setDialogOpen(e)
         }}>
             <DialogContent class="sm:max-w-[500px]">

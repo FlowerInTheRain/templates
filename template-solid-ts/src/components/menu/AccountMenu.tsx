@@ -2,18 +2,31 @@ import {createSignal} from "solid-js"
 
 import {Avatar, AvatarFallback, AvatarImage} from "../ui/avatar.tsx";
 import {DropdownMenu} from "@kobalte/core/dropdown-menu";
-import {CheckedIcon, DarkModeIcon, LightModeIcon, LoginIcon} from "../../assets/icons/SvgIcons.tsx";
+import {
+    CheckedIcon,
+    DarkModeIcon,
+    LightModeIcon,
+    LoginIcon,
+    LogOutIcon,
+    ProfileIcon
+} from "../../assets/icons/SvgIcons.tsx";
 import displayText from "../../constants/display-text.ts";
 import {appStore, setAppStore} from "../../stores/AppStore.ts";
 import ConnectionDialog from "../dialogs/ConnectionDialog.tsx";
 import {removeAuthorizationHeader} from "../../services/AxiosInstance.ts";
+import VerifyAccountDialog from "../dialogs/VerifyAccountDialog.tsx";
 
 export function AccountMenu(props: { updateTheme: (e: string) => void, themeName: () => string, logIn: () => void }) {
     const [showGitLog, setShowGitLog] = createSignal(false)
     const [showHistory, setShowHistory] = createSignal(false)
     const [dialogOpen, setDialogOpen] = createSignal(false)
+    const [verifyAccountDialogOpen, setVerifyAccountDialogOpen] = createSignal(false)
+
     const openDialog = () => {
         setDialogOpen(true)
+    }
+    const openVerifyAccountDialog = () => {
+        setVerifyAccountDialogOpen(true)
     }
     const logOut = () => {
         removeAuthorizationHeader()
@@ -24,6 +37,7 @@ export function AccountMenu(props: { updateTheme: (e: string) => void, themeName
     return (
         <>
             <ConnectionDialog setDialogOpen={setDialogOpen} dialogOpen={dialogOpen}/>
+            <VerifyAccountDialog setDialogOpen={setVerifyAccountDialogOpen} dialogOpen={verifyAccountDialogOpen}/>
 
             <DropdownMenu>
                 <DropdownMenu.Trigger class="dropdown-menu__trigger">
@@ -43,18 +57,24 @@ export function AccountMenu(props: { updateTheme: (e: string) => void, themeName
                             </DropdownMenu.Item>
                             :
                             <>
-                                <DropdownMenu.Item class="dropdown-menu__item" as={"a"} href={"/profile"}
-                                                   onClick={() => {
-                                                       console.log("click");
-                                                   }}>
-                                    Profil
+                            {!appStore.user!.accountVerifiedStatus &&
+                                <DropdownMenu.Item class="dropdown-menu__item" onClick={openVerifyAccountDialog} style={{color:"gold"}}>
+                                    {appStore.user!.accountVerifiedStatus.toString()}
+                                    <div class="dropdown-menu__item-right-slot" style={{color:"gold"}}><ProfileIcon /></div>
                                 </DropdownMenu.Item>
-                                <DropdownMenu.Item class="dropdown-menu__item" disabled>
-                                    Update Project <div class="dropdown-menu__item-right-slot">⌘+T</div>
+                            }
+                                <DropdownMenu.Item class="dropdown-menu__item" as={"a"} href={"/profile"}>
+                                    Profil
+                                    <div class="dropdown-menu__item-right-slot"><ProfileIcon/></div>
                                 </DropdownMenu.Item>
                                 <DropdownMenu.Item class="dropdown-menu__item" onClick={logOut}>
-                                    Log out <div class="dropdown-menu__item-right-slot">⌘+T</div>
+                                    Log out <div class="dropdown-menu__item-right-slot"><LogOutIcon/></div>
                                 </DropdownMenu.Item>
+                                {
+                                    /**
+                                     *
+                                     */
+                                }
                                 <DropdownMenu.Sub overlap gutter={4} shift={-8}>
                                     <DropdownMenu.SubTrigger class="dropdown-menu__sub-trigger">
                                         GitHub

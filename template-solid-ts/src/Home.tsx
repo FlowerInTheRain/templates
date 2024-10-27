@@ -5,7 +5,7 @@ import {Flex} from "./components/ui/flex.tsx";
 import {createSignal, onMount} from "solid-js"
 import dayjs from 'dayjs';
 import formatters from "./constants/formatters.ts";
-import {getMockData} from "./services/FakeService.ts";
+import {getMockData} from "./services/ApiService.ts";
 import ProductSummary from "./components/products/ProductsSummary.tsx";
 import InvoiceSummary from "./components/invoices/InvoicesSummary.tsx";
 
