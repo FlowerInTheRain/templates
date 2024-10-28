@@ -17,11 +17,6 @@ import org.eclipse.microprofile.config.inject.ConfigProperty
 
 @ApplicationScoped
 class Mailer {
-    @Inject
-    @field:Default
-    lateinit var mailer: Mailer
-
-
     @field:ConfigProperty(name = "azure.comm-service.endpoint")
     lateinit var azureCommunicationEndpoint: String
     @field:ConfigProperty(name = "azure.comm-service.mailer.sender.do.not.reply")
@@ -40,7 +35,6 @@ class Mailer {
             .setBodyHtml(
                 content.trimIndent()
             )
-
 
         val poller: SyncPoller<EmailSendResult, EmailSendResult> = emailClient.beginSend(emailMessage, null)
         val result: PollResponse<EmailSendResult> = poller.waitForCompletion()
