@@ -57,10 +57,9 @@ export function AccountMenu(props: { updateTheme: (e: string) => void, themeName
                             </DropdownMenu.Item>
                             :
                             <>
-                            {!appStore.user!.accountVerifiedStatus &&
+                            {(appStore.user !== null && !appStore.user.accountVerifiedStatus) &&
                                 <DropdownMenu.Item class="dropdown-menu__item" onClick={openVerifyAccountDialog} style={{color:"gold"}}>
-                                    {appStore.user!.accountVerifiedStatus.toString()}
-                                    <div class="dropdown-menu__item-right-slot" style={{color:"gold"}}><ProfileIcon /></div>
+                                    Vérifier mon profil<div class="dropdown-menu__item-right-slot" style={{color:"gold"}}><ProfileIcon /></div>
                                 </DropdownMenu.Item>
                             }
                                 <DropdownMenu.Item class="dropdown-menu__item" as={"a"} href={"/profile"}>

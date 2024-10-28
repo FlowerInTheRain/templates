@@ -14,7 +14,7 @@ const getMockData = async () => {
 const updateProfilePic = async (request: any) => {
     const phoneNumber = appStore.user?.phoneNumber
     try {
-        return await AxiosInstance.post(`/profile-pictures/update-profile-picture/client/${phoneNumber}`,request, {
+        return await AxiosInstance.put(`/profile-pictures/update-profile-picture/client/${phoneNumber}`,request, {
             headers : {
                 "Content-Type": "multipart/form-data",
             }

@@ -48,8 +48,6 @@ export default function VerifyAccountDialog(props: { setDialogOpen: (e: boolean)
                     <DialogTitle>Vérification de compte</DialogTitle>
                     <DialogDescription>
                         Veuillez saisir le code OTP envoyé par mail.
-                        {appStore.user!.accountVerifiedStatus.toString()}
-
                     </DialogDescription>
                 </DialogHeader>
                     {!loading() ?
