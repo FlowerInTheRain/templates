@@ -2,6 +2,6 @@ package com.templates.domain.ports.out
 
 import com.templates.domain.models.users.User
 
-interface FindUserOut {
+interface FindClientsOut {
     fun findByIdentifier(identifier: String) : User
 }

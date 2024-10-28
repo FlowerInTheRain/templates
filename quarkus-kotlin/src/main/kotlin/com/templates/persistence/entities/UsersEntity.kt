@@ -1,11 +1,12 @@
 package com.templates.persistence.entities
 
 import jakarta.persistence.*
-import jakarta.validation.Constraint
 import java.sql.Timestamp
 
 @Entity
 @Table(name = "users")
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "type", discriminatorType = DiscriminatorType.STRING)
 class UsersEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "users_generator")
@@ -22,7 +23,7 @@ class UsersEntity {
     var password: String? = null
     @Column(name = "reference", columnDefinition = "bpchar(32)", nullable = false, unique = true, updatable = false)
     var reference: String? = null
-    @Column(name = "type", columnDefinition = "varchar(12)", nullable = false)
+    @Column(name = "type", columnDefinition = "varchar(12)", nullable = false, updatable = false, insertable = false)
     var type: String? = null
     @Column(name = "phone_number", columnDefinition = "varchar(12)", unique = true, nullable = false)
     var phoneNumber: String? = null

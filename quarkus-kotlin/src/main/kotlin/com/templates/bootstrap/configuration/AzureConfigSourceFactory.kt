@@ -13,6 +13,8 @@ class AzureConfigSourceFactory : ConfigSourceFactory {
 		private const val API_KEY: String = "api.key"
 		private const val CLAIMS: String = "claims.origin"
 		private const val ISSUER: String = "mp.jwt.verify.issuer"
+		private const val ADMIN_CODE: String = "admin.code"
+
 	}
 
 	override fun getConfigSources(context: ConfigSourceContext): Iterable<ConfigSource> {
@@ -40,6 +42,7 @@ class AzureConfigSourceFactory : ConfigSourceFactory {
 				conf[API_KEY] = secretClient.getSecret("API-KEY").value
 				conf[CLAIMS] = secretClient.getSecret("CLAIMS-ORIGIN").value
 				conf[ISSUER] = secretClient.getSecret("TOKEN-ISSUER").value
+				conf[ADMIN_CODE] = secretClient.getSecret("TOKEN-ISSUER").value
 			}
 
 			return listOf(PropertiesConfigSource(conf, null, priority))

@@ -5,14 +5,16 @@ import com.templates.domain.errors.ApplicationExceptionsEnum
 import com.templates.domain.models.commands.users.CreateUserCommand
 import com.templates.domain.ports.out.CreateUsersOut
 import com.templates.persistence.mappers.users.UsersEntityMapper
+import com.templates.persistence.repositories.AdminsRepository
+import com.templates.persistence.repositories.ClientsRepository
 import jakarta.enterprise.inject.Default
 import jakarta.inject.Inject
-import com.templates.persistence.repositories.UsersRepository
 import jakarta.enterprise.context.ApplicationScoped
 import jakarta.transaction.Transactional
 import org.hibernate.exception.ConstraintViolationException
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import kotlin.jvm.Throws
 
 @ApplicationScoped
 class CreateUsersSpi : CreateUsersOut {
@@ -26,29 +28,55 @@ class CreateUsersSpi : CreateUsersOut {
 
     @Inject
     @field:Default
-    lateinit var usersRepository: UsersRepository
+    lateinit var clientsRepository: ClientsRepository
+
+    @Inject
+    @field:Default
+    lateinit var adminsRepository: AdminsRepository
 
     @Inject
     @field:Default
     lateinit var usersEntityMapper: UsersEntityMapper
 
     @Transactional
-    override fun addUser(user: CreateUserCommand) {
-        val userEntity = usersEntityMapper.fromCreateUserToEntity(user)
+    override fun addClient(user: CreateUserCommand) {
+        val userEntity = usersEntityMapper.fromCreateUserToClient(user)
         try {
-            usersRepository.persist(userEntity)
-            usersRepository.flush()
+            LOGGER.info(userEntity.toString())
+            clientsRepository.persist(userEntity)
+            clientsRepository.flush()
         } catch (e: ConstraintViolationException) {
             LOGGER.error("Error while adding user : {}", e.message)
             LOGGER.error("Error while adding user : {}", e.constraintName)
+            handleExceptions(e)
+        }
+    }
 
-            if (e.constraintName.equals(MAIL_KEY)) {
+    override fun addAdmin(user: CreateUserCommand) {
+        val userEntity = usersEntityMapper.fromCreateUserToAdmin(user)
+        try {
+            LOGGER.info(userEntity.toString())
+            adminsRepository.persist(userEntity)
+            adminsRepository.flush()
+        } catch (e: ConstraintViolationException) {
+            LOGGER.error("Error while adding admin : {}", e.message)
+            LOGGER.error("Error while adding admin : {}", e.constraintName)
+            handleExceptions(e)
+        }
+    }
+
+    private fun handleExceptions(e:ConstraintViolationException):Throws {
+        when {
+            e.constraintName.equals(MAIL_KEY) -> {
                 throw ApplicationException(ApplicationExceptionsEnum.CREATE_USER_DUPLICATE_MAIL)
-            } else if (e.constraintName.equals(PHONE_KEY)) {
+            }
+            e.constraintName.equals(PHONE_KEY) -> {
                 throw ApplicationException(ApplicationExceptionsEnum.CREATE_USER_DUPLICATE_PHONE_NUMBER)
-            } else if (e.constraintName.equals(REFERENCE_KEY)) {
+            }
+            e.constraintName.equals(REFERENCE_KEY) -> {
                 throw ApplicationException(ApplicationExceptionsEnum.CREATE_USER_DUPLICATE_REFERENCE)
-            } else {
+            }
+            else -> {
                 throw ApplicationException(ApplicationExceptionsEnum.ERROR)
             }
         }

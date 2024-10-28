@@ -1,5 +1,6 @@
 package com.templates.application.mappers
 
+import com.templates.application.dto.requests.CreateAdminRequest
 import com.templates.application.dto.requests.CreateUserRequest
 import com.templates.application.dto.responses.CreateUserResponse
 import com.templates.application.dto.responses.UserLoginResponse
@@ -17,6 +18,12 @@ interface UsersDtoMappers {
     @Mapping(target = "verificationCode", ignore = true)
     @Mapping(target = "verificationCodeTimestamp", ignore = true)
     fun fromCreationRequest(createUserRequest: CreateUserRequest):CreateUserCommand
+
+    @Mapping(target = "reference", ignore = true)
+    @Mapping(target = "type", ignore = true)
+    @Mapping(target = "verificationCode", ignore = true)
+    @Mapping(target = "verificationCodeTimestamp", ignore = true)
+    fun fromCreationRequest(createAdminRequest: CreateAdminRequest):CreateUserCommand
 
     fun toCreationResponse(userBasicInformations: UserBasicInformations):CreateUserResponse
     fun toLoginResponse(user: UserLoggedIn): UserLoginResponse

@@ -9,19 +9,24 @@ import com.templates.domain.models.users.UserTypes
 import com.templates.domain.ports.`in`.AzureStorageIn
 import com.templates.domain.ports.`in`.CreateUsersIn
 import com.templates.domain.ports.out.CreateUsersOut
+import com.templates.domain.ports.out.SecretsClientOut
 import com.templates.domain.services.PasswordUtils.hashWithBCrypt
+import com.templates.domain.utils.AdminCodeGenerator.generateAdminCode
 import com.templates.domain.utils.OtpGenerator
 import com.templates.domain.utils.UUIDGenerator.getNewUUID
 import jakarta.enterprise.context.ApplicationScoped
 import jakarta.enterprise.inject.Default
 import jakarta.inject.Inject
+import org.eclipse.microprofile.config.inject.ConfigProperty
 import org.jboss.logging.Logger
 import java.sql.Timestamp
 
 
 @ApplicationScoped
 class CreateUsers : CreateUsersIn {
-     val LOG: Logger = Logger.getLogger(CreateUsers::class.java)
+    companion object {
+        val LOG: Logger = Logger.getLogger(CreateUsers::class.java)
+    }
     @Inject
     @field:Default
     lateinit var jwtTokenGenerator: JwtTokenGenerator
@@ -34,9 +39,51 @@ class CreateUsers : CreateUsersIn {
     @Inject
     @field:Default
     lateinit var azureStorageIn: AzureStorageIn
+    @Inject
+    @field:Default
+    lateinit var secretsClientOut: SecretsClientOut
+    @field:ConfigProperty(name = "admin.code")
+    lateinit var adminCreationCode: String
 
     override fun createUser(user: CreateUserCommand):UserBasicInformations {
-        val userType = UserTypes.CLIENT.name
+        val userType = UserTypes.ADMIN.name
+        val userReference = setUpUserDataAndCheckInputs(user, userType)
+
+        val userToken = jwtTokenGenerator.getToken(user.mail,UserTypes
+            .CLIENT.name)
+        createUsersOut.addClient(user)
+        azureStorageIn.createContainerForUser(user.phoneNumber)
+        LOG.info("OTP verification Mail sent to user")
+       return UserBasicInformations(userType, userReference, userToken, false)
+    }
+
+
+
+    override fun createAdmin(user: CreateUserCommand, adminCode: String): UserBasicInformations {
+        if(adminCode == adminCreationCode){
+            val userType = UserTypes.CLIENT.name
+            val userReference = setUpUserDataAndCheckInputs(user, userType)
+            val userToken = jwtTokenGenerator.getToken(user.mail,UserTypes
+                .ADMIN.name)
+
+            createUsersOut.addClient(user)
+            azureStorageIn.createContainerForUser(user.phoneNumber)
+            //mailer.sendHtmlEmail(user.mail, content)
+            LOG.info("OTP verification Mail sent to user")
+            val newAdminCreationCode = generateAdminCode()
+            adminCreationCode = newAdminCreationCode
+            secretsClientOut.updateAdminCode(adminCreationCode)
+            LOG.info(adminCreationCode)
+            return UserBasicInformations(userType, userReference, userToken, false)
+        } else {
+            throw ApplicationException(ApplicationExceptionsEnum.ADMIN_VERIFICATION_CODE_NO_MATCH)
+        }
+    }
+
+    private fun setUpUserDataAndCheckInputs(
+        user: CreateUserCommand,
+        userType: String
+    ): String {
         val userReference = getNewUUID()
         val preHashPW = user.password
         val verificationCode = OtpGenerator.generateCode()
@@ -47,21 +94,13 @@ class CreateUsers : CreateUsersIn {
 
         verifyCreateUserInputs(preHashPW, user)
         val hash = hashWithBCrypt(preHashPW)
-        user.password = hash.result
-
-        val userToken = jwtTokenGenerator.getToken(user.mail,UserTypes
-            .CLIENT.name)
-
         user.verificationCode = verificationCode
         user.verificationCodeTimestamp = Timestamp(System.currentTimeMillis())
-        createUsersOut.addUser(user)
-        azureStorageIn.createContainerForUser(user.phoneNumber)
-        //mailer.sendHtmlEmail(user.mail, content)
-        LOG.info("OTP verification Mail sent to user")
-       return UserBasicInformations(userType, userReference, userToken, false)
+        user.password = hash.result
+        return userReference
     }
 
-    fun verifyCreateUserInputs(preHashPW: String, user: CreateUserCommand):Unit{
+    fun verifyCreateUserInputs(preHashPW: String, user: CreateUserCommand){
         if(!preHashPW.matches(Regex("^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[!?\\\$_])[A-Za-z\\d!?\\\$_]{8,}\$"))){
             throw ApplicationException(ApplicationExceptionsEnum.CREATE_USER_INVALID_PASSWORD)
         }
@@ -72,5 +111,4 @@ class CreateUsers : CreateUsersIn {
             throw ApplicationException(ApplicationExceptionsEnum.CREATE_USER_INVALID_PHONE_NUMBER)
         }
     }
-
 }

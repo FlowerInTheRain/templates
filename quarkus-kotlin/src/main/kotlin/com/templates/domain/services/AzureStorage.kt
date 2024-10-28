@@ -9,8 +9,7 @@ import com.azure.storage.blob.models.PublicAccessType
 import com.templates.domain.errors.ApplicationException
 import com.templates.domain.errors.ApplicationExceptionsEnum
 import com.templates.domain.ports.`in`.AzureStorageIn
-import com.templates.domain.ports.out.FindUserOut
-import com.templates.domain.ports.out.UpdateUserOut
+import com.templates.domain.ports.out.UpdateClientsOut
 import jakarta.annotation.PostConstruct
 import jakarta.enterprise.context.ApplicationScoped
 import jakarta.enterprise.inject.Default
@@ -42,7 +41,7 @@ class AzureStorage : AzureStorageIn {
 
     @Inject
     @field:Default
-    lateinit var updateUserOut: UpdateUserOut
+    lateinit var updateClientsOut: UpdateClientsOut
 
     var blobServiceClient: BlobServiceClient? = null
 
@@ -72,7 +71,7 @@ class AzureStorage : AzureStorageIn {
                 file.filePath().toString()
             )
             val profilePictureUrl = client.blobUrl
-            updateUserOut.updateUserProfilePicture(mail, profilePictureUrl)
+            updateClientsOut.updateProfilePicture(mail, profilePictureUrl)
             LOGGER.info("Profile picture updated : $profilePictureUrl")
             return profilePictureUrl
         } catch (e: Exception) {

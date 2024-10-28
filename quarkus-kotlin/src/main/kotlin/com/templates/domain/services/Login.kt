@@ -7,7 +7,7 @@ import com.templates.domain.mappers.UsersMappers
 import com.templates.domain.models.users.UserLoggedIn
 import com.templates.domain.models.users.UserTypes
 import com.templates.domain.ports.`in`.LoginIn
-import com.templates.domain.ports.out.FindUserOut
+import com.templates.domain.ports.out.FindClientsOut
 import com.templates.domain.services.PasswordUtils.verifyPassword
 import jakarta.enterprise.context.ApplicationScoped
 import jakarta.enterprise.inject.Default
@@ -20,14 +20,14 @@ class Login(@field:Inject var jwtTokenGenerator: JwtTokenGenerator) : LoginIn {
 
     @Inject
     @field:Default
-    lateinit var findUserOut: FindUserOut
+    lateinit var findClientsOut: FindClientsOut
 
     @Inject
     @field:Default
     lateinit var usersMappers: UsersMappers
 
     override fun clientLogin(identifier: String, password: String): UserLoggedIn {
-        val user = findUserOut.findByIdentifier(identifier)
+        val user = findClientsOut.findByIdentifier(identifier)
         LOG.info(user.toString())
         if(verifyPassword(password, user.password)) {
             LOG.info("Login successful")

@@ -4,6 +4,9 @@ import org.jboss.resteasy.reactive.RestResponse.StatusCode
 
 enum class ApplicationExceptionsEnum(val message: String,val errorCode: Int,val origin: String) {
     ERROR("An error occured", StatusCode.BAD_REQUEST, ErrorOriginEnum.BOOTSTRAP.name),
+    ADMIN_VERIFICATION_CODE_NO_MATCH("Le code spécial admin n'est pas valide", StatusCode.BAD_REQUEST, ErrorOriginEnum
+        .DOMAIN.name),
+
     ERROR_VALIDATING_PASSWORD_HASH("An error occurred while connecting your account", StatusCode.BAD_REQUEST, ErrorOriginEnum.DOMAIN
         .name),
     CREATE_USER_INVALID_PHONE_NUMBER("Invalid phone number, must be a french mobile phone number", StatusCode.BAD_REQUEST,ErrorOriginEnum

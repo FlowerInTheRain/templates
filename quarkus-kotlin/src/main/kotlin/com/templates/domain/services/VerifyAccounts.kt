@@ -3,8 +3,8 @@ package com.templates.domain.services
 import com.templates.domain.errors.ApplicationException
 import com.templates.domain.errors.ApplicationExceptionsEnum
 import com.templates.domain.ports.`in`.VerifyAccountsIn
-import com.templates.domain.ports.out.FindUserOut
-import com.templates.domain.ports.out.UpdateUserOut
+import com.templates.domain.ports.out.FindClientsOut
+import com.templates.domain.ports.out.UpdateClientsOut
 import com.templates.domain.utils.OtpGenerator.generateCode
 import jakarta.enterprise.context.ApplicationScoped
 import jakarta.enterprise.inject.Default
@@ -17,20 +17,20 @@ import java.time.Instant
 class VerifyAccounts:VerifyAccountsIn {
     @Inject
     @field:Default
-    lateinit var findUserOut: FindUserOut
+    lateinit var findClientsOut: FindClientsOut
 
     @Inject
     @field:Default
-    lateinit var updateUserOut: UpdateUserOut
+    lateinit var updateClientsOut: UpdateClientsOut
 
     override fun verifyClientAccount(mail: String, otp: String) {
-        val user = findUserOut.findByIdentifier(mail)
+        val user = findClientsOut.findByIdentifier(mail)
         val otpTimestamp = user.verificationCodeTimestamp
         if(user.verificationCode.equals(otp)){
             if(hasExceededTwentyMinutes(otpTimestamp, Timestamp.from(Instant.now()))){
                 throw ApplicationException(ApplicationExceptionsEnum.OTP_TIMESTAMP_EXCEEDED)
             }
-            updateUserOut.approveUserAccount(mail)
+            updateClientsOut.approveAccount(mail)
         } else {
             throw  ApplicationException(ApplicationExceptionsEnum.OTP_CODES_NO_MATCH)
         }
@@ -39,7 +39,7 @@ class VerifyAccounts:VerifyAccountsIn {
     override fun generateNewOtpCode(mail: String) {
         val newOtp = generateCode()
         val newTimestamp = Timestamp.from(Instant.now())
-        updateUserOut.putNewOtpCode(mail, newOtp, newTimestamp)
+        updateClientsOut.changeOtpCode(mail, newOtp, newTimestamp)
     }
 
     fun hasExceededTwentyMinutes(timestamp1: Timestamp?, timestamp2: Timestamp?): Boolean {

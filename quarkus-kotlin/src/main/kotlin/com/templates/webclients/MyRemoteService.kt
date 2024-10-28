@@ -1,4 +1,4 @@
-package com.templates.httpclients
+package com.templates.webclients
 
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient
 import jakarta.ws.rs.GET
