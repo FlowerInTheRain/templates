@@ -52,6 +52,7 @@ class CreateUsersSpi : CreateUsersOut {
         }
     }
 
+    @Transactional
     override fun addAdmin(user: CreateUserCommand) {
         val userEntity = usersEntityMapper.fromCreateUserToAdmin(user)
         try {

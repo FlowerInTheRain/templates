@@ -22,7 +22,8 @@ class UpdateClientsSpi:UpdateClientsOut {
     @Transactional
     override fun updateProfilePicture(mail: String, profilePictureUrl:String) {
         try {
-            clientsRepository.update("profile_pic_url = :profilePictureUrl WHERE mail = :mail", mapOf(
+            clientsRepository.update("profilePicture = :profilePictureUrl WHERE mail = :mail",
+                mapOf(
                 "mail" to mail,
                 "profilePictureUrl" to profilePictureUrl
             ))
@@ -48,7 +49,8 @@ class UpdateClientsSpi:UpdateClientsOut {
     @Transactional
     override fun changeOtpCode(mail: String, newOtp: String, newOtpTimestamp: Timestamp) {
         try {
-            clientsRepository.update("verification_code = :newOtp, verification_code_timestamp = :newTimestamp WHERE mail" +
+            clientsRepository.update("verificationCode = :newOtp, verificationCodeTimestamp = :newTimestamp WHERE " +
+                    "mail" +
                     " =:mail",
                 mapOf(
                     "newOtp" to newOtp,

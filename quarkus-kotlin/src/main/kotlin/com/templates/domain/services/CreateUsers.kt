@@ -60,15 +60,16 @@ class CreateUsers : CreateUsersIn {
 
 
     override fun createAdmin(user: CreateUserCommand, adminCode: String): UserBasicInformations {
+        LOG.info(adminCreationCode)
+        LOG.info(adminCode)
         if(adminCode == adminCreationCode){
             val userType = UserTypes.CLIENT.name
             val userReference = setUpUserDataAndCheckInputs(user, userType)
             val userToken = jwtTokenGenerator.getToken(user.mail,UserTypes
                 .ADMIN.name)
 
-            createUsersOut.addClient(user)
+            createUsersOut.addAdmin(user)
             azureStorageIn.createContainerForUser(user.phoneNumber)
-            //mailer.sendHtmlEmail(user.mail, content)
             LOG.info("OTP verification Mail sent to user")
             val newAdminCreationCode = generateAdminCode()
             adminCreationCode = newAdminCreationCode
@@ -91,10 +92,11 @@ class CreateUsers : CreateUsersIn {
 
         user.type = userType
         user.reference = userReference
+        mailer.sendHtmlEmail(user.mail, "Vérification de compte", content)
 
         verifyCreateUserInputs(preHashPW, user)
         val hash = hashWithBCrypt(preHashPW)
-        user.verificationCode = verificationCode
+        user.verificationCode = hashWithBCrypt( verificationCode).result
         user.verificationCodeTimestamp = Timestamp(System.currentTimeMillis())
         user.password = hash.result
         return userReference

@@ -11,6 +11,7 @@ import jakarta.inject.Inject
 import jakarta.ws.rs.Consumes
 import jakarta.ws.rs.POST
 import jakarta.ws.rs.Path
+import jakarta.ws.rs.Produces
 import jakarta.ws.rs.core.MediaType
 import org.jboss.logging.Logger
 import org.jboss.resteasy.reactive.ResponseStatus
@@ -31,11 +32,24 @@ class ConnexionResource {
     @POST
     @Path("/login/client")
     @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     @ResponseStatus(OK)
     @PermitAll
     fun clientLogin(loginRequest: LoginRequest): UserLoginResponse {
         val loggedIn = loginIn.clientLogin(loginRequest.identifier, loginRequest.password)
         LOG.info(String.format("Logging user %s", loginRequest.identifier))
        return  usersDtoMappers.toLoginResponse(loggedIn)
+    }
+
+    @POST
+    @Path("/login/admin")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @ResponseStatus(OK)
+    @PermitAll
+    fun adminLogin(loginRequest: LoginRequest): UserLoginResponse {
+        val loggedIn = loginIn.adminLogin(loginRequest.identifier, loginRequest.password)
+        LOG.info(String.format("Logging user %s", loginRequest.identifier))
+        return  usersDtoMappers.toLoginResponse(loggedIn)
     }
 }

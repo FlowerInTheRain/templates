@@ -6,6 +6,8 @@ enum class ApplicationExceptionsEnum(val message: String,val errorCode: Int,val 
     ERROR("An error occured", StatusCode.BAD_REQUEST, ErrorOriginEnum.BOOTSTRAP.name),
     ADMIN_VERIFICATION_CODE_NO_MATCH("Le code spécial admin n'est pas valide", StatusCode.BAD_REQUEST, ErrorOriginEnum
         .DOMAIN.name),
+    EMAIL_DELIVERY_FAILED("An error occured while sending the email", StatusCode.BAD_REQUEST, ErrorOriginEnum.DOMAIN
+        .name),
 
     ERROR_VALIDATING_PASSWORD_HASH("An error occurred while connecting your account", StatusCode.BAD_REQUEST, ErrorOriginEnum.DOMAIN
         .name),

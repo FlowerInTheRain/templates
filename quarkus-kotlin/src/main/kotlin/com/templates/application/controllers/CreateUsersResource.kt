@@ -42,7 +42,7 @@ class CreateUsersResource {
     }
 
     @POST
-    @Path("/admin/")
+    @Path("/admin")
     @Consumes(MediaType.APPLICATION_JSON)
     @ResponseStatus(CREATED)
     @PermitAll
@@ -50,7 +50,7 @@ class CreateUsersResource {
         val mappedRequest = usersDtoMappers.fromCreationRequest(creationRequest)
         LOG.info(String.format("Creating admin %s %s", mappedRequest.firstName, mappedRequest.lastName))
         val adminCode = creationRequest.adminCode
-        val userCreationInformations = createUsersIn.createUser(mappedRequest)
+        val userCreationInformations = createUsersIn.createAdmin(mappedRequest, adminCode)
         return usersDtoMappers.toCreationResponse(userCreationInformations)
     }
 }

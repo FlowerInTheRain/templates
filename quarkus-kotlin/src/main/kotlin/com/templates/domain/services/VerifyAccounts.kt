@@ -5,6 +5,8 @@ import com.templates.domain.errors.ApplicationExceptionsEnum
 import com.templates.domain.ports.`in`.VerifyAccountsIn
 import com.templates.domain.ports.out.FindClientsOut
 import com.templates.domain.ports.out.UpdateClientsOut
+import com.templates.domain.services.PasswordUtils.hashWithBCrypt
+import com.templates.domain.services.PasswordUtils.verifyPassword
 import com.templates.domain.utils.OtpGenerator.generateCode
 import jakarta.enterprise.context.ApplicationScoped
 import jakarta.enterprise.inject.Default
@@ -23,10 +25,15 @@ class VerifyAccounts:VerifyAccountsIn {
     @field:Default
     lateinit var updateClientsOut: UpdateClientsOut
 
+    @Inject
+    @field:Default
+    lateinit var mailer: Mailer
+
+
     override fun verifyClientAccount(mail: String, otp: String) {
         val user = findClientsOut.findByIdentifier(mail)
-        val otpTimestamp = user.verificationCodeTimestamp
-        if(user.verificationCode.equals(otp)){
+        val otpTimestamp = user.verificationCodeTimestamp!!
+        if(verifyPassword(user.verificationCode!!, otp)){
             if(hasExceededTwentyMinutes(otpTimestamp, Timestamp.from(Instant.now()))){
                 throw ApplicationException(ApplicationExceptionsEnum.OTP_TIMESTAMP_EXCEEDED)
             }
@@ -37,13 +44,16 @@ class VerifyAccounts:VerifyAccountsIn {
     }
 
     override fun generateNewOtpCode(mail: String) {
-        val newOtp = generateCode()
+        val newCode = generateCode()
+        val hashedOtp = hashWithBCrypt(newCode).result
         val newTimestamp = Timestamp.from(Instant.now())
-        updateClientsOut.changeOtpCode(mail, newOtp, newTimestamp)
+        val content = mailer.newOtpEmail(newCode)
+        mailer.sendHtmlEmail(mail, "Mise à jour du code OTP", content)
+        updateClientsOut.changeOtpCode(mail, hashedOtp, newTimestamp)
     }
 
-    fun hasExceededTwentyMinutes(timestamp1: Timestamp?, timestamp2: Timestamp?): Boolean {
-        val millisecondsDifference = Math.abs(timestamp2!!.time - timestamp1!!.time)
+    fun hasExceededTwentyMinutes(timestamp1: Timestamp, timestamp2: Timestamp): Boolean {
+        val millisecondsDifference = Math.abs(timestamp2.time - timestamp1.time)
         return millisecondsDifference > 1200000
     }
 }

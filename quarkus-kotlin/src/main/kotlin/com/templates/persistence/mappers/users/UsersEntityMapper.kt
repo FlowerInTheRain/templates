@@ -17,6 +17,7 @@ interface UsersEntityMapper {
     fun fromEntityToUser(usersEntity: UsersEntity): User
     fun fromClientToUser(clientsEntity: ClientsEntity): User
 
+    fun fromAdminToUser(adminsEntity: AdminsEntity): User
     fun fromUserToEntity(user: User): UsersEntity
 
 }

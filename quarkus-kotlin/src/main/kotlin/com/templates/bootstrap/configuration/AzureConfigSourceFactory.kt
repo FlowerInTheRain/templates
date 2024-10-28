@@ -42,7 +42,7 @@ class AzureConfigSourceFactory : ConfigSourceFactory {
 				conf[API_KEY] = secretClient.getSecret("API-KEY").value
 				conf[CLAIMS] = secretClient.getSecret("CLAIMS-ORIGIN").value
 				conf[ISSUER] = secretClient.getSecret("TOKEN-ISSUER").value
-				conf[ADMIN_CODE] = secretClient.getSecret("TOKEN-ISSUER").value
+				conf[ADMIN_CODE] = secretClient.getSecret("ADMIN-REGISTRATION-CODE").value
 			}
 
 			return listOf(PropertiesConfigSource(conf, null, priority))
