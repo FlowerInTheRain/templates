@@ -34,10 +34,10 @@ class ProfilePicturesResource {
     lateinit var azureStorageIn: AzureStorageIn
 
     @PUT
-    @Path("/update-profile-picture/client/{phoneNumber}")
+    @Path("/update-profile-picture/{phoneNumber}")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @ResponseStatus(ACCEPTED)
-    @RolesAllowed("CLIENT")
+    @RolesAllowed("CLIENT","ADMIN")
     @SecurityRequirement(name = "bearer")
     fun updateClientProfilePicture(phoneNumber:String, @Schema(type = SchemaType.STRING,
     format = "binary") @RestForm

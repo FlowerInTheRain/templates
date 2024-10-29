@@ -10,7 +10,10 @@ create table if not exists users (
                                      phone_number varchar(10) not null,
                                      profile_pic_url varchar(200),
                                      reference bpchar(32) not null,
-                                     verification_code bpchar(6),
+                                     verification_code varchar(100),
+                                     password_verification_code varchar(100),
+                                     password_verification_timestamp TIMESTAMP,
+
                                      constraint user_pk
                                          primary key (id, type),
                                      constraint uq_user_mail

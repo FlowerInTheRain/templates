@@ -8,10 +8,7 @@ import com.azure.core.util.polling.PollResponse
 import com.azure.core.util.polling.SyncPoller
 import com.templates.domain.errors.ApplicationException
 import com.templates.domain.errors.ApplicationExceptionsEnum
-import io.quarkus.mailer.Mailer
 import jakarta.enterprise.context.ApplicationScoped
-import jakarta.enterprise.inject.Default
-import jakarta.inject.Inject
 import org.eclipse.microprofile.config.inject.ConfigProperty
 
 
@@ -25,7 +22,6 @@ class Mailer {
     fun sendHtmlEmail(recipient: String, subject:String, content: String) {
         val emailClient = EmailClientBuilder().connectionString(azureCommunicationEndpoint).buildClient()
         val toAddress = EmailAddress(recipient)
-
 
         val emailMessage: EmailMessage = EmailMessage()
             .setSenderAddress(azureDoNotReplySender)
@@ -57,6 +53,17 @@ class Mailer {
                 "      <p>Us</p>\n" +
                 "      <p>Nation</p>\n" +
                 "      <p>Paris, France</p>\n" +
+                "    </div>\n" +
+                "  </div>\n" +
+                "</div>"
+    }
+    fun generatePasswordRecoveryEmail(token:String): String {
+        val url = String.format("http://localhost:7173/reset-password/%s",token)
+        return "<div style='font-family: Helvetica,Arial,sans-serif;min-width:1000px;overflow:auto;line-height:2'>\n" +
+                "  <div style='margin:50px auto;width:70%;padding:20px 0'>\n" +
+                "    <p>A request has been sent to recover your password. Use the following link to reset your " +
+                "password</p>\n" +
+                "    <p><a href='$url'></p>\n" +
                 "    </div>\n" +
                 "  </div>\n" +
                 "</div>"

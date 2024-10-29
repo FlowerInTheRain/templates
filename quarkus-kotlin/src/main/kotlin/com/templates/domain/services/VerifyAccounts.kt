@@ -7,6 +7,7 @@ import com.templates.domain.ports.out.FindClientsOut
 import com.templates.domain.ports.out.UpdateClientsOut
 import com.templates.domain.services.PasswordUtils.hashWithBCrypt
 import com.templates.domain.services.PasswordUtils.verifyPassword
+import com.templates.domain.utils.InputsValidator.hasTimestampExceededTwentyMinutes
 import com.templates.domain.utils.OtpGenerator.generateCode
 import jakarta.enterprise.context.ApplicationScoped
 import jakarta.enterprise.inject.Default
@@ -33,10 +34,8 @@ class VerifyAccounts:VerifyAccountsIn {
     override fun verifyClientAccount(mail: String, otp: String) {
         val user = findClientsOut.findByIdentifier(mail)
         val otpTimestamp = user.verificationCodeTimestamp!!
-        if(verifyPassword(user.verificationCode!!, otp)){
-            if(hasExceededTwentyMinutes(otpTimestamp, Timestamp.from(Instant.now()))){
-                throw ApplicationException(ApplicationExceptionsEnum.OTP_TIMESTAMP_EXCEEDED)
-            }
+        if(verifyPassword(otp, user.verificationCode!!)){
+            hasTimestampExceededTwentyMinutes(otpTimestamp, Timestamp.from(Instant.now()))
             updateClientsOut.approveAccount(mail)
         } else {
             throw  ApplicationException(ApplicationExceptionsEnum.OTP_CODES_NO_MATCH)
@@ -52,8 +51,4 @@ class VerifyAccounts:VerifyAccountsIn {
         updateClientsOut.changeOtpCode(mail, hashedOtp, newTimestamp)
     }
 
-    fun hasExceededTwentyMinutes(timestamp1: Timestamp, timestamp2: Timestamp): Boolean {
-        val millisecondsDifference = Math.abs(timestamp2.time - timestamp1.time)
-        return millisecondsDifference > 1200000
-    }
 }

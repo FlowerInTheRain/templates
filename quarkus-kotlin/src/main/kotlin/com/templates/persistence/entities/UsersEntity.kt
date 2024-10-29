@@ -31,12 +31,16 @@ class UsersEntity {
     var verificationCode: String? = null
     @Column(name = "verification_code_timestamp", columnDefinition = "TIMESTAMP")
     var verificationCodeTimestamp: Timestamp? = null
+    @Column(name = "password_verification_code", columnDefinition = "varchar(100)")
+    var passwordVerificationCode: String? = null
+    @Column(name = "password_verification_timestamp", columnDefinition = "TIMESTAMP")
+    var passwordVerificationTimestamp: Timestamp? = null
     @Column(name = "profile_pic_url", columnDefinition = "varchar(200)")
     var profilePicture: String? = null
     @Column(name = "account_verified", columnDefinition = "boolean DEFAULT false", nullable = false)
     var accountVerifiedStatus: Boolean? = false
     override fun toString(): String {
-        return "UsersEntity(id=$id, firstName=$firstName, lastName=$lastName, mail=$mail, password=$password, reference=$reference, type=$type, phoneNumber=$phoneNumber, verificationCode=$verificationCode, verificationCodeTimestamp=$verificationCodeTimestamp, profilePicture=$profilePicture, accountVerifiedStatus=$accountVerifiedStatus)"
+        return "UsersEntity(id=$id, firstName=$firstName, lastName=$lastName, mail=$mail, password=$password, reference=$reference, type=$type, phoneNumber=$phoneNumber, verificationCode=$verificationCode, verificationCodeTimestamp=$verificationCodeTimestamp, passwordVerificationCode=$passwordVerificationCode, passwordVerificationTimestamp=$passwordVerificationTimestamp, profilePicture=$profilePicture, accountVerifiedStatus=$accountVerifiedStatus)"
     }
 
 

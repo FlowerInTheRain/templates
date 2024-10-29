@@ -37,7 +37,7 @@ class UpdateClientsSpi:UpdateClientsOut {
     @Transactional
     override fun approveAccount(mail: String) {
         try {
-            clientsRepository.update("account_verified = true WHERE mail =:mail",  mapOf(
+            clientsRepository.update("accountVerifiedStatus = true WHERE mail =:mail",  mapOf(
                 "mail" to mail
             ))
             LOG.info(String.format("User %s was approved", mail))
@@ -62,6 +62,43 @@ class UpdateClientsSpi:UpdateClientsOut {
             handlleExceptions(e)
         }
 
+    }
+
+    override fun initPasswordRecovery(
+        identifier: String,
+        passwordVerificationCode: String,
+        passwordVerificationTimestamp: Timestamp
+    ) {
+        try {
+            clientsRepository.update("passwordVerificationCode = :verificationCode, passwordVerificationCodeTimestamp" +
+                    " = " +
+                    ":newTimestamp " +
+                    "WHERE " +
+                    "mail" +
+                    " =:mail",
+                mapOf(
+                    "verificationCode" to passwordVerificationCode,
+                    "newTimestamp" to passwordVerificationTimestamp,
+                    "mail" to identifier
+                ))
+            LOG.info(String.format("User %s verification code updated", identifier))
+        } catch (e: SQLException) {
+            handlleExceptions(e)
+        }
+    }
+
+    override fun changePassword(identifier: String, newPassword: String) {
+        try {
+            clientsRepository.update("password = :newPassword, passwordVerificationCodeTimestamp" +
+                    " = :newTimestamp WHERE mail =:mail OR phoneNumber = :mail",
+                mapOf(
+                    "newPassword" to newPassword,
+                    "mail" to identifier
+                ))
+            LOG.info(String.format("User %s verification code updated", identifier))
+        } catch (e: SQLException) {
+            handlleExceptions(e)
+        }
     }
 
     private fun handlleExceptions(e: SQLException) {

@@ -104,7 +104,7 @@ class CreateUsers : CreateUsersIn {
 
     fun verifyCreateUserInputs(preHashPW: String, user: CreateUserCommand){
         if(!preHashPW.matches(Regex("^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[!?\\\$_])[A-Za-z\\d!?\\\$_]{8,}\$"))){
-            throw ApplicationException(ApplicationExceptionsEnum.CREATE_USER_INVALID_PASSWORD)
+            throw ApplicationException(ApplicationExceptionsEnum.USER_INVALID_PASSWORD)
         }
         if(user.lastName.length < 3 || user.firstName.length < 2 ) {
             throw ApplicationException(ApplicationExceptionsEnum.CREATE_USER_INVALID_NAME)
