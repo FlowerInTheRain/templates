@@ -58,12 +58,12 @@ class Mailer {
                 "</div>"
     }
     fun generatePasswordRecoveryEmail(token:String): String {
-        val url = String.format("http://localhost:7173/reset-password/%s",token)
+        val url = String.format("http://localhost:5173/reset-password/%s",token)
         return "<div style='font-family: Helvetica,Arial,sans-serif;min-width:1000px;overflow:auto;line-height:2'>\n" +
                 "  <div style='margin:50px auto;width:70%;padding:20px 0'>\n" +
                 "    <p>A request has been sent to recover your password. Use the following link to reset your " +
                 "password</p>\n" +
-                "    <p><a href='$url'></p>\n" +
+                "    <p><a href='$url' target='_blank'>Réinitialiser mon mot de passe</a></p>\n" +
                 "    </div>\n" +
                 "  </div>\n" +
                 "</div>"

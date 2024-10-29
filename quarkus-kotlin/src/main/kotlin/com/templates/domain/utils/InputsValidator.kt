@@ -17,8 +17,14 @@ object InputsValidator {
         }
     }
 
-    fun validatePasswordHash(token:String, currentToken:String) {
-        if(!verifyPassword(currentToken, token)){
+    fun validatePhoneNumberFormat(phoneNumber: String) {
+        if(!phoneNumber.matches(Regex("^0[67]\\d{8}$"))){
+            throw ApplicationException(ApplicationExceptionsEnum.CREATE_USER_INVALID_PHONE_NUMBER)
+        }
+    }
+
+    fun validatePasswordHash(token:String, hashedToken:String) {
+        if(!verifyPassword(token, hashedToken)){
             throw ApplicationException(ApplicationExceptionsEnum.INVALID_TOKEN)
         }
     }

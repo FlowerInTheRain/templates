@@ -16,6 +16,7 @@ import jakarta.ws.rs.core.MediaType
 import org.eclipse.microprofile.jwt.JsonWebToken
 import org.jboss.resteasy.reactive.ResponseStatus
 import org.jboss.resteasy.reactive.RestResponse.StatusCode.ACCEPTED
+import org.jboss.resteasy.reactive.RestResponse.StatusCode.NO_CONTENT
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -34,7 +35,7 @@ class PasswordRecoveryResource {
     @PUT
     @Path("/init-reset")
     @Consumes(MediaType.APPLICATION_JSON)
-    @ResponseStatus(ACCEPTED)
+    @ResponseStatus(NO_CONTENT)
     @PermitAll
     fun initiatePasswordReset(passwordRecoveryRequest: InitPasswordRecoveryRequest) {
         passwordManagementIn.initPasswordRecovery(passwordRecoveryRequest.identifier)
@@ -43,17 +44,18 @@ class PasswordRecoveryResource {
     @PUT
     @Path("/reset-password")
     @Consumes(MediaType.APPLICATION_JSON)
-    @ResponseStatus(ACCEPTED)
+    @ResponseStatus(NO_CONTENT)
     @PermitAll
     fun resetPassword(passwordRecoveryRequest: PasswordRecoveryRequest) {
-        passwordManagementIn.recoverPassword(passwordRecoveryRequest.token, passwordRecoveryRequest.password,
+        passwordManagementIn.recoverPassword(passwordRecoveryRequest.mail, passwordRecoveryRequest.token,
+            passwordRecoveryRequest.password,
             passwordRecoveryRequest.passwordConfirmation)
     }
 
     @PUT
     @Path("/change-password")
     @Consumes(MediaType.APPLICATION_JSON)
-    @ResponseStatus(ACCEPTED)
+    @ResponseStatus(NO_CONTENT)
     @RolesAllowed("CLIENT","ADMIN")
     fun changePassword(passwordChangeRequest: PasswordChangeRequest) {
         val mail = jwt.name

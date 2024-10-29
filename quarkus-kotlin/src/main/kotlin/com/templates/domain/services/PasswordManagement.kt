@@ -1,5 +1,6 @@
 package com.templates.domain.services
 
+import com.templates.application.controllers.CreateUsersResource
 import com.templates.domain.ports.`in`.PasswordManagementIn
 import com.templates.domain.ports.out.FindClientsOut
 import com.templates.domain.ports.out.UpdateClientsOut
@@ -12,11 +13,14 @@ import com.templates.domain.utils.InputsValidator.validatePasswordHash
 import jakarta.enterprise.context.ApplicationScoped
 import jakarta.enterprise.inject.Default
 import jakarta.inject.Inject
+import org.jboss.logging.Logger
 import java.sql.Timestamp
 import java.time.Instant
 
 @ApplicationScoped
 class PasswordManagement : PasswordManagementIn {
+    private val LOG: Logger = Logger.getLogger(PasswordManagement::class.java)
+
     @Inject
     @field:Default
     lateinit var mailer: Mailer
@@ -33,6 +37,7 @@ class PasswordManagement : PasswordManagementIn {
         val user = findClientsOut.findByIdentifier(identifier)
         val mail = user.mail
         val token = generateAdminCode()
+        LOG.info(token)
         val mailContent = mailer.generatePasswordRecoveryEmail(token)
         val safeToken = hashWithBCrypt(token).result
         val tokenTimestamp = Timestamp.from(Instant.now())
@@ -40,16 +45,17 @@ class PasswordManagement : PasswordManagementIn {
         updateClientsOut.initPasswordRecovery(mail, safeToken, tokenTimestamp)
     }
 
-    override fun recoverPassword(identifier: String, token: String, password: String, passwordConfirmation: String) {
-        val user = findClientsOut.findByIdentifier(identifier)
-        val currentToken = user.passwordVerificationCode!!
+    override fun recoverPassword( mail:String,token: String, password: String, passwordConfirmation: String) {
+        print(hashWithBCrypt(token).result)
+        val user = findClientsOut.findByIdentifier(mail)
+        val hashedToken = user.passwordVerificationCode!!
         val currentTimestamp = user.passwordVerificationTimestamp!!
         validatePasswordFormat(password)
         validatePasswordConfirmation(password, passwordConfirmation)
-        validatePasswordHash(token, currentToken)
+        validatePasswordHash(token, hashedToken)
         hasTimestampExceededTwentyMinutes(currentTimestamp, Timestamp.from(Instant.now()))
         val hashedPw = hashWithBCrypt(password).result
-        updateClientsOut.changePassword(identifier, hashedPw)
+        updateClientsOut.changePassword(user.mail, hashedPw)
     }
 
 

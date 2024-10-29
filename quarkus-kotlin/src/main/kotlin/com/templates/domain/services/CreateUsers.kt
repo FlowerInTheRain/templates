@@ -12,6 +12,8 @@ import com.templates.domain.ports.out.CreateUsersOut
 import com.templates.domain.ports.out.SecretsClientOut
 import com.templates.domain.services.PasswordUtils.hashWithBCrypt
 import com.templates.domain.utils.AdminCodeGenerator.generateAdminCode
+import com.templates.domain.utils.InputsValidator.validatePasswordFormat
+import com.templates.domain.utils.InputsValidator.validatePhoneNumberFormat
 import com.templates.domain.utils.OtpGenerator
 import com.templates.domain.utils.UUIDGenerator.getNewUUID
 import jakarta.enterprise.context.ApplicationScoped
@@ -103,14 +105,10 @@ class CreateUsers : CreateUsersIn {
     }
 
     fun verifyCreateUserInputs(preHashPW: String, user: CreateUserCommand){
-        if(!preHashPW.matches(Regex("^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[!?\\\$_])[A-Za-z\\d!?\\\$_]{8,}\$"))){
-            throw ApplicationException(ApplicationExceptionsEnum.USER_INVALID_PASSWORD)
-        }
+        validatePasswordFormat(preHashPW)
         if(user.lastName.length < 3 || user.firstName.length < 2 ) {
             throw ApplicationException(ApplicationExceptionsEnum.CREATE_USER_INVALID_NAME)
         }
-        if(!user.phoneNumber.matches(Regex("^0[67]\\d{8}$"))){
-            throw ApplicationException(ApplicationExceptionsEnum.CREATE_USER_INVALID_PHONE_NUMBER)
-        }
+       validatePhoneNumberFormat(user.phoneNumber)
     }
 }

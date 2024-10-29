@@ -13,13 +13,13 @@ import java.sql.SQLException
 import java.sql.Timestamp
 
 @ApplicationScoped
+@Transactional
 class UpdateClientsSpi:UpdateClientsOut {
 
     @Inject
     @field:Default
     lateinit var clientsRepository: ClientsRepository
 
-    @Transactional
     override fun updateProfilePicture(mail: String, profilePictureUrl:String) {
         try {
             clientsRepository.update("profilePicture = :profilePictureUrl WHERE mail = :mail",
@@ -29,12 +29,11 @@ class UpdateClientsSpi:UpdateClientsOut {
             ))
             LOG.info(String.format("User %s profille picture was updated", mail))
         } catch (e: SQLException) {
-            handlleExceptions(e)
+            handleExceptions(e)
         }
 
     }
 
-    @Transactional
     override fun approveAccount(mail: String) {
         try {
             clientsRepository.update("accountVerifiedStatus = true WHERE mail =:mail",  mapOf(
@@ -42,11 +41,10 @@ class UpdateClientsSpi:UpdateClientsOut {
             ))
             LOG.info(String.format("User %s was approved", mail))
         } catch (e: SQLException) {
-            handlleExceptions(e)
+            handleExceptions(e)
         }
     }
 
-    @Transactional
     override fun changeOtpCode(mail: String, newOtp: String, newOtpTimestamp: Timestamp) {
         try {
             clientsRepository.update("verificationCode = :newOtp, verificationCodeTimestamp = :newTimestamp WHERE " +
@@ -59,7 +57,7 @@ class UpdateClientsSpi:UpdateClientsOut {
                 ))
             LOG.info(String.format("User %s verification code updated", mail))
         } catch (e: SQLException) {
-            handlleExceptions(e)
+            handleExceptions(e)
         }
 
     }
@@ -70,7 +68,7 @@ class UpdateClientsSpi:UpdateClientsOut {
         passwordVerificationTimestamp: Timestamp
     ) {
         try {
-            clientsRepository.update("passwordVerificationCode = :verificationCode, passwordVerificationCodeTimestamp" +
+            clientsRepository.update("passwordVerificationCode = :verificationCode, passwordVerificationTimestamp" +
                     " = " +
                     ":newTimestamp " +
                     "WHERE " +
@@ -83,25 +81,24 @@ class UpdateClientsSpi:UpdateClientsOut {
                 ))
             LOG.info(String.format("User %s verification code updated", identifier))
         } catch (e: SQLException) {
-            handlleExceptions(e)
+            handleExceptions(e)
         }
     }
 
     override fun changePassword(identifier: String, newPassword: String) {
         try {
-            clientsRepository.update("password = :newPassword, passwordVerificationCodeTimestamp" +
-                    " = :newTimestamp WHERE mail =:mail OR phoneNumber = :mail",
+            clientsRepository.update("password = :newPassword WHERE mail =:mail OR phoneNumber = :mail",
                 mapOf(
                     "newPassword" to newPassword,
                     "mail" to identifier
                 ))
             LOG.info(String.format("User %s verification code updated", identifier))
         } catch (e: SQLException) {
-            handlleExceptions(e)
+            handleExceptions(e)
         }
     }
 
-    private fun handlleExceptions(e: SQLException) {
+    private fun handleExceptions(e: SQLException) {
         LOG.info(e.message)
         throw ApplicationException(ApplicationExceptionsEnum.ERROR)
     }
