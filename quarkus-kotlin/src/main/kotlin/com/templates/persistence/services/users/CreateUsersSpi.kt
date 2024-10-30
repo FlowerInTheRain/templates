@@ -16,6 +16,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import kotlin.jvm.Throws
 
+@Transactional
 @ApplicationScoped
 class CreateUsersSpi : CreateUsersOut {
     companion object {
@@ -38,7 +39,6 @@ class CreateUsersSpi : CreateUsersOut {
     @field:Default
     lateinit var usersEntityMapper: UsersEntityMapper
 
-    @Transactional
     override fun addClient(user: CreateUserCommand) {
         val userEntity = usersEntityMapper.fromCreateUserToClient(user)
         try {
@@ -52,7 +52,6 @@ class CreateUsersSpi : CreateUsersOut {
         }
     }
 
-    @Transactional
     override fun addAdmin(user: CreateUserCommand) {
         val userEntity = usersEntityMapper.fromCreateUserToAdmin(user)
         try {

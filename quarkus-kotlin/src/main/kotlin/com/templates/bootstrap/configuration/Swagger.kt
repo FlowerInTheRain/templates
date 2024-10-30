@@ -19,11 +19,12 @@ import org.eclipse.microprofile.openapi.annotations.security.SecurityScheme
     )
 )
 @SecurityScheme(
+    apiKeyName ="Bearer",
     scheme = "bearer",
     securitySchemeName = "bearer",
-    type = SecuritySchemeType.HTTP,
-    `in` = SecuritySchemeIn.HEADER,
-    bearerFormat = "JWT"
+    type = SecuritySchemeType.APIKEY,
+    `in` = SecuritySchemeIn.COOKIE,
+
 )
 @SecurityScheme(
     scheme = "api-key",
