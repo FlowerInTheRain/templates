@@ -2,19 +2,24 @@ package com.templates.application.controllers
 
 import com.templates.application.controllers.CookieUtils.setUpCookie
 import com.templates.application.dto.requests.LoginRequest
+import com.templates.application.dto.responses.UserLoginResponse
 import com.templates.application.mappers.UsersDtoMappers
+import com.templates.domain.ports.`in`.CsrfTokenGeneratorIn
 import com.templates.domain.ports.`in`.LoginIn
-import com.templates.domain.utils.UUIDGenerator.getNewUUID
 import jakarta.annotation.security.PermitAll
 import jakarta.annotation.security.RolesAllowed
 import jakarta.enterprise.context.RequestScoped
 import jakarta.enterprise.inject.Default
 import jakarta.inject.Inject
-import jakarta.servlet.http.HttpSession
 import jakarta.ws.rs.*
-import jakarta.ws.rs.core.Context
 import jakarta.ws.rs.core.MediaType
 import jakarta.ws.rs.core.Response
+import org.eclipse.microprofile.config.inject.ConfigProperty
+import org.eclipse.microprofile.openapi.annotations.Operation
+import org.eclipse.microprofile.openapi.annotations.media.Content
+import org.eclipse.microprofile.openapi.annotations.media.Schema
+import org.eclipse.microprofile.openapi.annotations.responses.APIResponse
+import org.eclipse.microprofile.openapi.annotations.responses.APIResponses
 import org.jboss.logging.Logger
 import org.jboss.resteasy.reactive.ResponseStatus
 import org.jboss.resteasy.reactive.RestResponse.StatusCode.OK
@@ -27,11 +32,16 @@ class ConnexionResource {
 
     @Inject
     @field:Default
-    lateinit var loginIn: LoginIn
+    private lateinit var loginIn: LoginIn
     @Inject
     @field:Default
-    lateinit var usersDtoMappers: UsersDtoMappers
-
+    private lateinit var usersDtoMappers: UsersDtoMappers
+    @Inject
+    @field:Default
+    private lateinit var csrfTokenGeneratorIn: CsrfTokenGeneratorIn
+    
+    @field:ConfigProperty(name="quarkus.rest-csrf.cookie-name")
+    private lateinit var csrfCookieName: String
 
     @POST
     @Path("/login/client")
@@ -39,11 +49,20 @@ class ConnexionResource {
     @Produces(MediaType.APPLICATION_JSON)
     @ResponseStatus(OK)
     @PermitAll
+    @Operation(summary = "Logs a client", description = "Logs in a client")
+    @APIResponses(
+        APIResponse(responseCode = "200", description = "OK", content = [Content(mediaType = "application/json",
+            schema = Schema(implementation = UserLoginResponse::class)
+        )]),
+    )
     fun clientLogin(loginRequest: LoginRequest): Response {
-        val loggedIn = loginIn.clientLogin(loginRequest.identifier, loginRequest.password)
-        val cookie = setUpCookie("Bearer", loggedIn.jwToken)
         LOG.info(String.format("Logging user %s", loginRequest.identifier))
-       return  Response.ok(usersDtoMappers.toLoginResponse(loggedIn)).cookie(cookie).build()
+
+        val loggedIn = loginIn.clientLogin(loginRequest.identifier, loginRequest.password)
+        val bearerCookie = setUpCookie("Bearer", loggedIn.jwToken)
+        val csrfToken = csrfTokenGeneratorIn.generateToken(loggedIn.mail)
+        val csrfCookie = setUpCookie(csrfCookieName, csrfToken)
+       return  Response.ok(usersDtoMappers.toLoginResponse(loggedIn)).cookie(bearerCookie).cookie(csrfCookie).build()
     }
 
     @POST
@@ -52,11 +71,19 @@ class ConnexionResource {
     @Produces(MediaType.APPLICATION_JSON)
     @ResponseStatus(OK)
     @PermitAll
+    @Operation(summary = "Logs an admin", description = "Logs an admin")
+    @APIResponses(
+        APIResponse(responseCode = "200", description = "OK", content = [Content(mediaType = "application/json",
+            schema = Schema(implementation = UserLoginResponse::class)
+        )]),
+    )
     fun adminLogin(loginRequest: LoginRequest): Response {
         val loggedIn = loginIn.adminLogin(loginRequest.identifier, loginRequest.password)
-        val cookie = setUpCookie("Bearer", loggedIn.jwToken)
-        LOG.info(String.format("Logging user %s", loginRequest.identifier))
-        return  Response.ok(usersDtoMappers.toLoginResponse(loggedIn)).cookie(cookie).build()
+        val bearerCookie = setUpCookie("Bearer", loggedIn.jwToken)
+        val csrfToken = csrfTokenGeneratorIn.generateToken(loggedIn.mail)
+        val csrfCookie = setUpCookie(csrfCookieName, csrfToken)
+        LOG.info(String.format("Logging admin %s", loginRequest.identifier))
+        return  Response.ok(usersDtoMappers.toLoginResponse(loggedIn)).cookie(bearerCookie).cookie(csrfCookie).build()
     }
 
     @GET

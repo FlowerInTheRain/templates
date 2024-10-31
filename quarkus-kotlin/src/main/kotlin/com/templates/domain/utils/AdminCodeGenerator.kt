@@ -4,7 +4,7 @@ import kotlin.random.Random
 
 object AdminCodeGenerator {
     fun generateAdminCode(): String {
-        val numbers = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!?()"
+        val numbers = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!?()$-_&=+*"
         val until = 15
         var code = ""
         val random = Random

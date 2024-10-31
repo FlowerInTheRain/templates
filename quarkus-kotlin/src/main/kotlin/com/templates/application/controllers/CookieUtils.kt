@@ -4,6 +4,8 @@ import jakarta.ws.rs.core.NewCookie
 
 object CookieUtils {
     fun setUpCookie(name:String, value:String) : NewCookie {
-        return NewCookie(name, value, "/", null, null, 3600, false)
+        return if (name == "Bearer" ) NewCookie(name, value, "/", null, null, 64800, true) else NewCookie(name, value,
+        "/",
+        null, null, 64800, false)
     }
 }

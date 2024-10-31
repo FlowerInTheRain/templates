@@ -1,9 +1,11 @@
 package com.templates.application.controllers
 
+import com.templates.application.controllers.CookieUtils.setUpCookie
 import com.templates.application.dto.requests.LoginRequest
 import com.templates.application.dto.requests.OtpRequest
 import com.templates.application.dto.responses.UserLoginResponse
 import com.templates.application.mappers.UsersDtoMappers
+import com.templates.domain.ports.`in`.CsrfTokenGeneratorIn
 import com.templates.domain.ports.`in`.LoginIn
 import com.templates.domain.ports.`in`.VerifyAccountsIn
 import jakarta.annotation.security.PermitAll
@@ -16,9 +18,12 @@ import jakarta.ws.rs.POST
 import jakarta.ws.rs.PUT
 import jakarta.ws.rs.Path
 import jakarta.ws.rs.core.MediaType
+import jakarta.ws.rs.core.Response
+import org.eclipse.microprofile.config.inject.ConfigProperty
 import org.eclipse.microprofile.jwt.JsonWebToken
 import org.jboss.logging.Logger
 import org.jboss.resteasy.reactive.ResponseStatus
+import org.jboss.resteasy.reactive.RestResponse.StatusCode.NO_CONTENT
 import org.jboss.resteasy.reactive.RestResponse.StatusCode.OK
 
 @Path("/verify-account")
@@ -28,28 +33,42 @@ class AccountVerificationResource {
 
     @Inject
     @field:Default
-    lateinit var verifyAccountsIn: VerifyAccountsIn
+    private lateinit var verifyAccountsIn: VerifyAccountsIn
+
     @Inject
     @field:Default
-    lateinit var jwt: JsonWebToken
+    private lateinit var jwt: JsonWebToken
+
+    @Inject
+    @field:Default
+    private lateinit var csrfTokenGeneratorIn: CsrfTokenGeneratorIn
+
+    @field:ConfigProperty(name="quarkus.rest-csrf.cookie-name")
+    private lateinit var csrfCookieName: String
 
     @PUT
     @Path("/client")
     @Consumes(MediaType.APPLICATION_JSON)
-    @ResponseStatus(OK)
+    @ResponseStatus(NO_CONTENT)
     @RolesAllowed("CLIENT")
-    fun clientLogin(otpRequest: OtpRequest) {
+    fun verifyClientAccount(otpRequest: OtpRequest):Response {
         val mail = jwt.name
         verifyAccountsIn.verifyClientAccount(mail, otpRequest.otpCode)
+        val csrfToken = csrfTokenGeneratorIn.generateToken(mail)
+        val csrfCookie = setUpCookie(csrfCookieName, csrfToken)
+        return Response.noContent().cookie(csrfCookie).build()
     }
 
     @PUT
     @Path("/new-otp")
     @Consumes(MediaType.APPLICATION_JSON)
-    @ResponseStatus(OK)
+    @ResponseStatus(NO_CONTENT)
     @RolesAllowed("CLIENT")
-    fun generateNewOtpCode() {
+    fun generateNewOtpCode():Response {
         val mail = jwt.name
         verifyAccountsIn.generateNewOtpCode(mail)
+        val csrfToken = csrfTokenGeneratorIn.generateToken(mail)
+        val csrfCookie = setUpCookie(csrfCookieName, csrfToken)
+        return Response.noContent().cookie(csrfCookie).build()
     }
 }
