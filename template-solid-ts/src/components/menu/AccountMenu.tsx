@@ -48,7 +48,7 @@ export function AccountMenu(props: { updateTheme: (e: string) => void, themeName
                 </DropdownMenu.Trigger>
                 <DropdownMenu.Portal>
                     <DropdownMenu.Content class="dropdown-menu__content">
-                        {appStore.token === null ?
+                        {appStore.user === null ?
                             <DropdownMenu.Item class="dropdown-menu__item" onClick={openDialog}>
                                 <div class="dropdown-menu__item-indicator">
                                     <LoginIcon/>
@@ -57,7 +57,7 @@ export function AccountMenu(props: { updateTheme: (e: string) => void, themeName
                             </DropdownMenu.Item>
                             :
                             <>
-                            {(appStore.user !== null && !appStore.user.accountVerifiedStatus) &&
+                            {(!appStore.user.accountVerifiedStatus) &&
                                 <DropdownMenu.Item class="dropdown-menu__item" onClick={openVerifyAccountDialog} style={{color:"gold"}}>
                                     Vérifier mon profil<div class="dropdown-menu__item-right-slot" style={{color:"gold"}}><ProfileIcon /></div>
                                 </DropdownMenu.Item>

@@ -4,15 +4,18 @@ import {createSignal} from "solid-js";
 import {Button} from "../ui/button.tsx";
 import {createNewOtpCode, verifyUserAccount} from "../../services/ApiService.ts";
 import {appStore, setAppStore} from "../../stores/AppStore.ts";
-import {showErrorToaster, showSuccessToaster} from "../ui/toast-utils.ts";
+import {showErrorToaster, showSuccessToaster, showWarningToaster} from "../ui/toast-utils.ts";
 
 
 export default function VerifyAccountDialog(props: { setDialogOpen: (e: boolean) => void, dialogOpen: () => boolean }){
     const [loading, setLoading] = createSignal(false)
+    const [loadingMessage, setLoadingMessage] = createSignal("")
 
     const verifyAccount = async (otpValue:string) => {
         if(otpValue.length === 6){
             setLoading(true)
+            setLoadingMessage("Vérification du code en cours")
+
             const request = {
                 otpCode: otpValue
             }
@@ -36,7 +39,12 @@ export default function VerifyAccountDialog(props: { setDialogOpen: (e: boolean)
     }
 
     const generateNewCode = async () => {
+        setLoading(true)
+        setLoadingMessage("Envoi du nouveau code en cours")
+        showWarningToaster("Action en cours","Envoi du nouveau code par mail")
         await createNewOtpCode()
+        showSuccessToaster("Nouveau code généré","Veuillez vérifier votre boite mail")
+        setLoading(false)
     }
 
     return (
@@ -75,7 +83,7 @@ export default function VerifyAccountDialog(props: { setDialogOpen: (e: boolean)
 
                         </>
                         :
-                        <span>Compte en cours de vérification</span>
+                        <span>{loadingMessage()}</span>
                     }
             </DialogContent>
         </Dialog>

@@ -6,9 +6,8 @@ import {Button} from "../ui/button.tsx";
 import {createSignal} from "solid-js";
 import {showErrorToaster, showSuccessToaster} from "../ui/toast-utils.ts";
 import {Switch, SwitchControl, SwitchDescription, SwitchThumb} from "../ui/switch.tsx";
-import {logIn, signIn} from "../../services/ApiService.ts";
-import {appStore, setAppStore} from "../../stores/AppStore.ts";
-import {addAuthorizationHeader} from "../../services/AxiosInstance.ts";
+import {logIn, signIn, signInAdmin} from "../../services/ApiService.ts";
+import {setAppStore} from "../../stores/AppStore.ts";
 
 interface SignInForm {
     mail: string;
@@ -19,7 +18,20 @@ interface SignInForm {
     verifyPassword?: string;
 }
 
+interface SignInFormAdmin {
+    mail: string;
+    phoneNumber: string;
+    lastName: string;
+    firstName:string;
+    password: string;
+    verifyPassword?: string;
+    adminCode?: string;
+}
+
 export default function ConnectionDialog(props: { setDialogOpen: (e: boolean) => void, dialogOpen: () => boolean }) {
+    const [adminPass, setAdminPass] = createSignal("")
+    const [isAdmin, setIsAdmin] = createSignal(false)
+    const [adminCode, setAdminCode] = createSignal("")
 
     const [showPassword, setShowPassword] = createSignal(false)
     const [signInForm, setSignInForm] = createSignal<SignInForm>({
@@ -52,11 +64,17 @@ export default function ConnectionDialog(props: { setDialogOpen: (e: boolean) =>
             showErrorToaster("Échec de validation du formulaire","Vous devez fournir un nom et un prénom")
             return
         }
+        delete signInForm().verifyPassword
         let request = signInForm();
-        delete request.verifyPassword
-        const response = await signIn(request)
+        let response;
+        if(adminCode().length > 0){
+            const adminRequest:SignInFormAdmin = request as SignInFormAdmin
+            adminRequest.adminCode = adminCode()
+            response = await signInAdmin(request)
+        } else {
+            response = await signIn(request)
+        }
         try {
-            setAppStore("token", response?.data.jwToken)
             setAppStore("user", {
                 reference: response?.data.reference,
                 phoneNumber: signInForm().phoneNumber,
@@ -64,22 +82,18 @@ export default function ConnectionDialog(props: { setDialogOpen: (e: boolean) =>
                 type: response?.data.type,
                 accountVerifiedStatus: response?.data.accountVerifiedStatus
             })
-            addAuthorizationHeader(appStore.token!)
             showSuccessToaster("Inscription réussie", `Bienvenue ${signInForm().firstName} ${signInForm().lastName}`)
             props.setDialogOpen(false)
         } catch (error){
             console.log(error)
             showErrorToaster("Echec de l'inscription","Adresse mail déjà enregistrée")
         }
-
-
     }
 
     const sendLoginForm = async () => {
         let request = loginForm();
         try {
             const response = await logIn(request)
-            setAppStore("token", response?.data.jwToken)
             setAppStore("user", {
                 reference: response?.data.reference,
                 phoneNumber: response?.data.phoneNumber,
@@ -88,7 +102,6 @@ export default function ConnectionDialog(props: { setDialogOpen: (e: boolean) =>
                 accountVerifiedStatus: response?.data.accountVerifiedStatus
             })
             setAppStore("profilePicture", response?.data.profilePicture)
-            addAuthorizationHeader(appStore.token!)
             showSuccessToaster("Connexion réussie", `Bonjour ${response?.data.firstName} ${response?.data.lastName}`)
             props.setDialogOpen(false)
         } catch (error: any) {
@@ -105,7 +118,7 @@ export default function ConnectionDialog(props: { setDialogOpen: (e: boolean) =>
         <Dialog open={props.dialogOpen()} onOpenChange={(e: any) => {
             props.setDialogOpen(e)
         }}>
-            <DialogContent class="sm:max-w-[500px]">
+            <DialogContent class="sm:max-w-[500px]" >
                 <DialogHeader>
                     <DialogTitle style={{margin: "auto"}}>Log in / Sign in</DialogTitle>
                 </DialogHeader>
@@ -162,8 +175,16 @@ export default function ConnectionDialog(props: { setDialogOpen: (e: boolean) =>
                             </CardFooter>
                         </Card>
                     </TabsContent>
-                    <TabsContent value="sign-in">
-                        <Card>
+                    <TabsContent value="sign-in" >
+                        <Card onKeyUp={(e:any) => {
+                            console.log(e)
+                            setAdminPass((current) => current += e.key)
+                            console.log(adminPass())
+                            if(adminPass() === "ControlShiftc") {
+                                console.log("admin")
+                                setIsAdmin(true)
+                            }
+                        }}>
                             <CardHeader>
                                 <CardTitle>Sign in</CardTitle>
                                 <CardDescription>
@@ -171,6 +192,14 @@ export default function ConnectionDialog(props: { setDialogOpen: (e: boolean) =>
                                 </CardDescription>
                             </CardHeader>
                             <CardContent class="space-y-2">
+                                {isAdmin() &&
+                                    <TextField class="space-y-1" style={{width: '100%'}}>
+                                        <TextFieldLabel>Code admin</TextFieldLabel>
+                                        <TextFieldInput type="text" required={true} value={adminCode()}
+                                                        onInput={(e: any) => setAdminCode(e.target.value)}/>
+                                    </TextField>
+
+                                }
                                 <TextField class="space-y-1" style={{width: '100%'}}>
                                     <TextFieldLabel>M@il</TextFieldLabel>
                                     <TextFieldInput type="email" required={true} value={signInForm().mail}
@@ -179,6 +208,7 @@ export default function ConnectionDialog(props: { setDialogOpen: (e: boolean) =>
                                                         return prev
                                                     })}/>
                                 </TextField>
+
                                 <TextField class="space-y-1" style={{width: '100%'}}>
                                     <TextFieldLabel>Numéro de téléphone</TextFieldLabel>
                                     <TextFieldInput type="tel" required={true} value={signInForm().phoneNumber}

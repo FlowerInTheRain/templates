@@ -14,7 +14,7 @@ const getMockData = async () => {
 const updateProfilePic = async (request: any) => {
     const phoneNumber = appStore.user?.phoneNumber
     try {
-        return await AxiosInstance.put(`/profile-pictures/update-profile-picture/client/${phoneNumber}`,request, {
+        return await AxiosInstance.put(`/profile-pictures/update-profile-picture/${phoneNumber}`,request, {
             headers : {
                 "Content-Type": "multipart/form-data",
             }
@@ -24,12 +24,17 @@ const updateProfilePic = async (request: any) => {
     }
 }
 const signIn = async (signInRequest: any) => {
-    return await AxiosInstance.post("/users-create",signInRequest)
+    return await AxiosInstance.post("/users-create/clients",signInRequest)
 }
 
 const logIn = async (logInRequest: any) => {
-    return await AxiosInstance.post("/connection/login/client",logInRequest)
+    return await AxiosInstance.post("/connection/login",logInRequest)
 }
+
+const signInAdmin = async (signInRequest: any) => {
+    return await AxiosInstance.post("/users-create/admin",signInRequest)
+}
+
 
 const createNewOtpCode = async () => {
     return await AxiosInstance.put("/verify-account/new-otp")
@@ -52,5 +57,6 @@ export {
     signIn,
     logIn,
     createNewOtpCode,
-    verifyUserAccount
+    verifyUserAccount,
+    signInAdmin
 }
