@@ -27,6 +27,7 @@ class CsrfCookieFilter:ContainerRequestFilter {
         val csrfCookie = requestContext.cookies["csrf-token"];
         val mail = jwt.name
         if(requestContext.uriInfo.path.startsWith
+                ("/admin-code")|| requestContext.uriInfo.path.startsWith
                 ("/csrf-token") || requestContext.uriInfo.path.startsWith
                 ("/connexion") || requestContext.uriInfo.path.startsWith
                 ("/users-create")|| requestContext.uriInfo.path.startsWith

@@ -4,12 +4,9 @@ import JwtTokenGenerator
 import com.templates.domain.errors.ApplicationException
 import com.templates.domain.errors.ApplicationExceptionsEnum
 import com.templates.domain.mappers.UsersMappers
-import com.templates.domain.models.users.User
 import com.templates.domain.models.users.UserLoggedIn
-import com.templates.domain.models.users.UserTypes
 import com.templates.domain.ports.`in`.LoginIn
-import com.templates.domain.ports.out.FindAdminsOut
-import com.templates.domain.ports.out.FindClientsOut
+import com.templates.domain.ports.out.FindUserOut
 import com.templates.domain.services.PasswordUtils.verifyPassword
 import jakarta.enterprise.context.ApplicationScoped
 import jakarta.enterprise.inject.Default
@@ -22,30 +19,19 @@ class Login(@field:Inject var jwtTokenGenerator: JwtTokenGenerator) : LoginIn {
 
     @Inject
     @field:Default
-    lateinit var findClientsOut: FindClientsOut
+    private lateinit var findUserOut: FindUserOut
+
 
     @Inject
     @field:Default
-    lateinit var findAdminsOut: FindAdminsOut
+    private lateinit var usersMappers: UsersMappers
 
-    @Inject
-    @field:Default
-    lateinit var usersMappers: UsersMappers
 
-    override fun clientLogin(identifier: String, password: String): UserLoggedIn {
-        val client = findClientsOut.findByIdentifier(identifier)
-        return login(client, password, UserTypes.CLIENT)
-    }
-
-    override fun adminLogin(identifier: String, password: String): UserLoggedIn {
-        val user = findAdminsOut.findByIdentifier(identifier)
-        return login(user, password, UserTypes.ADMIN)
-    }
-
-    private fun login(user: User, password: String, userType:UserTypes): UserLoggedIn {
+    override fun login(identifier: String, password: String): UserLoggedIn {
+        val user = findUserOut.findByIdentifier(identifier)
         if(verifyPassword(password, user.password)) {
             LOG.info("Login successful")
-            val jwToken = jwtTokenGenerator.getToken(user.mail, userType.name)
+            val jwToken = jwtTokenGenerator.getToken(user.mail, user.type)
             return usersMappers.fromUsersToUsersLoggedIn(user, jwToken)
         } else {
             throw ApplicationException(ApplicationExceptionsEnum.ERROR_VALIDATING_PASSWORD_HASH)

@@ -69,7 +69,7 @@ class CreateUsers : CreateUsersIn {
             val userReference = setUpUserDataAndCheckInputs(user, userType)
             val userToken = jwtTokenGenerator.getToken(user.mail,UserTypes
                 .ADMIN.name)
-
+            user.accountVerified = true
             createUsersOut.addAdmin(user)
             azureStorageIn.createContainerForUser(user.phoneNumber)
             LOG.info("OTP verification Mail sent to user")
@@ -94,7 +94,9 @@ class CreateUsers : CreateUsersIn {
 
         user.type = userType
         user.reference = userReference
-        mailer.sendHtmlEmail(user.mail, "Vérification de compte", content)
+        if(user.type == UserTypes.CLIENT.name){
+            mailer.sendHtmlEmail(user.mail, "Vérification de compte", content)
+        }
 
         verifyCreateUserInputs(preHashPW, user)
         val hash = hashWithBCrypt(preHashPW)

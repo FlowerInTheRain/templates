@@ -44,46 +44,25 @@ class ConnexionResource {
     private lateinit var csrfCookieName: String
 
     @POST
-    @Path("/login/client")
+    @Path("/login")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @ResponseStatus(OK)
     @PermitAll
-    @Operation(summary = "Logs a client", description = "Logs in a client")
+    @Operation(summary = "Logs a user", description = "Logs in a user")
     @APIResponses(
         APIResponse(responseCode = "200", description = "OK", content = [Content(mediaType = "application/json",
             schema = Schema(implementation = UserLoginResponse::class)
         )]),
     )
-    fun clientLogin(loginRequest: LoginRequest): Response {
+    fun login(loginRequest: LoginRequest): Response {
         LOG.info(String.format("Logging user %s", loginRequest.identifier))
 
-        val loggedIn = loginIn.clientLogin(loginRequest.identifier, loginRequest.password)
+        val loggedIn = loginIn.login(loginRequest.identifier, loginRequest.password)
         val bearerCookie = setUpCookie("Bearer", loggedIn.jwToken)
         val csrfToken = csrfTokenGeneratorIn.generateToken(loggedIn.mail)
         val csrfCookie = setUpCookie(csrfCookieName, csrfToken)
        return  Response.ok(usersDtoMappers.toLoginResponse(loggedIn)).cookie(bearerCookie).cookie(csrfCookie).build()
-    }
-
-    @POST
-    @Path("/login/admin")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    @ResponseStatus(OK)
-    @PermitAll
-    @Operation(summary = "Logs an admin", description = "Logs an admin")
-    @APIResponses(
-        APIResponse(responseCode = "200", description = "OK", content = [Content(mediaType = "application/json",
-            schema = Schema(implementation = UserLoginResponse::class)
-        )]),
-    )
-    fun adminLogin(loginRequest: LoginRequest): Response {
-        val loggedIn = loginIn.adminLogin(loginRequest.identifier, loginRequest.password)
-        val bearerCookie = setUpCookie("Bearer", loggedIn.jwToken)
-        val csrfToken = csrfTokenGeneratorIn.generateToken(loggedIn.mail)
-        val csrfCookie = setUpCookie(csrfCookieName, csrfToken)
-        LOG.info(String.format("Logging admin %s", loginRequest.identifier))
-        return  Response.ok(usersDtoMappers.toLoginResponse(loggedIn)).cookie(bearerCookie).cookie(csrfCookie).build()
     }
 
     @GET

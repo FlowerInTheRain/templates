@@ -24,11 +24,11 @@ class VerifyAccounts:VerifyAccountsIn {
 
     @Inject
     @field:Default
-    lateinit var updateClientsOut: UpdateClientsOut
+    private lateinit var updateClientsOut: UpdateClientsOut
 
     @Inject
     @field:Default
-    lateinit var mailer: Mailer
+    private lateinit var mailer: Mailer
 
 
     override fun verifyClientAccount(mail: String, otp: String) {

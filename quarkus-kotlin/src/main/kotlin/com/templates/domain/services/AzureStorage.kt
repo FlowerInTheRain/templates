@@ -9,6 +9,8 @@ import com.azure.storage.blob.models.PublicAccessType
 import com.templates.domain.errors.ApplicationException
 import com.templates.domain.errors.ApplicationExceptionsEnum
 import com.templates.domain.ports.`in`.AzureStorageIn
+import com.templates.domain.ports.out.FindAdminsOut
+import com.templates.domain.ports.out.UpdateAdminsOut
 import com.templates.domain.ports.out.UpdateClientsOut
 import jakarta.annotation.PostConstruct
 import jakarta.enterprise.context.ApplicationScoped
@@ -43,6 +45,10 @@ class AzureStorage : AzureStorageIn {
     @field:Default
     lateinit var updateClientsOut: UpdateClientsOut
 
+    @Inject
+    @field:Default
+    lateinit var updateAdminsOut: UpdateAdminsOut
+
     var blobServiceClient: BlobServiceClient? = null
 
     @PostConstruct
@@ -58,7 +64,7 @@ class AzureStorage : AzureStorageIn {
             .buildClient()
     }
 
-    override fun updateProfilePicture(mail: String, phoneNumber:String, file: FileUpload): String {
+    override fun updateProfilePicture(mail: String, role:String, phoneNumber:String, file: FileUpload): String {
         val containerName = String.format(FORMATTER, phoneNumber)
         val fileName: String = file.fileName()
         try {
@@ -71,7 +77,11 @@ class AzureStorage : AzureStorageIn {
                 file.filePath().toString()
             )
             val profilePictureUrl = client.blobUrl
-            updateClientsOut.updateProfilePicture(mail, profilePictureUrl)
+            if(role == "CLIENT"){
+                updateClientsOut.updateProfilePicture(mail, profilePictureUrl)
+            } else {
+                updateAdminsOut.updateProfilePicture(mail, profilePictureUrl)
+            }
             LOGGER.info("Profile picture updated : $profilePictureUrl")
             return profilePictureUrl
         } catch (e: Exception) {

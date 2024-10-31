@@ -8,13 +8,6 @@ import java.util.*
 
 @ApplicationScoped
 class UsersRepository : PanacheRepository<UsersEntity?> {
-    fun findByName(name: String?): UsersEntity {
-        return find("name", name).firstResult<UsersEntity>()
-    }
-
-    fun findAllKotlinEntities(): MutableList<UsersEntity?>? {
-        return listAll()
-    }
 
     fun findByIdentifier(identifier: String): Optional<UsersEntity> {
         return find("SELECT u from UsersEntity u WHERE (u.mail =:mail OR u.phoneNumber = :phoneNumber)", Parameters.with("mail", identifier).and("phoneNumber", identifier))

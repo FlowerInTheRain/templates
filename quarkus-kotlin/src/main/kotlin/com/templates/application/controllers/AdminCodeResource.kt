@@ -41,15 +41,17 @@ class AdminCodeResource {
 
     @GET
     @ResponseStatus(OK)
-    @RolesAllowed("ADMIN")
     @APIResponses(
         APIResponse(responseCode = "200", description = "OK", content = [Content(mediaType = "text/plain",
             schema = Schema(implementation = String::class))]),
     )
+    @PermitAll
     fun createAdmin(): Response {
-        val mail = jwt.name
+        /**val mail = jwt.name
         val csrfToken = csrfTokenGeneratorIn.generateToken(mail)
-        val csrfCookie = setUpCookie(csrfCookieName, csrfToken)
-        return Response.ok(adminCodeIn.getCurrentCode()).cookie(csrfCookie).build()
+        val csrfCookie = setUpCookie(csrfCookieName, csrfToken)*/
+        return Response.ok(adminCodeIn.getCurrentCode())
+            //.cookie(csrfCookie)
+        .build()
     }
 }

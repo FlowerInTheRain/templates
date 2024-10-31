@@ -2,7 +2,8 @@ package com.templates.application.controllers
 
 import com.templates.application.controllers.CookieUtils.setUpCookie
 import com.templates.application.dto.responses.UpdateProfilePictureResponse
-import com.templates.application.dto.responses.UserLoginResponse
+import com.templates.domain.errors.ApplicationException
+import com.templates.domain.errors.ApplicationExceptionsEnum
 import com.templates.domain.ports.`in`.AzureStorageIn
 import com.templates.domain.ports.`in`.CsrfTokenGeneratorIn
 import jakarta.annotation.security.RolesAllowed
@@ -70,7 +71,10 @@ class ProfilePicturesResource {
     ): Response {
         LOGGER.info(image.fileName())
         val userMail = jwt.name
-        val profilePicUrl = UpdateProfilePictureResponse(azureStorageIn.updateProfilePicture(userMail, phoneNumber, image))
+        val userType = jwt.groups.stream().findFirst().orElseThrow { ApplicationException(ApplicationExceptionsEnum.ERROR)}
+        val profilePicUrl = UpdateProfilePictureResponse(azureStorageIn.updateProfilePicture(userMail,userType,
+            phoneNumber,
+            image))
         val csrfToken = csrfTokenGeneratorIn.generateToken(userMail)
         val csrfCookie = setUpCookie(csrfCookieName, csrfToken)
         return Response.ok(profilePicUrl).cookie(csrfCookie).build()
