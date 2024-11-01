@@ -1,5 +1,5 @@
 .swagger-ui .topbar {
-    background-color: #D4D3DD;
+    background-color: #757F9A;
     margin: 0;
     color: #5D4157;
     box-shadow: 0 5px 5px 0 rgba(0,0,0,.4), 0 3px 1px -2px rgba(0,0,0,.2), 0 1px 5px 0 rgba(0,0,0,.12);
@@ -8,19 +8,19 @@
 
 body {
     margin: 0;
-    background: #EFEFBB;  /* fallback for old browsers */
-    background: -webkit-linear-gradient(to right, #D4D3DD, #EFEFBB);  /* Chrome 10-25, Safari 5.1-6 */
-    background: linear-gradient(to right, #D4D3DD, #EFEFBB); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    background: #757F9A;  /* fallback for old browsers */
+    background: -webkit-linear-gradient(to right, #D7DDE8, #757F9A);  /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to right, #D7DDE8, #757F9A); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 
 }
 .swagger-ui .scheme-container {
     margin: 0 0 20px;
     padding: 30px 0;
-    background: #EFEFBB;  /* fallback for old browsers */
-    background: -webkit-linear-gradient(to right, #D4D3DD, #EFEFBB);  /* Chrome 10-25, Safari 5.1-6 */
-    background: linear-gradient(to right, #D4D3DD, #EFEFBB); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    background: #757F9A;  /* fallback for old browsers */
+    background: -webkit-linear-gradient(to right, #D7DDE8, #757F9A);  /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to right, #D7DDE8, #757F9A); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 
-    box-shadow: 0 1px 2px 0 #4ca2cd;
+    box-shadow: 0 1px 2px 0 #D7DDE8;
 }
 .swagger-ui .opblock.opblock-get .opblock-summary {
     border-color: transparent;
@@ -58,7 +58,8 @@ body {
     border-color: transparent;
 }
 .swagger-ui .topbar .download-url-wrapper .download-url-button {
-    background: #4ca2cd;
+    background: #D7DDE8;
+    color: #5D4157;
 }
 
 span {
@@ -74,23 +75,20 @@ span {
     background-color: transparent;
     display: inline;
     line-height: 1;
-    color: #4ca2cd;
-    border-color: #4ca2cd;
+    color: #5D4157;
+    border-color: #5D4157;
 }
 
 .swagger-ui .btn.authorize svg {
-    fill: #4ca2cd;
+    fill: #5D4157;
 }
 
 .swagger-ui .model-box-control:focus, .swagger-ui .models-control:focus, .swagger-ui .opblock-summary-control:focus {
     outline: none;
 }
 
-.swagger-ui .topbar .download-url-wrapper .download-url-button {
-    background: #EFEFBB;
-    color: #5D4157;
-}
 
-input:focus{
-    outline: none;
+.modal-ux-inner {
+    background-color:floralwhite;
+
 }
