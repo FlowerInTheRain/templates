@@ -18,7 +18,7 @@ class UpdateClientsSpi:UpdateClientsOut {
 
     @Inject
     @field:Default
-    lateinit var clientsRepository: ClientsRepository
+    private lateinit var clientsRepository: ClientsRepository
 
     override fun updateProfilePicture(mail: String, profilePictureUrl:String) {
         try {
@@ -27,7 +27,7 @@ class UpdateClientsSpi:UpdateClientsOut {
                 "mail" to mail,
                 "profilePictureUrl" to profilePictureUrl
             ))
-            LOG.info(String.format("User %s profille picture was updated", mail))
+            LOG.info(String.format("User %s profile picture was updated", mail))
         } catch (e: SQLException) {
             handleExceptions(e)
         }

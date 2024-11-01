@@ -1,4 +1,5 @@
-package com.templates.bootstrap.quarkusapp
+package com.templates.bootstrap
+
 
 import io.quarkus.runtime.Quarkus
 import io.quarkus.runtime.annotations.QuarkusMain

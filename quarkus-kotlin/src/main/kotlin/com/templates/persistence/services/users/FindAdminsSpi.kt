@@ -14,15 +14,17 @@ import org.slf4j.LoggerFactory
 
 @ApplicationScoped
 class FindAdminsSpi : FindAdminsOut{
-    private val LOGGER: Logger = LoggerFactory.getLogger(FindClientsSpi::class.java.name)
+    companion object{
+        private val LOGGER: Logger = LoggerFactory.getLogger(FindClientsSpi::class.java.name)
+    }
 
     @Inject
     @field:Default
-    lateinit var adminsRepository: AdminsRepository
+    private lateinit var adminsRepository: AdminsRepository
 
     @Inject
     @field:Default
-    lateinit var usersEntityMapper: UsersEntityMapper
+    private lateinit var usersEntityMapper: UsersEntityMapper
 
     override fun findByIdentifier(identifier: String): User {
         val clientFromDb = adminsRepository.findByIdentifier(identifier).orElseThrow { ApplicationException(

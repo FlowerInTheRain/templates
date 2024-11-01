@@ -10,7 +10,7 @@ import jakarta.inject.Inject
 class AdminCode :AdminCodeIn{
     @Inject
     @field:Default
-    lateinit var secretsClientOut: SecretsClientOut
+    private lateinit var secretsClientOut: SecretsClientOut
     override fun getCurrentCode(): String {
         return secretsClientOut.getCurrentAdminCreationCode()
     }

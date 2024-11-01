@@ -4,7 +4,6 @@ import com.templates.application.controllers.CookieUtils.setUpCookie
 import com.templates.application.dto.requests.CreateAdminRequest
 import com.templates.application.dto.requests.CreateUserRequest
 import com.templates.application.dto.responses.CreateUserResponse
-import com.templates.application.dto.responses.UserLoginResponse
 import com.templates.application.mappers.UsersDtoMappers
 import com.templates.domain.ports.`in`.CreateUsersIn
 import com.templates.domain.ports.`in`.CsrfTokenGeneratorIn
@@ -31,7 +30,9 @@ import org.jboss.resteasy.reactive.RestResponse.StatusCode.CREATED
 @Path("/users-create")
 @RequestScoped
 class CreateUsersResource {
-    private val LOG: Logger = Logger.getLogger(CreateUsersResource::class.java)
+    companion object{
+        private val LOG: Logger = Logger.getLogger(CreateUsersResource::class.java)
+    }
 
     @Inject
     @field: Default

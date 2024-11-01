@@ -1,6 +1,5 @@
 package com.templates.bootstrap.configuration
 
-import com.templates.bootstrap.persistence.DatasourceConfigurator
 import com.templates.domain.services.CsrfTokenCache
 import jakarta.annotation.Priority
 import jakarta.enterprise.inject.Default
@@ -24,7 +23,7 @@ class CsrfCookieFilter:ContainerRequestFilter {
     private lateinit var jwt: JsonWebToken
 
     override fun filter(requestContext: ContainerRequestContext) {
-        val csrfCookie = requestContext.cookies["csrf-token"];
+        val csrfCookie = requestContext.cookies["csrf-token"]
         val mail = jwt.name
         if(requestContext.uriInfo.path.startsWith
                 ("/admin-code")|| requestContext.uriInfo.path.startsWith
@@ -35,13 +34,13 @@ class CsrfCookieFilter:ContainerRequestFilter {
                 ("/connection")|| requestContext.uriInfo.path == "/password-recovery/init-reset"
             || requestContext.uriInfo.path ==
                 "/password-recovery/reset-password"){
-            return;
+            return
         }
-        if (csrfCookie == null || csrfCookie.getValue().isEmpty() || csrfCookie.getValue() != csrfTokenCache
+        if (csrfCookie == null || csrfCookie.value.isEmpty() || csrfCookie.value != csrfTokenCache
             .getUserToken(mail)) {
             requestContext.abortWith(
-                Response.status(Response.Status.FORBIDDEN)
-                .entity("CSRF token missing or invalid").build());
+                Response.status(Response.Status.EXPECTATION_FAILED)
+                .entity("CSRF token error").build())
         }
     }
 }

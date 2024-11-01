@@ -28,8 +28,9 @@ import org.jboss.resteasy.reactive.RestResponse.StatusCode.OK
 @Path("/connection")
 @RequestScoped
 class ConnexionResource {
-    private val LOG: Logger = Logger.getLogger(ConnexionResource::class.java)
-
+    companion object{
+        private val LOG: Logger = Logger.getLogger(ConnexionResource::class.java)
+    }
     @Inject
     @field:Default
     private lateinit var loginIn: LoginIn

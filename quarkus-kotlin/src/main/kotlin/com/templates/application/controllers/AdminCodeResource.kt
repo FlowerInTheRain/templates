@@ -4,7 +4,6 @@ import com.templates.application.controllers.CookieUtils.setUpCookie
 import com.templates.domain.ports.`in`.AdminCodeIn
 import com.templates.domain.ports.`in`.CsrfTokenGeneratorIn
 import jakarta.annotation.security.PermitAll
-import jakarta.annotation.security.RolesAllowed
 import jakarta.enterprise.context.RequestScoped
 import jakarta.enterprise.inject.Default
 import jakarta.inject.Inject
@@ -19,10 +18,14 @@ import org.eclipse.microprofile.openapi.annotations.responses.APIResponse
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponses
 import org.jboss.resteasy.reactive.ResponseStatus
 import org.jboss.resteasy.reactive.RestResponse.StatusCode.OK
+import java.util.logging.Logger
 
 @Path("/admin-code")
 @RequestScoped
 class AdminCodeResource {
+    companion object {
+        private val LOG = Logger.getLogger(AdminCodeResource::class.java.name)
+    }
     @Inject
     @field:Default
     private lateinit var adminCodeIn: AdminCodeIn
@@ -46,12 +49,11 @@ class AdminCodeResource {
             schema = Schema(implementation = String::class))]),
     )
     @PermitAll
-    fun createAdmin(): Response {
-        /**val mail = jwt.name
+    fun getAdminCode(): Response {
+        LOG.info("Retrieving new admin code")
+        val mail = jwt.name
         val csrfToken = csrfTokenGeneratorIn.generateToken(mail)
-        val csrfCookie = setUpCookie(csrfCookieName, csrfToken)*/
-        return Response.ok(adminCodeIn.getCurrentCode())
-            //.cookie(csrfCookie)
-        .build()
+        val csrfCookie = setUpCookie(csrfCookieName, csrfToken)
+        return Response.ok(adminCodeIn.getCurrentCode()).cookie(csrfCookie).build()
     }
 }

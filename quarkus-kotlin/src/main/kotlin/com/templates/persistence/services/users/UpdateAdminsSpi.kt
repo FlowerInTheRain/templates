@@ -3,9 +3,7 @@ package com.templates.persistence.services.users
 import com.templates.domain.errors.ApplicationException
 import com.templates.domain.errors.ApplicationExceptionsEnum
 import com.templates.domain.ports.out.UpdateAdminsOut
-import com.templates.domain.ports.out.UpdateClientsOut
 import com.templates.persistence.repositories.AdminsRepository
-import com.templates.persistence.repositories.ClientsRepository
 import jakarta.enterprise.context.ApplicationScoped
 import jakarta.enterprise.inject.Default
 import jakarta.inject.Inject
@@ -29,7 +27,7 @@ class UpdateAdminsSpi:UpdateAdminsOut {
                 "mail" to mail,
                 "profilePictureUrl" to profilePictureUrl
             ))
-            LOG.info(String.format("User %s profille picture was updated", mail))
+            LOG.info(String.format("User %s profile picture was updated", mail))
         } catch (e: SQLException) {
             handleExceptions(e)
         }

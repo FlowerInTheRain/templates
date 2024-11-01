@@ -15,15 +15,17 @@ import org.slf4j.LoggerFactory
 
 @ApplicationScoped
 class FindClientsSpi:FindClientsOut {
-    private val LOGGER: Logger = LoggerFactory.getLogger(FindClientsSpi::class.java.name)
+    companion object {
+        private val LOGGER: Logger = LoggerFactory.getLogger(FindClientsSpi::class.java.name)
+    }
 
     @Inject
     @field:Default
-    lateinit var clientsRepository: ClientsRepository
+    private lateinit var clientsRepository: ClientsRepository
 
     @Inject
     @field:Default
-    lateinit var usersEntityMapper: UsersEntityMapper
+    private lateinit var usersEntityMapper: UsersEntityMapper
 
     override fun findByIdentifier(identifier: String): User {
         val clientFromDb = clientsRepository.findByIdentifier(identifier).orElseThrow { ApplicationException(ApplicationExceptionsEnum.LOGIN_USER_NOT_FOUND) }

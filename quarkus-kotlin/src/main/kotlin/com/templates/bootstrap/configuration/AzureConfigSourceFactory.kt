@@ -1,4 +1,4 @@
-package com.templates.bootstrap.configuration;
+package com.templates.bootstrap.configuration
 
 import com.azure.identity.ClientSecretCredentialBuilder
 import com.azure.security.keyvault.secrets.SecretClientBuilder

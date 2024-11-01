@@ -1,4 +1,5 @@
-import com.templates.application.dto.responses.ErrorResponse
+package com.templates.bootstrap.interceptors
+
 import jakarta.ws.rs.Produces
 import jakarta.ws.rs.core.MediaType
 import jakarta.ws.rs.core.Response

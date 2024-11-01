@@ -23,21 +23,20 @@ class CreateUsersSpi : CreateUsersOut {
         const val MAIL_KEY = "uq_user_mail"
         const val PHONE_KEY = "uq_user_phone"
         const val REFERENCE_KEY = "uq_user_reference"
-
+        private val LOGGER: Logger = LoggerFactory.getLogger(CreateUsersSpi::class.java.name)
     }
-    private val LOGGER: Logger = LoggerFactory.getLogger(CreateUsersSpi::class.java.name)
 
     @Inject
     @field:Default
-    lateinit var clientsRepository: ClientsRepository
+    private lateinit var clientsRepository: ClientsRepository
 
     @Inject
     @field:Default
-    lateinit var adminsRepository: AdminsRepository
+    private lateinit var adminsRepository: AdminsRepository
 
     @Inject
     @field:Default
-    lateinit var usersEntityMapper: UsersEntityMapper
+    private lateinit var usersEntityMapper: UsersEntityMapper
 
     override fun addClient(user: CreateUserCommand) {
         val userEntity = usersEntityMapper.fromCreateUserToClient(user)

@@ -29,16 +29,16 @@ class DatasourceConfigurator(
 ) :
     TenantConnectionResolver {
     @field:ConfigProperty(name = "azure.tenant-id")
-    lateinit var tenantId: String
+    private lateinit var tenantId: String
 
     @field:ConfigProperty(name = "azure.tenant.token")
-    lateinit var secret: String
+    private lateinit var secret: String
 
     @field:ConfigProperty(name = "azure.client-id")
-    lateinit var clientId: String
+    private lateinit var clientId: String
 
     @field:ConfigProperty(name = "azure.vault.url")
-    lateinit  var keyVaultUrl: String
+    private lateinit  var keyVaultUrl: String
 
     private fun createDatasource(): AgroalDataSource {
         val secretClient = SecretClientBuilder()

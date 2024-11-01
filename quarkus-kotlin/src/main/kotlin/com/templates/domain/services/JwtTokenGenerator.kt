@@ -1,3 +1,5 @@
+package com.templates.domain.services
+
 import io.smallrye.jwt.build.Jwt
 import jakarta.enterprise.context.ApplicationScoped
 import org.eclipse.microprofile.config.inject.ConfigProperty
@@ -8,10 +10,10 @@ import java.time.temporal.ChronoUnit
 @ApplicationScoped
 class JwtTokenGenerator {
     @field:ConfigProperty(name = "mp.jwt.verify.issuer")
-    lateinit var issuer: String
+    private lateinit var issuer: String
 
     @field:ConfigProperty(name = "claims.origin")
-    lateinit var origin: String
+    private lateinit var origin: String
 
     fun getToken(mail: String?, userType: String): String {
         return Jwt.issuer(issuer)

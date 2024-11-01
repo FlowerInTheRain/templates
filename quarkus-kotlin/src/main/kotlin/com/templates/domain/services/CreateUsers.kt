@@ -31,21 +31,21 @@ class CreateUsers : CreateUsersIn {
     }
     @Inject
     @field:Default
-    lateinit var jwtTokenGenerator: JwtTokenGenerator
+    private lateinit var jwtTokenGenerator: JwtTokenGenerator
     @Inject
     @field:Default
-    lateinit var mailer: Mailer
+    private lateinit var mailer: Mailer
     @Inject
     @field:Default
-    lateinit var createUsersOut: CreateUsersOut
+    private lateinit var createUsersOut: CreateUsersOut
     @Inject
     @field:Default
-    lateinit var azureStorageIn: AzureStorageIn
+    private lateinit var azureStorageIn: AzureStorageIn
     @Inject
     @field:Default
-    lateinit var secretsClientOut: SecretsClientOut
+    private lateinit var secretsClientOut: SecretsClientOut
     @field:ConfigProperty(name = "admin.code")
-    lateinit var adminCreationCode: String
+    private lateinit var adminCreationCode: String
 
     override fun createUser(user: CreateUserCommand):UserBasicInformations {
         val userType = UserTypes.ADMIN.name

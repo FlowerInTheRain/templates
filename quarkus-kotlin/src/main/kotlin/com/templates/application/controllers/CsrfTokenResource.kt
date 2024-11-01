@@ -22,7 +22,7 @@ class CsrfTokenResource {
     private lateinit var jwt: JsonWebToken
     @Inject
     @field:Default
-    private lateinit var csrgTokenGeneratorIn: CsrfTokenGeneratorIn
+    private lateinit var csrfTokenGeneratorIn: CsrfTokenGeneratorIn
 
     @GET
     @ResponseStatus(ACCEPTED)
@@ -30,7 +30,7 @@ class CsrfTokenResource {
     @SecurityRequirement(name = "bearer")
     fun getCsrfToken( ): Response {
         val userMail = jwt.name
-        val csrfToken = csrgTokenGeneratorIn.generateToken(userMail)
+        val csrfToken = csrfTokenGeneratorIn.generateToken(userMail)
         val cookie = setUpCookie("csrf-token", csrfToken)
         return Response.ok().cookie(cookie).build()
     }

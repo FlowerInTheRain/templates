@@ -1,7 +1,6 @@
 package com.templates.application.controllers
 
 import com.templates.application.controllers.CookieUtils.setUpCookie
-import com.templates.application.dto.responses.UpdateProfilePictureResponse
 import com.templates.domain.ports.`in`.CsrfTokenGeneratorIn
 import jakarta.annotation.security.RolesAllowed
 import jakarta.enterprise.context.RequestScoped

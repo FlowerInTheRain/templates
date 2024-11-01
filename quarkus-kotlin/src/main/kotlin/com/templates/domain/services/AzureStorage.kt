@@ -9,7 +9,6 @@ import com.azure.storage.blob.models.PublicAccessType
 import com.templates.domain.errors.ApplicationException
 import com.templates.domain.errors.ApplicationExceptionsEnum
 import com.templates.domain.ports.`in`.AzureStorageIn
-import com.templates.domain.ports.out.FindAdminsOut
 import com.templates.domain.ports.out.UpdateAdminsOut
 import com.templates.domain.ports.out.UpdateClientsOut
 import jakarta.annotation.PostConstruct
@@ -25,29 +24,29 @@ import org.slf4j.LoggerFactory
 class AzureStorage : AzureStorageIn {
     companion object {
         const val FORMATTER: String = "user-%s"
+        val LOGGER: Logger = LoggerFactory.getLogger(AzureStorage::class.java.name)
     }
 
-    private val LOGGER: Logger = LoggerFactory.getLogger(AzureStorage::class.java.name)
 
     @field:ConfigProperty(name = "azure.client-id")
-    lateinit var clientId: String
+    private lateinit var clientId: String
 
     @field:ConfigProperty(name = "azure.tenant-id")
-    lateinit var tenantId: String
+    private lateinit var tenantId: String
 
     @field:ConfigProperty(name = "azure.tenant.token")
-    lateinit var clientSecret: String
+    private lateinit var clientSecret: String
 
     @field:ConfigProperty(name = "azure.store.endpoint")
-    lateinit var endpoint: String
+    private lateinit var endpoint: String
 
     @Inject
     @field:Default
-    lateinit var updateClientsOut: UpdateClientsOut
+    private lateinit var updateClientsOut: UpdateClientsOut
 
     @Inject
     @field:Default
-    lateinit var updateAdminsOut: UpdateAdminsOut
+    private lateinit var updateAdminsOut: UpdateAdminsOut
 
     var blobServiceClient: BlobServiceClient? = null
 

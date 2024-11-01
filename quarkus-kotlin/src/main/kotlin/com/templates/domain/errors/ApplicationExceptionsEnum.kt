@@ -3,14 +3,14 @@ package com.templates.domain.errors
 import org.jboss.resteasy.reactive.RestResponse.StatusCode
 
 enum class ApplicationExceptionsEnum(val message: String,val errorCode: Int,val origin: String) {
-    ERROR("An error occured", StatusCode.BAD_REQUEST, ErrorOriginEnum.BOOTSTRAP.name),
-    INVALID_TOKEN("Invallid token", StatusCode.BAD_REQUEST, ErrorOriginEnum.DOMAIN.name),
+    ERROR("An error occurred", StatusCode.BAD_REQUEST, ErrorOriginEnum.BOOTSTRAP.name),
+    INVALID_TOKEN("Invalid token", StatusCode.BAD_REQUEST, ErrorOriginEnum.DOMAIN.name),
     PASSWORDS_NO_MATCH("Les mots de passe ne correspondent pas", StatusCode.BAD_REQUEST, ErrorOriginEnum.DOMAIN
         .name),
 
     ADMIN_VERIFICATION_CODE_NO_MATCH("Le code spécial admin n'est pas valide", StatusCode.BAD_REQUEST, ErrorOriginEnum
         .DOMAIN.name),
-    EMAIL_DELIVERY_FAILED("An error occured while sending the email", StatusCode.BAD_REQUEST, ErrorOriginEnum.DOMAIN
+    EMAIL_DELIVERY_FAILED("An error occurred while sending the email", StatusCode.BAD_REQUEST, ErrorOriginEnum.DOMAIN
         .name),
 
     ERROR_VALIDATING_PASSWORD_HASH("An error occurred while connecting your account", StatusCode.BAD_REQUEST, ErrorOriginEnum.DOMAIN

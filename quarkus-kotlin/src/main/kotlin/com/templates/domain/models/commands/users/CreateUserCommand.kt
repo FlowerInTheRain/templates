@@ -12,7 +12,6 @@ class CreateUserCommand(
     var type: String ? = null,
     var verificationCode: String ? = null,
     var verificationCodeTimestamp:  Timestamp? = null,
-    var profilePicUrl: String? = null,
     var accountVerified: Boolean = false,
 ) {
     override fun toString(): String {

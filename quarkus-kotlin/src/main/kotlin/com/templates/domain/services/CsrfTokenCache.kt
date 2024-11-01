@@ -1,6 +1,5 @@
 package com.templates.domain.services
 
-import com.sun.jna.platform.unix.solaris.LibKstat.KstatNamed.UNION.STR
 import io.quarkus.cache.Cache
 import io.quarkus.cache.CacheName
 import io.quarkus.cache.CaffeineCache
@@ -12,8 +11,8 @@ import java.util.concurrent.CompletableFuture
 class CsrfTokenCache {
 
     @CacheName("csrf-token-cache")
-    lateinit var cache: Cache
-    // Method to add or update an item in the cache
+    private lateinit var cache: Cache
+
     fun addItem(id: String, token: String) {
         cache.`as`(CaffeineCache::class.java).put(id, CompletableFuture.completedFuture(token))
     }

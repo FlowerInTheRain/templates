@@ -34,7 +34,9 @@ import org.slf4j.LoggerFactory
 @Path("/profile-pictures")
 @RequestScoped
 class ProfilePicturesResource {
-    private val LOGGER: Logger = LoggerFactory.getLogger(ProfilePicturesResource::class.java.name)
+    companion object {
+        private val LOGGER: Logger = LoggerFactory.getLogger(ProfilePicturesResource::class.java.name)
+    }
 
     @Inject
     @field:Default

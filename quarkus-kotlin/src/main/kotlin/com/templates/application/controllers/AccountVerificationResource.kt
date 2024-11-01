@@ -1,20 +1,14 @@
 package com.templates.application.controllers
 
 import com.templates.application.controllers.CookieUtils.setUpCookie
-import com.templates.application.dto.requests.LoginRequest
 import com.templates.application.dto.requests.OtpRequest
-import com.templates.application.dto.responses.UserLoginResponse
-import com.templates.application.mappers.UsersDtoMappers
 import com.templates.domain.ports.`in`.CsrfTokenGeneratorIn
-import com.templates.domain.ports.`in`.LoginIn
 import com.templates.domain.ports.`in`.VerifyAccountsIn
-import jakarta.annotation.security.PermitAll
 import jakarta.annotation.security.RolesAllowed
 import jakarta.enterprise.context.RequestScoped
 import jakarta.enterprise.inject.Default
 import jakarta.inject.Inject
 import jakarta.ws.rs.Consumes
-import jakarta.ws.rs.POST
 import jakarta.ws.rs.PUT
 import jakarta.ws.rs.Path
 import jakarta.ws.rs.core.MediaType
@@ -24,12 +18,13 @@ import org.eclipse.microprofile.jwt.JsonWebToken
 import org.jboss.logging.Logger
 import org.jboss.resteasy.reactive.ResponseStatus
 import org.jboss.resteasy.reactive.RestResponse.StatusCode.NO_CONTENT
-import org.jboss.resteasy.reactive.RestResponse.StatusCode.OK
 
 @Path("/verify-account")
 @RequestScoped
 class AccountVerificationResource {
-    private val LOG: Logger = Logger.getLogger(AccountVerificationResource::class.java)
+    companion object{
+        private val LOG: Logger = Logger.getLogger(AccountVerificationResource::class.java)
+    }
 
     @Inject
     @field:Default
@@ -52,6 +47,7 @@ class AccountVerificationResource {
     @ResponseStatus(NO_CONTENT)
     @RolesAllowed("CLIENT")
     fun verifyClientAccount(otpRequest: OtpRequest):Response {
+        LOG.info("Vérifying user account")
         val mail = jwt.name
         verifyAccountsIn.verifyClientAccount(mail, otpRequest.otpCode)
         val csrfToken = csrfTokenGeneratorIn.generateToken(mail)
@@ -65,6 +61,8 @@ class AccountVerificationResource {
     @ResponseStatus(NO_CONTENT)
     @RolesAllowed("CLIENT")
     fun generateNewOtpCode():Response {
+        LOG.info("Initiating new OTP")
+
         val mail = jwt.name
         verifyAccountsIn.generateNewOtpCode(mail)
         val csrfToken = csrfTokenGeneratorIn.generateToken(mail)

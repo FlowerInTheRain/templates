@@ -14,12 +14,12 @@ import org.jboss.resteasy.reactive.RestResponse.StatusCode.OK
 @Path("/healthcheck")
 @RequestScoped
 class HealthCheckResource {
-
+    private val healthCheckResponse:String = "Application is up and running"
     @GET
     @Produces(MediaType.TEXT_PLAIN)
     @ResponseStatus(OK)
     @PermitAll
-    fun healthCheck() = "Application is up and running"
+    fun healthCheck() = healthCheckResponse
 
     @GET
     @Path("/secured")
@@ -27,5 +27,5 @@ class HealthCheckResource {
     @ResponseStatus(OK)
     @RolesAllowed( "CLIENT","ADMIN" )
     @SecurityRequirement(name = "bearer")
-    fun healthCheckNotAllowed() = "Hahaha"
+    fun healthCheckNotAllowed() = "$healthCheckResponse hahaha"
 }

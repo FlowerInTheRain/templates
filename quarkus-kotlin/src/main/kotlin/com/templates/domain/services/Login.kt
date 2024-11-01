@@ -1,6 +1,5 @@
 package com.templates.domain.services
 
-import JwtTokenGenerator
 import com.templates.domain.errors.ApplicationException
 import com.templates.domain.errors.ApplicationExceptionsEnum
 import com.templates.domain.mappers.UsersMappers
@@ -15,7 +14,9 @@ import org.jboss.logging.Logger
 
 @ApplicationScoped
 class Login(@field:Inject var jwtTokenGenerator: JwtTokenGenerator) : LoginIn {
-    val LOG: Logger = Logger.getLogger(Login::class.java)
+    companion object{
+        val LOG: Logger = Logger.getLogger(Login::class.java)
+    }
 
     @Inject
     @field:Default

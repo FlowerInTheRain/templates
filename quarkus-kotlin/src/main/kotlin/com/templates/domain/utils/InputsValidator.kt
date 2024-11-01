@@ -4,6 +4,7 @@ import com.templates.domain.errors.ApplicationException
 import com.templates.domain.errors.ApplicationExceptionsEnum
 import com.templates.domain.services.PasswordUtils.verifyPassword
 import java.sql.Timestamp
+import kotlin.math.abs
 
 object InputsValidator {
     fun validatePasswordConfirmation(inputPassword: String, confirmPassword: String) {
@@ -30,7 +31,7 @@ object InputsValidator {
     }
 
     fun hasTimestampExceededTwentyMinutes(timestamp1: Timestamp, timestamp2: Timestamp) {
-        val millisecondsDifference = Math.abs(timestamp2.time - timestamp1.time)
+        val millisecondsDifference = abs(timestamp2.time - timestamp1.time)
         if( millisecondsDifference > 1200000){
             throw ApplicationException(ApplicationExceptionsEnum.OTP_TIMESTAMP_EXCEEDED)
 

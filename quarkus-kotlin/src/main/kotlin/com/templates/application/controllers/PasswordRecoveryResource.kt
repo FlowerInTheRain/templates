@@ -28,14 +28,17 @@ import org.slf4j.LoggerFactory
 @Path("/password-recovery")
 @RequestScoped
 class PasswordRecoveryResource {
-    private val LOGGER: Logger = LoggerFactory.getLogger(PasswordRecoveryResource::class.java.name)
+    companion object {
+        private val LOGGER: Logger = LoggerFactory.getLogger(PasswordRecoveryResource::class.java.name)
+    }
 
     @Inject
     @field:Default
     private lateinit var passwordManagementIn: PasswordManagementIn
+
     @Inject
     @field:Default
-    lateinit var jwt:JsonWebToken
+    private lateinit var jwt:JsonWebToken
 
     @Inject
     @field:Default
@@ -73,6 +76,7 @@ class PasswordRecoveryResource {
     @ResponseStatus(NO_CONTENT)
     @RolesAllowed("CLIENT","ADMIN")
     fun changePassword(passwordChangeRequest: PasswordChangeRequest): Response {
+        LOGGER.info("Starting update password")
         val mail = jwt.name
         passwordManagementIn.changePassword(mail, passwordChangeRequest.password, passwordChangeRequest.passwordConfirmation)
         val csrfToken = csrfTokenGeneratorIn.generateToken(mail)

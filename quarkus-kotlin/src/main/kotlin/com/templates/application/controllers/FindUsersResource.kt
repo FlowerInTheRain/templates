@@ -1,13 +1,9 @@
 package com.templates.application.controllers
 
-import com.templates.application.dto.requests.CreateUserRequest
-import com.templates.application.dto.responses.CreateUserResponse
-import jakarta.annotation.security.PermitAll
 import jakarta.annotation.security.RolesAllowed
 import jakarta.enterprise.context.RequestScoped
 import jakarta.enterprise.inject.Default
 import jakarta.inject.Inject
-import jakarta.validation.Valid
 import jakarta.ws.rs.Consumes
 import jakarta.ws.rs.GET
 import jakarta.ws.rs.Path
@@ -22,11 +18,13 @@ import org.jboss.resteasy.reactive.RestResponse.StatusCode.CREATED
 @Path("/users-find")
 @RequestScoped
 class FindUsersResource {
-    private val LOG: Logger = Logger.getLogger(FindUsersResource::class.java)
+    companion object {
+        private val LOG: Logger = Logger.getLogger(FindUsersResource::class.java)
+    }
 
     @Inject
     @field:Default
-    lateinit var jwt: JsonWebToken
+    private lateinit var jwt: JsonWebToken
 
     @GET
     @Path("/me")

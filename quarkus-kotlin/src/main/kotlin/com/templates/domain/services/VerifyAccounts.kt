@@ -20,7 +20,7 @@ import java.time.Instant
 class VerifyAccounts:VerifyAccountsIn {
     @Inject
     @field:Default
-    lateinit var findClientsOut: FindClientsOut
+    private lateinit var findClientsOut: FindClientsOut
 
     @Inject
     @field:Default

@@ -15,9 +15,9 @@ import org.eclipse.microprofile.config.inject.ConfigProperty
 @ApplicationScoped
 class Mailer {
     @field:ConfigProperty(name = "azure.comm-service.endpoint")
-    lateinit var azureCommunicationEndpoint: String
+    private lateinit var azureCommunicationEndpoint: String
     @field:ConfigProperty(name = "azure.comm-service.mailer.sender.do.not.reply")
-    lateinit var azureDoNotReplySender: String
+    private lateinit var azureDoNotReplySender: String
 
     fun sendHtmlEmail(recipient: String, subject:String, content: String) {
         val emailClient = EmailClientBuilder().connectionString(azureCommunicationEndpoint).buildClient()

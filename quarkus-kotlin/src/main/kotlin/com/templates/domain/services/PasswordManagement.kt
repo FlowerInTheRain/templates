@@ -1,6 +1,5 @@
 package com.templates.domain.services
 
-import com.templates.application.controllers.CreateUsersResource
 import com.templates.domain.ports.`in`.PasswordManagementIn
 import com.templates.domain.ports.out.FindClientsOut
 import com.templates.domain.ports.out.UpdateClientsOut
@@ -19,19 +18,22 @@ import java.time.Instant
 
 @ApplicationScoped
 class PasswordManagement : PasswordManagementIn {
-    private val LOG: Logger = Logger.getLogger(PasswordManagement::class.java)
+    companion object {
+        private val LOG: Logger = Logger.getLogger(PasswordManagement::class.java)
+
+    }
 
     @Inject
     @field:Default
-    lateinit var mailer: Mailer
+    private lateinit var mailer: Mailer
 
     @Inject
     @field:Default
-    lateinit var updateClientsOut: UpdateClientsOut
+    private lateinit var updateClientsOut: UpdateClientsOut
 
     @Inject
     @field:Default
-    lateinit var findClientsOut: FindClientsOut
+    private lateinit var findClientsOut: FindClientsOut
 
     override fun initPasswordRecovery(identifier: String) {
         val user = findClientsOut.findByIdentifier(identifier)
