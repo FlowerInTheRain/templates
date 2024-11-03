@@ -29,9 +29,9 @@ class FindAdminsSpi : FindAdminsOut{
     override fun findByIdentifier(identifier: String): User {
         val clientFromDb = adminsRepository.findByIdentifier(identifier).orElseThrow { ApplicationException(
             ApplicationExceptionsEnum.LOGIN_USER_NOT_FOUND) }
-        LOGGER.info(clientFromDb.toString())
+        LOGGER.debug(clientFromDb.toString())
         val user = usersEntityMapper.fromAdminToUser(clientFromDb)
-        LOGGER.info(user.toString())
+        LOGGER.debug(user.toString())
         return user
     }
 }

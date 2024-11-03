@@ -41,7 +41,7 @@ class CreateUsersSpi : CreateUsersOut {
     override fun addClient(user: CreateUserCommand) {
         val userEntity = usersEntityMapper.fromCreateUserToClient(user)
         try {
-            LOGGER.info(userEntity.toString())
+            LOGGER.debug(userEntity.toString())
             clientsRepository.persist(userEntity)
             clientsRepository.flush()
         } catch (e: ConstraintViolationException) {
@@ -54,7 +54,7 @@ class CreateUsersSpi : CreateUsersOut {
     override fun addAdmin(user: CreateUserCommand) {
         val userEntity = usersEntityMapper.fromCreateUserToAdmin(user)
         try {
-            LOGGER.info(userEntity.toString())
+            LOGGER.debug(userEntity.toString())
             adminsRepository.persist(userEntity)
             adminsRepository.flush()
         } catch (e: ConstraintViolationException) {

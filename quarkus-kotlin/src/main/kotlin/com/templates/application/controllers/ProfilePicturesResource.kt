@@ -71,7 +71,6 @@ class ProfilePicturesResource {
         ("image")  image:
                                     FileUpload
     ): Response {
-        LOGGER.info(image.fileName())
         val userMail = jwt.name
         val userType = jwt.groups.stream().findFirst().orElseThrow { ApplicationException(ApplicationExceptionsEnum.ERROR)}
         val profilePicUrl = UpdateProfilePictureResponse(azureStorageIn.updateProfilePicture(userMail,userType,

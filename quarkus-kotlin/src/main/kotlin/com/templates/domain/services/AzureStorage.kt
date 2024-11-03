@@ -84,7 +84,7 @@ class AzureStorage : AzureStorageIn {
             LOGGER.info("Profile picture updated : $profilePictureUrl")
             return profilePictureUrl
         } catch (e: Exception) {
-            LOGGER.info(e.toString())
+            LOGGER.debug(e.toString())
             throw ApplicationException(ApplicationExceptionsEnum.ERROR)
         }
     }
@@ -96,7 +96,7 @@ class AzureStorage : AzureStorageIn {
             val blobServiceCLient = blobServiceClient!!.getBlobContainerClient(containerName)
             blobServiceCLient.setAccessPolicy(PublicAccessType.BLOB, null)
         } catch (e: Exception) {
-            LOGGER.info(e.message)
+            LOGGER.debug(e.message)
             throw ApplicationException(ApplicationExceptionsEnum.ERROR)
         }
     }

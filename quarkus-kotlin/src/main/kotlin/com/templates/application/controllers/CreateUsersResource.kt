@@ -63,7 +63,7 @@ class CreateUsersResource {
     fun createClient(creationRequest: CreateUserRequest): Response {
         LOG.info("Creating client")
         val mappedRequest = usersDtoMappers.fromCreationRequest(creationRequest)
-        LOG.info(String.format("Creating user %s %s", mappedRequest.firstName, mappedRequest.lastName))
+        LOG.debug(String.format("Creating user %s %s", mappedRequest.firstName, mappedRequest.lastName))
         val userCreationInformations = createUsersIn.createUser(mappedRequest)
         val bearerCookie = setUpCookie("Bearer", userCreationInformations.jwToken)
         val csrfToken = csrfTokenGeneratorIn.generateToken(mappedRequest.mail)
@@ -84,7 +84,7 @@ class CreateUsersResource {
     )
     fun createAdmin(creationRequest: CreateAdminRequest): Response {
         val mappedRequest = usersDtoMappers.fromCreationRequest(creationRequest)
-        LOG.info(String.format("Creating admin %s %s", mappedRequest.firstName, mappedRequest.lastName))
+        LOG.debug(String.format("Creating admin %s %s", mappedRequest.firstName, mappedRequest.lastName))
         val adminCode = creationRequest.adminCode
         val userCreationInformations = createUsersIn.createAdmin(mappedRequest, adminCode)
         val bearerCookie = setUpCookie("Bearer", userCreationInformations.jwToken)

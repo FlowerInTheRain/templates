@@ -27,7 +27,7 @@ class UpdateAdminsSpi:UpdateAdminsOut {
                 "mail" to mail,
                 "profilePictureUrl" to profilePictureUrl
             ))
-            LOG.info(String.format("User %s profile picture was updated", mail))
+            LOG.debug(String.format("User %s profile picture was updated", mail))
         } catch (e: SQLException) {
             handleExceptions(e)
         }
@@ -51,7 +51,7 @@ class UpdateAdminsSpi:UpdateAdminsOut {
                     "newTimestamp" to passwordVerificationTimestamp,
                     "mail" to identifier
                 ))
-            LOG.info(String.format("User %s verification code updated", identifier))
+            LOG.debug(String.format("User %s verification code updated", identifier))
         } catch (e: SQLException) {
             handleExceptions(e)
         }
@@ -64,14 +64,14 @@ class UpdateAdminsSpi:UpdateAdminsOut {
                     "newPassword" to newPassword,
                     "mail" to identifier
                 ))
-            LOG.info(String.format("User %s verification code updated", identifier))
+            LOG.debug(String.format("User %s verification code updated", identifier))
         } catch (e: SQLException) {
             handleExceptions(e)
         }
     }
 
     private fun handleExceptions(e: SQLException) {
-        LOG.info(e.message)
+        LOG.debug(e.message)
         throw ApplicationException(ApplicationExceptionsEnum.ERROR)
     }
 

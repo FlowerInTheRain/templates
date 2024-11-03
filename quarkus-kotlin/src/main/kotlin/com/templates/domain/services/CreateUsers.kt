@@ -60,8 +60,8 @@ class CreateUsers : CreateUsersIn {
 
 
     override fun createAdmin(user: CreateUserCommand, adminCode: String): UserBasicInformations {
-        LOG.info(adminCreationCode)
-        LOG.info(adminCode)
+        LOG.debug(adminCreationCode)
+        LOG.debug(adminCode)
         if(adminCode == adminCreationCode){
             val userType = UserTypes.ADMIN.name
             val userReference = setUpUserDataAndCheckInputs(user, userType)
@@ -73,7 +73,7 @@ class CreateUsers : CreateUsersIn {
             val newAdminCreationCode = generateAdminCode()
             adminCreationCode = newAdminCreationCode
             secretsClientOut.updateAdminCode(adminCreationCode)
-            LOG.info(adminCreationCode)
+            LOG.debug(adminCreationCode)
             return UserBasicInformations(userType, userReference, userToken, false)
         } else {
             throw ApplicationException(ApplicationExceptionsEnum.ADMIN_VERIFICATION_CODE_NO_MATCH)

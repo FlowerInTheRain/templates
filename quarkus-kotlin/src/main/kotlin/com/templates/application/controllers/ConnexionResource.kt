@@ -57,7 +57,7 @@ class ConnexionResource {
         )]),
     )
     fun login(loginRequest: LoginRequest): Response {
-        LOG.info(String.format("Logging user %s", loginRequest.identifier))
+        LOG.debug(String.format("Logging user %s", loginRequest.identifier))
 
         val loggedIn = loginIn.login(loginRequest.identifier, loginRequest.password)
         val bearerCookie = setUpCookie("Bearer", loggedIn.jwToken)

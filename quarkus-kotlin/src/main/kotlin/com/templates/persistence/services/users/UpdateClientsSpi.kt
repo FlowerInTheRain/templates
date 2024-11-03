@@ -27,7 +27,7 @@ class UpdateClientsSpi:UpdateClientsOut {
                 "mail" to mail,
                 "profilePictureUrl" to profilePictureUrl
             ))
-            LOG.info(String.format("User %s profile picture was updated", mail))
+            LOG.debug(String.format("User %s profile picture was updated", mail))
         } catch (e: SQLException) {
             handleExceptions(e)
         }
@@ -39,7 +39,7 @@ class UpdateClientsSpi:UpdateClientsOut {
             clientsRepository.update("accountVerifiedStatus = true WHERE mail =:mail",  mapOf(
                 "mail" to mail
             ))
-            LOG.info(String.format("User %s was approved", mail))
+            LOG.debug(String.format("User %s was approved", mail))
         } catch (e: SQLException) {
             handleExceptions(e)
         }
@@ -55,7 +55,7 @@ class UpdateClientsSpi:UpdateClientsOut {
                     "newTimestamp" to newOtpTimestamp,
                     "mail" to mail
                 ))
-            LOG.info(String.format("User %s verification code updated", mail))
+            LOG.debug(String.format("User %s verification code updated", mail))
         } catch (e: SQLException) {
             handleExceptions(e)
         }
@@ -79,7 +79,7 @@ class UpdateClientsSpi:UpdateClientsOut {
                     "newTimestamp" to passwordVerificationTimestamp,
                     "mail" to identifier
                 ))
-            LOG.info(String.format("User %s verification code updated", identifier))
+            LOG.debug(String.format("User %s verification code updated", identifier))
         } catch (e: SQLException) {
             handleExceptions(e)
         }
@@ -92,7 +92,7 @@ class UpdateClientsSpi:UpdateClientsOut {
                     "newPassword" to newPassword,
                     "mail" to identifier
                 ))
-            LOG.info(String.format("User %s verification code updated", identifier))
+            LOG.debug(String.format("User %s verification code updated", identifier))
         } catch (e: SQLException) {
             handleExceptions(e)
         }

@@ -51,14 +51,14 @@ class DatasourceConfigurator(
                     .build()
             )
             .buildClient()
-        LOG.info("Retrieving secrets from Azure key vault")
+        LOG.debug("Retrieving secrets from Azure key vault")
         val url =
             secretClient.getSecret("DB-URL").value + "/" + secretClient.getSecret(
                 "DB-SCHEME-TEMPLATES"
             ).value+ "?currentSchema=" + secretClient.getSecret(
                 "DB-SCHEME-TEMPLATES"
             ).value
-        LOG.info("Secrets successfully retrieved")
+        LOG.debug("Secrets successfully retrieved")
         val dataSourceConfiguration = AgroalDataSourceConfigurationSupplier()
 
         val poolConfiguration = dataSourceConfiguration.connectionPoolConfiguration()
@@ -82,7 +82,7 @@ class DatasourceConfigurator(
             .credential(NamePrincipal((secretClient.getSecret("DB-ADMIN").value)))
             .credential(SimplePassword((secretClient.getSecret("DB-PASSWORD").value)))
         try {
-            LOG.info("Building Datasource from secrets")
+            LOG.debug("Building Datasource from secrets")
             return AgroalDataSource.from(dataSourceConfiguration.get())
         } catch (ex: SQLException) {
             throw IllegalStateException(
