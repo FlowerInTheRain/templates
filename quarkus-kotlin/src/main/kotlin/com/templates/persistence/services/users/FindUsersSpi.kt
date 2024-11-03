@@ -13,12 +13,8 @@ import jakarta.inject.Inject
 import org.jboss.logging.Logger
 
 @ApplicationScoped
-
 class FindUsersSpi:FindUserOut {
-    companion object {
-        private val LOG: Logger = Logger.getLogger(FindUserOut::class.java)
 
-    }
     @Inject
     @field:Default
     private lateinit var usersRepository: UsersRepository

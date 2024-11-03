@@ -16,7 +16,7 @@ import jakarta.transaction.TransactionManager
 import jakarta.transaction.TransactionSynchronizationRegistry
 import org.eclipse.microprofile.config.inject.ConfigProperty
 import org.hibernate.engine.jdbc.connections.spi.ConnectionProvider
-import org.jboss.logging.Logger
+import io.quarkus.logging.Log;
 import java.sql.SQLException
 import java.time.Duration
 import java.time.temporal.ChronoUnit
@@ -51,14 +51,14 @@ class DatasourceConfigurator(
                     .build()
             )
             .buildClient()
-        LOG.debug("Retrieving secrets from Azure key vault")
+        Log.debug("Retrieving secrets from Azure key vault")
         val url =
             secretClient.getSecret("DB-URL").value + "/" + secretClient.getSecret(
                 "DB-SCHEME-TEMPLATES"
             ).value+ "?currentSchema=" + secretClient.getSecret(
                 "DB-SCHEME-TEMPLATES"
             ).value
-        LOG.debug("Secrets successfully retrieved")
+        Log.debug("Secrets successfully retrieved")
         val dataSourceConfiguration = AgroalDataSourceConfigurationSupplier()
 
         val poolConfiguration = dataSourceConfiguration.connectionPoolConfiguration()
@@ -82,7 +82,7 @@ class DatasourceConfigurator(
             .credential(NamePrincipal((secretClient.getSecret("DB-ADMIN").value)))
             .credential(SimplePassword((secretClient.getSecret("DB-PASSWORD").value)))
         try {
-            LOG.debug("Building Datasource from secrets")
+            Log.debug("Building Datasource from secrets")
             return AgroalDataSource.from(dataSourceConfiguration.get())
         } catch (ex: SQLException) {
             throw IllegalStateException(
@@ -94,9 +94,5 @@ class DatasourceConfigurator(
 
     override fun resolve(tenantId: String): ConnectionProvider {
         return QuarkusConnectionProvider(createDatasource())
-    }
-
-    companion object {
-        private val LOG: Logger = Logger.getLogger(DatasourceConfigurator::class.java)
     }
 }

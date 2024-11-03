@@ -1,4 +1,4 @@
-package com.templates
+package com.templates.endpoints
 
 import com.templates.domain.models.users.UserTypes
 import com.templates.domain.services.JwtTokenGenerator

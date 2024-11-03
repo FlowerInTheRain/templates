@@ -12,8 +12,7 @@ import jakarta.inject.Inject
 import jakarta.enterprise.context.ApplicationScoped
 import jakarta.transaction.Transactional
 import org.hibernate.exception.ConstraintViolationException
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
+import io.quarkus.logging.Log;
 import kotlin.jvm.Throws
 
 @Transactional
@@ -23,7 +22,6 @@ class CreateUsersSpi : CreateUsersOut {
         const val MAIL_KEY = "uq_user_mail"
         const val PHONE_KEY = "uq_user_phone"
         const val REFERENCE_KEY = "uq_user_reference"
-        private val LOGGER: Logger = LoggerFactory.getLogger(CreateUsersSpi::class.java.name)
     }
 
     @Inject
@@ -41,12 +39,10 @@ class CreateUsersSpi : CreateUsersOut {
     override fun addClient(user: CreateUserCommand) {
         val userEntity = usersEntityMapper.fromCreateUserToClient(user)
         try {
-            LOGGER.debug(userEntity.toString())
+            Log.debug(userEntity.toString())
             clientsRepository.persist(userEntity)
             clientsRepository.flush()
         } catch (e: ConstraintViolationException) {
-            LOGGER.error("Error while adding user : {}", e.message)
-            LOGGER.error("Error while adding user : {}", e.constraintName)
             handleExceptions(e)
         }
     }
@@ -54,17 +50,17 @@ class CreateUsersSpi : CreateUsersOut {
     override fun addAdmin(user: CreateUserCommand) {
         val userEntity = usersEntityMapper.fromCreateUserToAdmin(user)
         try {
-            LOGGER.debug(userEntity.toString())
+            Log.debug(userEntity.toString())
             adminsRepository.persist(userEntity)
             adminsRepository.flush()
         } catch (e: ConstraintViolationException) {
-            LOGGER.error("Error while adding admin : {}", e.message)
-            LOGGER.error("Error while adding admin : {}", e.constraintName)
             handleExceptions(e)
         }
     }
 
     private fun handleExceptions(e:ConstraintViolationException):Throws {
+        Log.error(String.format("Error while adding admin : %s", e.message))
+        Log.error(String.format("Error while adding admin : %s", e.constraintName))
         when {
             e.constraintName.equals(MAIL_KEY) -> {
                 throw ApplicationException(ApplicationExceptionsEnum.CREATE_USER_DUPLICATE_MAIL)

@@ -11,7 +11,7 @@ import org.mapstruct.Mapper
 import org.mapstruct.Mapping
 import org.mapstruct.MappingConstants
 
-@Mapper(componentModel = MappingConstants.ComponentModel.JAKARTA)
+@Mapper(componentModel = MappingConstants.ComponentModel.CDI)
 interface UsersDtoMappers {
     @Mapping(target = "reference", ignore = true)
     @Mapping(target = "type", ignore = true)

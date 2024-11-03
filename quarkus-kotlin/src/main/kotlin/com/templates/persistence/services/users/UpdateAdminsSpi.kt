@@ -8,7 +8,7 @@ import jakarta.enterprise.context.ApplicationScoped
 import jakarta.enterprise.inject.Default
 import jakarta.inject.Inject
 import jakarta.transaction.Transactional
-import org.jboss.logging.Logger
+import io.quarkus.logging.Log;
 import java.sql.SQLException
 import java.sql.Timestamp
 
@@ -27,7 +27,7 @@ class UpdateAdminsSpi:UpdateAdminsOut {
                 "mail" to mail,
                 "profilePictureUrl" to profilePictureUrl
             ))
-            LOG.debug(String.format("User %s profile picture was updated", mail))
+            Log.debug(String.format("User %s profile picture was updated", mail))
         } catch (e: SQLException) {
             handleExceptions(e)
         }
@@ -51,7 +51,7 @@ class UpdateAdminsSpi:UpdateAdminsOut {
                     "newTimestamp" to passwordVerificationTimestamp,
                     "mail" to identifier
                 ))
-            LOG.debug(String.format("User %s verification code updated", identifier))
+            Log.debug(String.format("User %s verification code updated", identifier))
         } catch (e: SQLException) {
             handleExceptions(e)
         }
@@ -64,20 +64,15 @@ class UpdateAdminsSpi:UpdateAdminsOut {
                     "newPassword" to newPassword,
                     "mail" to identifier
                 ))
-            LOG.debug(String.format("User %s verification code updated", identifier))
+            Log.debug(String.format("User %s verification code updated", identifier))
         } catch (e: SQLException) {
             handleExceptions(e)
         }
     }
 
     private fun handleExceptions(e: SQLException) {
-        LOG.debug(e.message)
+        Log.debug(e.message)
         throw ApplicationException(ApplicationExceptionsEnum.ERROR)
     }
-
-    companion object {
-        val LOG: Logger = Logger.getLogger(UpdateAdminsSpi::class.java)
-    }
-
 
 }

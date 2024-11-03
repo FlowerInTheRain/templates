@@ -12,16 +12,12 @@ import com.templates.domain.utils.InputsValidator.validatePasswordHash
 import jakarta.enterprise.context.ApplicationScoped
 import jakarta.enterprise.inject.Default
 import jakarta.inject.Inject
-import org.jboss.logging.Logger
+import io.quarkus.logging.Log;
 import java.sql.Timestamp
 import java.time.Instant
 
 @ApplicationScoped
 class PasswordManagement : PasswordManagementIn {
-    companion object {
-        private val LOG: Logger = Logger.getLogger(PasswordManagement::class.java)
-
-    }
 
     @Inject
     @field:Default
@@ -39,7 +35,7 @@ class PasswordManagement : PasswordManagementIn {
         val user = findClientsOut.findByIdentifier(identifier)
         val mail = user.mail
         val token = generateAdminCode()
-        LOG.info(token)
+        Log.info(token)
         val mailContent = mailer.generatePasswordRecoveryEmail(token)
         val safeToken = hashWithBCrypt(token).result
         val tokenTimestamp = Timestamp.from(Instant.now())
@@ -48,7 +44,6 @@ class PasswordManagement : PasswordManagementIn {
     }
 
     override fun recoverPassword( mail:String,token: String, password: String, passwordConfirmation: String) {
-        print(hashWithBCrypt(token).result)
         val user = findClientsOut.findByIdentifier(mail)
         val hashedToken = user.passwordVerificationCode!!
         val currentTimestamp = user.passwordVerificationTimestamp!!

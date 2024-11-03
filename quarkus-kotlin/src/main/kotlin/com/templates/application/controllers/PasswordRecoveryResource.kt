@@ -1,11 +1,11 @@
 package com.templates.application.controllers
 
-import com.templates.application.controllers.CookieUtils.setUpCookie
 import com.templates.application.dto.requests.InitPasswordRecoveryRequest
 import com.templates.application.dto.requests.PasswordChangeRequest
 import com.templates.application.dto.requests.PasswordRecoveryRequest
 import com.templates.domain.ports.`in`.CsrfTokenGeneratorIn
 import com.templates.domain.ports.`in`.PasswordManagementIn
+import io.quarkus.logging.Log
 import jakarta.annotation.security.PermitAll
 import jakarta.annotation.security.RolesAllowed
 import jakarta.enterprise.context.RequestScoped
@@ -22,15 +22,10 @@ import org.eclipse.microprofile.openapi.annotations.responses.APIResponse
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponses
 import org.jboss.resteasy.reactive.ResponseStatus
 import org.jboss.resteasy.reactive.RestResponse.StatusCode.NO_CONTENT
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 
 @Path("/password-recovery")
 @RequestScoped
 class PasswordRecoveryResource {
-    companion object {
-        private val LOGGER: Logger = LoggerFactory.getLogger(PasswordRecoveryResource::class.java.name)
-    }
 
     @Inject
     @field:Default
@@ -46,7 +41,9 @@ class PasswordRecoveryResource {
 
     @field:ConfigProperty(name="quarkus.rest-csrf.cookie-name")
     private lateinit var csrfCookieName: String
-
+    @Inject
+    @field: Default
+    private lateinit var cookieUtils: CookieUtils
     @PUT
     @Path("/init-reset")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -76,11 +73,11 @@ class PasswordRecoveryResource {
     @ResponseStatus(NO_CONTENT)
     @RolesAllowed("CLIENT","ADMIN")
     fun changePassword(passwordChangeRequest: PasswordChangeRequest): Response {
-        LOGGER.info("Starting update password")
+        Log.info("Starting update password")
         val mail = jwt.name
         passwordManagementIn.changePassword(mail, passwordChangeRequest.password, passwordChangeRequest.passwordConfirmation)
         val csrfToken = csrfTokenGeneratorIn.generateToken(mail)
-        val csrfCookie = setUpCookie(csrfCookieName, csrfToken)
+        val csrfCookie = cookieUtils.setUpCookie(csrfCookieName, csrfToken)
         return Response.noContent().cookie(csrfCookie).build()
     }
 }

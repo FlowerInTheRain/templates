@@ -8,7 +8,7 @@ import jakarta.enterprise.context.ApplicationScoped
 import jakarta.enterprise.inject.Default
 import jakarta.inject.Inject
 import jakarta.transaction.Transactional
-import org.jboss.logging.Logger
+import io.quarkus.logging.Log;
 import java.sql.SQLException
 import java.sql.Timestamp
 
@@ -27,7 +27,7 @@ class UpdateClientsSpi:UpdateClientsOut {
                 "mail" to mail,
                 "profilePictureUrl" to profilePictureUrl
             ))
-            LOG.debug(String.format("User %s profile picture was updated", mail))
+            Log.debug(String.format("User %s profile picture was updated", mail))
         } catch (e: SQLException) {
             handleExceptions(e)
         }
@@ -39,7 +39,7 @@ class UpdateClientsSpi:UpdateClientsOut {
             clientsRepository.update("accountVerifiedStatus = true WHERE mail =:mail",  mapOf(
                 "mail" to mail
             ))
-            LOG.debug(String.format("User %s was approved", mail))
+            Log.debug(String.format("User %s was approved", mail))
         } catch (e: SQLException) {
             handleExceptions(e)
         }
@@ -55,7 +55,7 @@ class UpdateClientsSpi:UpdateClientsOut {
                     "newTimestamp" to newOtpTimestamp,
                     "mail" to mail
                 ))
-            LOG.debug(String.format("User %s verification code updated", mail))
+            Log.debug(String.format("User %s verification code updated", mail))
         } catch (e: SQLException) {
             handleExceptions(e)
         }
@@ -79,7 +79,7 @@ class UpdateClientsSpi:UpdateClientsOut {
                     "newTimestamp" to passwordVerificationTimestamp,
                     "mail" to identifier
                 ))
-            LOG.debug(String.format("User %s verification code updated", identifier))
+            Log.debug(String.format("User %s verification code updated", identifier))
         } catch (e: SQLException) {
             handleExceptions(e)
         }
@@ -92,20 +92,15 @@ class UpdateClientsSpi:UpdateClientsOut {
                     "newPassword" to newPassword,
                     "mail" to identifier
                 ))
-            LOG.debug(String.format("User %s verification code updated", identifier))
+            Log.debug(String.format("User %s verification code updated", identifier))
         } catch (e: SQLException) {
             handleExceptions(e)
         }
     }
 
     private fun handleExceptions(e: SQLException) {
-        LOG.info(e.message)
+        Log.info(e.message)
         throw ApplicationException(ApplicationExceptionsEnum.ERROR)
     }
-
-    companion object {
-        val LOG: Logger = Logger.getLogger(UpdateClientsSpi::class.java)
-    }
-
 
 }

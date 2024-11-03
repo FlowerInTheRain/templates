@@ -1,8 +1,8 @@
 package com.templates.application.controllers
 
-import com.templates.application.controllers.CookieUtils.setUpCookie
 import com.templates.domain.ports.`in`.AdminCodeIn
 import com.templates.domain.ports.`in`.CsrfTokenGeneratorIn
+import io.quarkus.logging.Log
 import jakarta.annotation.security.PermitAll
 import jakarta.enterprise.context.RequestScoped
 import jakarta.enterprise.inject.Default
@@ -18,14 +18,12 @@ import org.eclipse.microprofile.openapi.annotations.responses.APIResponse
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponses
 import org.jboss.resteasy.reactive.ResponseStatus
 import org.jboss.resteasy.reactive.RestResponse.StatusCode.OK
-import java.util.logging.Logger
+
 
 @Path("/admin-code")
 @RequestScoped
 class AdminCodeResource {
-    companion object {
-        private val LOG = Logger.getLogger(AdminCodeResource::class.java.name)
-    }
+
     @Inject
     @field:Default
     private lateinit var adminCodeIn: AdminCodeIn
@@ -41,6 +39,9 @@ class AdminCodeResource {
     @field:ConfigProperty(name="quarkus.rest-csrf.cookie-name")
     private lateinit var csrfCookieName: String
 
+    @Inject
+    @field: Default
+    private lateinit var cookieUtils: CookieUtils
 
     @GET
     @ResponseStatus(OK)
@@ -50,10 +51,10 @@ class AdminCodeResource {
     )
     @PermitAll
     fun getAdminCode(): Response {
-        LOG.info("Retrieving new admin code")
+        Log.info("Retrieving new admin code")
         val mail = jwt.name
         val csrfToken = csrfTokenGeneratorIn.generateToken(mail)
-        val csrfCookie = setUpCookie(csrfCookieName, csrfToken)
+        val csrfCookie = cookieUtils.setUpCookie(csrfCookieName, csrfToken)
         return Response.ok(adminCodeIn.getCurrentCode()).cookie(csrfCookie).build()
     }
 }

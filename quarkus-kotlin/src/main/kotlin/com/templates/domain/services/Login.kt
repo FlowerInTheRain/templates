@@ -10,13 +10,10 @@ import com.templates.domain.services.PasswordUtils.verifyPassword
 import jakarta.enterprise.context.ApplicationScoped
 import jakarta.enterprise.inject.Default
 import jakarta.inject.Inject
-import org.jboss.logging.Logger
+import io.quarkus.logging.Log;
 
 @ApplicationScoped
 class Login(@field:Inject var jwtTokenGenerator: JwtTokenGenerator) : LoginIn {
-    companion object{
-        val LOG: Logger = Logger.getLogger(Login::class.java)
-    }
 
     @Inject
     @field:Default
@@ -30,9 +27,9 @@ class Login(@field:Inject var jwtTokenGenerator: JwtTokenGenerator) : LoginIn {
 
     override fun login(identifier: String, password: String): UserLoggedIn {
         val user = findUserOut.findByIdentifier(identifier)
-        LOG.info(user.toString())
+        Log.info(user.toString())
         if(verifyPassword(password, user.password)) {
-            LOG.info("Login successful")
+            Log.info("Login successful")
             val jwToken = jwtTokenGenerator.getToken(user.mail, user.type)
             return usersMappers.fromUsersToUsersLoggedIn(user, jwToken)
         } else {

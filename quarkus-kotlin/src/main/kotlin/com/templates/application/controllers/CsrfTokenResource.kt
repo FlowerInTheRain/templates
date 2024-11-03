@@ -1,6 +1,5 @@
 package com.templates.application.controllers
 
-import com.templates.application.controllers.CookieUtils.setUpCookie
 import com.templates.domain.ports.`in`.CsrfTokenGeneratorIn
 import jakarta.annotation.security.RolesAllowed
 import jakarta.enterprise.context.RequestScoped
@@ -23,7 +22,9 @@ class CsrfTokenResource {
     @Inject
     @field:Default
     private lateinit var csrfTokenGeneratorIn: CsrfTokenGeneratorIn
-
+    @Inject
+    @field: Default
+    private lateinit var cookieUtils: CookieUtils
     @GET
     @ResponseStatus(ACCEPTED)
     @RolesAllowed("CLIENT","ADMIN")
@@ -31,7 +32,7 @@ class CsrfTokenResource {
     fun getCsrfToken( ): Response {
         val userMail = jwt.name
         val csrfToken = csrfTokenGeneratorIn.generateToken(userMail)
-        val cookie = setUpCookie("csrf-token", csrfToken)
+        val cookie = cookieUtils.setUpCookie("csrf-token", csrfToken)
         return Response.ok().cookie(cookie).build()
     }
 }

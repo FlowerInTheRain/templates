@@ -17,14 +17,13 @@ import jakarta.enterprise.inject.Default
 import jakarta.inject.Inject
 import org.eclipse.microprofile.config.inject.ConfigProperty
 import org.jboss.resteasy.reactive.multipart.FileUpload
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
+import io.quarkus.logging.Log;
+
 
 @ApplicationScoped
 class AzureStorage : AzureStorageIn {
     companion object {
         const val FORMATTER: String = "user-%s"
-        val LOGGER: Logger = LoggerFactory.getLogger(AzureStorage::class.java.name)
     }
 
 
@@ -81,10 +80,10 @@ class AzureStorage : AzureStorageIn {
             } else {
                 updateAdminsOut.updateProfilePicture(mail, profilePictureUrl)
             }
-            LOGGER.info("Profile picture updated : $profilePictureUrl")
+            Log.info("Profile picture updated : $profilePictureUrl")
             return profilePictureUrl
         } catch (e: Exception) {
-            LOGGER.debug(e.toString())
+            Log.debug(e.toString())
             throw ApplicationException(ApplicationExceptionsEnum.ERROR)
         }
     }
@@ -96,7 +95,7 @@ class AzureStorage : AzureStorageIn {
             val blobServiceCLient = blobServiceClient!!.getBlobContainerClient(containerName)
             blobServiceCLient.setAccessPolicy(PublicAccessType.BLOB, null)
         } catch (e: Exception) {
-            LOGGER.debug(e.message)
+            Log.debug(e.message)
             throw ApplicationException(ApplicationExceptionsEnum.ERROR)
         }
     }

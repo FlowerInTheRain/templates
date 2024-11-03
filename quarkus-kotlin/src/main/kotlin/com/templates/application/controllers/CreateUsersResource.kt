@@ -1,12 +1,12 @@
 package com.templates.application.controllers
 
-import com.templates.application.controllers.CookieUtils.setUpCookie
 import com.templates.application.dto.requests.CreateAdminRequest
 import com.templates.application.dto.requests.CreateUserRequest
 import com.templates.application.dto.responses.CreateUserResponse
 import com.templates.application.mappers.UsersDtoMappers
 import com.templates.domain.ports.`in`.CreateUsersIn
 import com.templates.domain.ports.`in`.CsrfTokenGeneratorIn
+import io.quarkus.logging.Log
 import jakarta.annotation.security.PermitAll
 import jakarta.enterprise.context.RequestScoped
 import jakarta.enterprise.inject.Default
@@ -22,7 +22,6 @@ import org.eclipse.microprofile.openapi.annotations.media.Content
 import org.eclipse.microprofile.openapi.annotations.media.Schema
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponses
-import org.jboss.logging.Logger
 import org.jboss.resteasy.reactive.ResponseStatus
 import org.jboss.resteasy.reactive.RestResponse.StatusCode.CREATED
 
@@ -30,13 +29,14 @@ import org.jboss.resteasy.reactive.RestResponse.StatusCode.CREATED
 @Path("/users-create")
 @RequestScoped
 class CreateUsersResource {
-    companion object{
-        private val LOG: Logger = Logger.getLogger(CreateUsersResource::class.java)
-    }
 
     @Inject
     @field: Default
     private lateinit var createUsersIn: CreateUsersIn
+
+    @Inject
+    @field: Default
+    private lateinit var cookieUtils: CookieUtils
 
     @Inject
     @field: Default
@@ -61,13 +61,13 @@ class CreateUsersResource {
         )]),
     )
     fun createClient(creationRequest: CreateUserRequest): Response {
-        LOG.info("Creating client")
+        Log.info("Creating client")
         val mappedRequest = usersDtoMappers.fromCreationRequest(creationRequest)
-        LOG.debug(String.format("Creating user %s %s", mappedRequest.firstName, mappedRequest.lastName))
+        Log.debug(String.format("Creating user %s %s", mappedRequest.firstName, mappedRequest.lastName))
         val userCreationInformations = createUsersIn.createUser(mappedRequest)
-        val bearerCookie = setUpCookie("Bearer", userCreationInformations.jwToken)
+        val bearerCookie = cookieUtils.setUpCookie("Bearer", userCreationInformations.jwToken)
         val csrfToken = csrfTokenGeneratorIn.generateToken(mappedRequest.mail)
-        val csrfCookie = setUpCookie(csrfCookieName, csrfToken)
+        val csrfCookie = cookieUtils.setUpCookie(csrfCookieName, csrfToken)
         return Response.ok(usersDtoMappers.toCreationResponse(userCreationInformations)).cookie(bearerCookie).cookie(csrfCookie).build()
     }
 
@@ -76,20 +76,22 @@ class CreateUsersResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @ResponseStatus(CREATED)
     @PermitAll
-    @Operation(summary = "Logs a client", description = "Logs in a client")
+    @Operation(summary = "Logs an admin", description = "Logs in an admin")
     @APIResponses(
         APIResponse(responseCode = "200", description = "OK", content = [Content(mediaType = "application/json",
             schema = Schema(implementation = CreateUserResponse::class)
         )]),
     )
     fun createAdmin(creationRequest: CreateAdminRequest): Response {
+        Log.info("Creating admin")
+        Log.info(creationRequest.toString())
         val mappedRequest = usersDtoMappers.fromCreationRequest(creationRequest)
-        LOG.debug(String.format("Creating admin %s %s", mappedRequest.firstName, mappedRequest.lastName))
-        val adminCode = creationRequest.adminCode
-        val userCreationInformations = createUsersIn.createAdmin(mappedRequest, adminCode)
-        val bearerCookie = setUpCookie("Bearer", userCreationInformations.jwToken)
+        Log.info(String.format("Creating admin %s %s", mappedRequest.firstName, mappedRequest.lastName))
+        val userCreationInformations = createUsersIn.createAdmin(mappedRequest, creationRequest.adminCode)
+        Log.info("Setting cookies")
+        val bearerCookie = cookieUtils.setUpCookie("Bearer", userCreationInformations.jwToken)
         val csrfToken = csrfTokenGeneratorIn.generateToken(mappedRequest.mail)
-        val csrfCookie = setUpCookie(csrfCookieName, csrfToken)
+        val csrfCookie = cookieUtils.setUpCookie(csrfCookieName, csrfToken)
         return Response.ok(usersDtoMappers.toCreationResponse(userCreationInformations)).cookie(bearerCookie).cookie(csrfCookie).build()
     }
 }

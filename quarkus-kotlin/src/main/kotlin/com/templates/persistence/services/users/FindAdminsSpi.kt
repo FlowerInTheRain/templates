@@ -9,14 +9,10 @@ import com.templates.persistence.repositories.AdminsRepository
 import jakarta.enterprise.context.ApplicationScoped
 import jakarta.enterprise.inject.Default
 import jakarta.inject.Inject
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
+import io.quarkus.logging.Log
 
 @ApplicationScoped
 class FindAdminsSpi : FindAdminsOut{
-    companion object{
-        private val LOGGER: Logger = LoggerFactory.getLogger(FindClientsSpi::class.java.name)
-    }
 
     @Inject
     @field:Default
@@ -29,9 +25,9 @@ class FindAdminsSpi : FindAdminsOut{
     override fun findByIdentifier(identifier: String): User {
         val clientFromDb = adminsRepository.findByIdentifier(identifier).orElseThrow { ApplicationException(
             ApplicationExceptionsEnum.LOGIN_USER_NOT_FOUND) }
-        LOGGER.debug(clientFromDb.toString())
+        Log.debug(clientFromDb.toString())
         val user = usersEntityMapper.fromAdminToUser(clientFromDb)
-        LOGGER.debug(user.toString())
+        Log.debug(user.toString())
         return user
     }
 }

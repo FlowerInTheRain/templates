@@ -1,6 +1,5 @@
 package com.templates.application.controllers
 
-import com.templates.application.controllers.CookieUtils.setUpCookie
 import com.templates.domain.ports.`in`.CsrfTokenGeneratorIn
 import jakarta.annotation.security.RolesAllowed
 import jakarta.enterprise.context.RequestScoped
@@ -23,6 +22,10 @@ import org.jboss.resteasy.reactive.RestResponse.StatusCode.OK
 @Path("/test")
 @RequestScoped
 class TestCsrf {
+    @Inject
+    @field: Default
+    private lateinit var cookieUtils: CookieUtils
+
     @Inject
     @field:Default
     private lateinit var jwt: JsonWebToken
@@ -48,7 +51,7 @@ class TestCsrf {
     fun ttt(): Response {
         val userMail = jwt.name
         val csrfToken = csrfTokenGeneratorIn.generateToken(userMail)
-        val csrfCookie = setUpCookie(csrfCookieName, csrfToken)
+        val csrfCookie = cookieUtils.setUpCookie(csrfCookieName, csrfToken)
         return Response.ok("LOL").cookie(csrfCookie).build()
     }
 }

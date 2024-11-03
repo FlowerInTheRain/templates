@@ -1,11 +1,11 @@
 package com.templates.application.controllers
 
-import com.templates.application.controllers.CookieUtils.setUpCookie
 import com.templates.application.dto.requests.LoginRequest
 import com.templates.application.dto.responses.UserLoginResponse
 import com.templates.application.mappers.UsersDtoMappers
 import com.templates.domain.ports.`in`.CsrfTokenGeneratorIn
 import com.templates.domain.ports.`in`.LoginIn
+import io.quarkus.logging.Log
 import jakarta.annotation.security.PermitAll
 import jakarta.annotation.security.RolesAllowed
 import jakarta.enterprise.context.RequestScoped
@@ -20,7 +20,6 @@ import org.eclipse.microprofile.openapi.annotations.media.Content
 import org.eclipse.microprofile.openapi.annotations.media.Schema
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponses
-import org.jboss.logging.Logger
 import org.jboss.resteasy.reactive.ResponseStatus
 import org.jboss.resteasy.reactive.RestResponse.StatusCode.OK
 
@@ -28,9 +27,6 @@ import org.jboss.resteasy.reactive.RestResponse.StatusCode.OK
 @Path("/connection")
 @RequestScoped
 class ConnexionResource {
-    companion object{
-        private val LOG: Logger = Logger.getLogger(ConnexionResource::class.java)
-    }
     @Inject
     @field:Default
     private lateinit var loginIn: LoginIn
@@ -43,7 +39,9 @@ class ConnexionResource {
     
     @field:ConfigProperty(name="quarkus.rest-csrf.cookie-name")
     private lateinit var csrfCookieName: String
-
+    @Inject
+    @field: Default
+    private lateinit var cookieUtils: CookieUtils
     @POST
     @Path("/login")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -57,12 +55,12 @@ class ConnexionResource {
         )]),
     )
     fun login(loginRequest: LoginRequest): Response {
-        LOG.debug(String.format("Logging user %s", loginRequest.identifier))
+        Log.debug(String.format("Logging user %s", loginRequest.identifier))
 
         val loggedIn = loginIn.login(loginRequest.identifier, loginRequest.password)
-        val bearerCookie = setUpCookie("Bearer", loggedIn.jwToken)
+        val bearerCookie = cookieUtils.setUpCookie("Bearer", loggedIn.jwToken)
         val csrfToken = csrfTokenGeneratorIn.generateToken(loggedIn.mail)
-        val csrfCookie = setUpCookie(csrfCookieName, csrfToken)
+        val csrfCookie = cookieUtils.setUpCookie(csrfCookieName, csrfToken)
        return  Response.ok(usersDtoMappers.toLoginResponse(loggedIn)).cookie(bearerCookie).cookie(csrfCookie).build()
     }
 
@@ -70,7 +68,7 @@ class ConnexionResource {
     @Path("/logout")
     @RolesAllowed("CLIENT","ADMIN")
     fun logout(): Response {
-        val cookie = setUpCookie("Bearer", "")
+        val cookie = cookieUtils.setUpCookie("Bearer", "")
         return Response.ok("Logged out").cookie(cookie).build()
     }
 }

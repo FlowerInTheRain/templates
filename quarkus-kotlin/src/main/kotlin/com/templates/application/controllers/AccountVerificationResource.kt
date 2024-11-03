@@ -1,6 +1,5 @@
 package com.templates.application.controllers
 
-import com.templates.application.controllers.CookieUtils.setUpCookie
 import com.templates.application.dto.requests.OtpRequest
 import com.templates.domain.ports.`in`.CsrfTokenGeneratorIn
 import com.templates.domain.ports.`in`.VerifyAccountsIn
@@ -15,16 +14,17 @@ import jakarta.ws.rs.core.MediaType
 import jakarta.ws.rs.core.Response
 import org.eclipse.microprofile.config.inject.ConfigProperty
 import org.eclipse.microprofile.jwt.JsonWebToken
-import org.jboss.logging.Logger
+import io.quarkus.logging.Log;
 import org.jboss.resteasy.reactive.ResponseStatus
 import org.jboss.resteasy.reactive.RestResponse.StatusCode.NO_CONTENT
 
 @Path("/verify-account")
 @RequestScoped
 class AccountVerificationResource {
-    companion object{
-        private val LOG: Logger = Logger.getLogger(AccountVerificationResource::class.java)
-    }
+
+    @Inject
+    @field: Default
+    private lateinit var cookieUtils: CookieUtils
 
     @Inject
     @field:Default
@@ -47,11 +47,11 @@ class AccountVerificationResource {
     @ResponseStatus(NO_CONTENT)
     @RolesAllowed("CLIENT")
     fun verifyClientAccount(otpRequest: OtpRequest):Response {
-        LOG.info("Vérifying user account")
+        Log.info("Vérifying user account")
         val mail = jwt.name
         verifyAccountsIn.verifyClientAccount(mail, otpRequest.otpCode)
         val csrfToken = csrfTokenGeneratorIn.generateToken(mail)
-        val csrfCookie = setUpCookie(csrfCookieName, csrfToken)
+        val csrfCookie = cookieUtils.setUpCookie(csrfCookieName, csrfToken)
         return Response.noContent().cookie(csrfCookie).build()
     }
 
@@ -61,12 +61,12 @@ class AccountVerificationResource {
     @ResponseStatus(NO_CONTENT)
     @RolesAllowed("CLIENT")
     fun generateNewOtpCode():Response {
-        LOG.info("Initiating new OTP")
+        Log.info("Initiating new OTP")
 
         val mail = jwt.name
         verifyAccountsIn.generateNewOtpCode(mail)
         val csrfToken = csrfTokenGeneratorIn.generateToken(mail)
-        val csrfCookie = setUpCookie(csrfCookieName, csrfToken)
+        val csrfCookie = cookieUtils.setUpCookie(csrfCookieName, csrfToken)
         return Response.noContent().cookie(csrfCookie).build()
     }
 }

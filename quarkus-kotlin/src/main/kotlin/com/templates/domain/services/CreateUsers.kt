@@ -15,19 +15,16 @@ import com.templates.domain.utils.InputsValidator.validatePasswordFormat
 import com.templates.domain.utils.InputsValidator.validatePhoneNumberFormat
 import com.templates.domain.utils.OtpGenerator
 import com.templates.domain.utils.UUIDGenerator.getNewUUID
+import io.quarkus.logging.Log
 import jakarta.enterprise.context.ApplicationScoped
 import jakarta.enterprise.inject.Default
 import jakarta.inject.Inject
 import org.eclipse.microprofile.config.inject.ConfigProperty
-import org.jboss.logging.Logger
 import java.sql.Timestamp
-
 
 @ApplicationScoped
 class CreateUsers : CreateUsersIn {
-    companion object {
-        val LOG: Logger = Logger.getLogger(CreateUsers::class.java)
-    }
+
     @Inject
     @field:Default
     private lateinit var jwtTokenGenerator: JwtTokenGenerator
@@ -47,21 +44,21 @@ class CreateUsers : CreateUsersIn {
     private lateinit var adminCreationCode: String
 
     override fun createUser(user: CreateUserCommand):UserBasicInformations {
-        LOG.info("Creating user")
+        Log.info("Creating user")
         val userType = UserTypes.CLIENT.name
         val userReference = setUpUserDataAndCheckInputs(user, userType)
         val userToken = jwtTokenGenerator.getToken(user.mail,userType)
         createUsersOut.addClient(user)
         azureStorageIn.createContainerForUser(user.phoneNumber)
-        LOG.info("OTP verification Mail sent to user")
+        Log.info("OTP verification Mail sent to user")
        return UserBasicInformations(userType, userReference, userToken, false)
     }
 
 
 
     override fun createAdmin(user: CreateUserCommand, adminCode: String): UserBasicInformations {
-        LOG.debug(adminCreationCode)
-        LOG.debug(adminCode)
+        Log.debug(adminCreationCode)
+        Log.debug(adminCode)
         if(adminCode == adminCreationCode){
             val userType = UserTypes.ADMIN.name
             val userReference = setUpUserDataAndCheckInputs(user, userType)
@@ -69,18 +66,18 @@ class CreateUsers : CreateUsersIn {
             user.accountVerified = true
             createUsersOut.addAdmin(user)
             azureStorageIn.createContainerForUser(user.phoneNumber)
-            LOG.info("OTP verification Mail sent to user")
+            Log.info("OTP verification Mail sent to user")
             val newAdminCreationCode = generateAdminCode()
             adminCreationCode = newAdminCreationCode
             secretsClientOut.updateAdminCode(adminCreationCode)
-            LOG.debug(adminCreationCode)
+            Log.debug(adminCreationCode)
             return UserBasicInformations(userType, userReference, userToken, false)
         } else {
             throw ApplicationException(ApplicationExceptionsEnum.ADMIN_VERIFICATION_CODE_NO_MATCH)
         }
     }
 
-    private fun setUpUserDataAndCheckInputs(
+    fun setUpUserDataAndCheckInputs(
         user: CreateUserCommand,
         userType: String
     ): String {

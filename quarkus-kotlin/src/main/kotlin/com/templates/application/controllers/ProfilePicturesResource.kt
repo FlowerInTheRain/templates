@@ -1,6 +1,5 @@
 package com.templates.application.controllers
 
-import com.templates.application.controllers.CookieUtils.setUpCookie
 import com.templates.application.dto.responses.UpdateProfilePictureResponse
 import com.templates.domain.errors.ApplicationException
 import com.templates.domain.errors.ApplicationExceptionsEnum
@@ -28,16 +27,13 @@ import org.jboss.resteasy.reactive.ResponseStatus
 import org.jboss.resteasy.reactive.RestForm
 import org.jboss.resteasy.reactive.RestResponse.StatusCode.ACCEPTED
 import org.jboss.resteasy.reactive.multipart.FileUpload
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 
 @Path("/profile-pictures")
 @RequestScoped
 class ProfilePicturesResource {
-    companion object {
-        private val LOGGER: Logger = LoggerFactory.getLogger(ProfilePicturesResource::class.java.name)
-    }
-
+    @Inject
+    @field: Default
+    private lateinit var cookieUtils: CookieUtils
     @Inject
     @field:Default
     private lateinit var jwt: JsonWebToken
@@ -77,7 +73,7 @@ class ProfilePicturesResource {
             phoneNumber,
             image))
         val csrfToken = csrfTokenGeneratorIn.generateToken(userMail)
-        val csrfCookie = setUpCookie(csrfCookieName, csrfToken)
+        val csrfCookie = cookieUtils.setUpCookie(csrfCookieName, csrfToken)
         return Response.ok(profilePicUrl).cookie(csrfCookie).build()
     }
 }
