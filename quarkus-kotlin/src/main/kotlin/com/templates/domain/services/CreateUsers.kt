@@ -1,6 +1,5 @@
 package com.templates.domain.services
 
-import JwtTokenGenerator
 import com.templates.domain.errors.ApplicationException
 import com.templates.domain.errors.ApplicationExceptionsEnum
 import com.templates.domain.models.commands.users.CreateUserCommand
@@ -48,11 +47,10 @@ class CreateUsers : CreateUsersIn {
     private lateinit var adminCreationCode: String
 
     override fun createUser(user: CreateUserCommand):UserBasicInformations {
-        val userType = UserTypes.ADMIN.name
+        LOG.info("Creating user")
+        val userType = UserTypes.CLIENT.name
         val userReference = setUpUserDataAndCheckInputs(user, userType)
-
-        val userToken = jwtTokenGenerator.getToken(user.mail,UserTypes
-            .CLIENT.name)
+        val userToken = jwtTokenGenerator.getToken(user.mail,userType)
         createUsersOut.addClient(user)
         azureStorageIn.createContainerForUser(user.phoneNumber)
         LOG.info("OTP verification Mail sent to user")
@@ -65,10 +63,9 @@ class CreateUsers : CreateUsersIn {
         LOG.info(adminCreationCode)
         LOG.info(adminCode)
         if(adminCode == adminCreationCode){
-            val userType = UserTypes.CLIENT.name
+            val userType = UserTypes.ADMIN.name
             val userReference = setUpUserDataAndCheckInputs(user, userType)
-            val userToken = jwtTokenGenerator.getToken(user.mail,UserTypes
-                .ADMIN.name)
+            val userToken = jwtTokenGenerator.getToken(user.mail,userType)
             user.accountVerified = true
             createUsersOut.addAdmin(user)
             azureStorageIn.createContainerForUser(user.phoneNumber)

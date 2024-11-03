@@ -4,16 +4,21 @@ import com.templates.domain.errors.ApplicationException
 import com.templates.domain.errors.ApplicationExceptionsEnum
 import com.templates.domain.models.users.User
 import com.templates.domain.ports.out.FindUserOut
+import com.templates.domain.services.PasswordManagement
 import com.templates.persistence.mappers.users.UsersEntityMapper
 import com.templates.persistence.repositories.UsersRepository
 import jakarta.enterprise.context.ApplicationScoped
 import jakarta.enterprise.inject.Default
 import jakarta.inject.Inject
+import org.jboss.logging.Logger
 
 @ApplicationScoped
 
 class FindUsersSpi:FindUserOut {
+    companion object {
+        private val LOG: Logger = Logger.getLogger(FindUserOut::class.java)
 
+    }
     @Inject
     @field:Default
     private lateinit var usersRepository: UsersRepository

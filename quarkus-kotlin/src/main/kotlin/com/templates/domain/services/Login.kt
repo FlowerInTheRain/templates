@@ -30,6 +30,7 @@ class Login(@field:Inject var jwtTokenGenerator: JwtTokenGenerator) : LoginIn {
 
     override fun login(identifier: String, password: String): UserLoggedIn {
         val user = findUserOut.findByIdentifier(identifier)
+        LOG.info(user.toString())
         if(verifyPassword(password, user.password)) {
             LOG.info("Login successful")
             val jwToken = jwtTokenGenerator.getToken(user.mail, user.type)
