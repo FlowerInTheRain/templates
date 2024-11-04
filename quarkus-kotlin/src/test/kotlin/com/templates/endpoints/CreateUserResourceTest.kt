@@ -16,6 +16,8 @@ import com.templates.domain.services.JwtTokenGenerator
 import io.quarkus.test.InjectMock
 import io.quarkus.test.junit.QuarkusTest
 import io.restassured.RestAssured
+import io.restassured.response.ResponseBody
+import io.restassured.response.ResponseBodyExtractionOptions
 import jakarta.inject.Inject
 import jakarta.ws.rs.core.NewCookie
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -23,6 +25,7 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import org.mockito.ArgumentCaptor
 import org.mockito.Mockito
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.*
@@ -65,6 +68,8 @@ class CreateUserResourceTest {
             null,
             null
         )
+        val mapper = ObjectMapper()
+
     }
 
     @Test
@@ -99,19 +104,17 @@ class CreateUserResourceTest {
             NewCookie.Builder("csrf-token").value
                 (csrfToken).maxAge(64800).httpOnly(false).path("/").build()
         )
+
         val res = RestAssured.given()
             .header("Content-Type", "application/json")
             .body(json)
             .`when`()
             .post("/users-create/admin")
             .then().extract()
+
         verify(createUsersIn).createAdmin(createUserCommandCaptor.capture(), adminCodeCaptor.capture())
-        assertTrue(createUserCommandCaptor.firstValue.mail == adminRequest.mail)
-        assertTrue(createUserCommandCaptor.firstValue.firstName == adminRequest.firstName)
-        assertTrue(createUserCommandCaptor.firstValue.lastName == adminRequest.lastName)
-        assertTrue(createUserCommandCaptor.firstValue.password == adminRequest.password)
-        assertTrue(createUserCommandCaptor.firstValue.phoneNumber == adminRequest.phoneNumber)
-        assertTrue(adminCodeCaptor.firstValue == adminRequest.adminCode)
+
+        commonAsserts(createUserCommandCaptor, adminCodeCaptor)
         val responseBody = res.body().`as`(CreateUserResponse::class.java)
         assertTrue(responseBody.type == UserTypes.ADMIN.name)
         assertTrue(responseBody.reference == userBasicInformations.reference)
@@ -124,21 +127,11 @@ class CreateUserResourceTest {
     @Test
     @DisplayName("Should get bad request")
     fun testCreateAdminBadRequest() {
-        val csrfToken = "ATOKEN"
-        val mapper = ObjectMapper()
         val json = mapper.writeValueAsString(adminRequest)
-        val jwtToken = jwtTokenGenerator.getToken(adminRequest.mail, UserTypes.ADMIN.name)
-        val userBasicInformations = UserBasicInformations(
-            UserTypes.ADMIN.name,
-            "ABCDEF",
-            jwtToken,
-            false
-        )
         val createUserCommandCaptor = argumentCaptor<CreateUserCommand>()
         val adminCodeCaptor = argumentCaptor<String>()
 
         whenever(usersDtoMappers.fromCreationRequest(adminRequest)).thenReturn(mappedRequest)
-
         whenever(
             createUsersIn.createAdmin(
                 any(), eq(adminRequest.adminCode)
@@ -154,16 +147,24 @@ class CreateUserResourceTest {
 
         verify(createUsersIn).createAdmin(createUserCommandCaptor.capture(), adminCodeCaptor.capture())
 
+        commonAsserts(createUserCommandCaptor, adminCodeCaptor)
+        assertEquals(res.statusCode(), 400)
+        val responseBody = res.body().`as`(ApplicationException::class.java)
+        assertTrue(responseBody.origin == ApplicationExceptionsEnum.CREATE_USER_INVALID_PHONE_NUMBER.origin)
+        assertTrue(responseBody.message == ApplicationExceptionsEnum.CREATE_USER_INVALID_PHONE_NUMBER.message)
+    }
+
+    private fun commonAsserts(
+        createUserCommandCaptor: KArgumentCaptor<CreateUserCommand>,
+        adminCodeCaptor: KArgumentCaptor<String>
+    ) {
         assertTrue(createUserCommandCaptor.firstValue.mail == adminRequest.mail)
         assertTrue(createUserCommandCaptor.firstValue.firstName == adminRequest.firstName)
         assertTrue(createUserCommandCaptor.firstValue.lastName == adminRequest.lastName)
         assertTrue(createUserCommandCaptor.firstValue.password == adminRequest.password)
         assertTrue(createUserCommandCaptor.firstValue.phoneNumber == adminRequest.phoneNumber)
         assertTrue(adminCodeCaptor.firstValue == adminRequest.adminCode)
-        assertEquals(res.statusCode(), 400)
-        val responseBody = res.body().`as`(ApplicationException::class.java)
-        assertTrue(responseBody.origin == ApplicationExceptionsEnum.CREATE_USER_INVALID_PHONE_NUMBER.origin)
-        assertTrue(responseBody.message == ApplicationExceptionsEnum.CREATE_USER_INVALID_PHONE_NUMBER.message)
     }
+
 
 }
