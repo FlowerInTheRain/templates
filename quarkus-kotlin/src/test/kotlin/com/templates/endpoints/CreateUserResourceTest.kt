@@ -33,6 +33,7 @@ import org.mockito.kotlin.*
 class CreateUserResourceTest {
     @InjectMock
     private lateinit var csrfTokenGeneratorIn: CsrfTokenGeneratorIn
+
     @InjectMock
     private lateinit var cookieUtils: CookieUtils
 
@@ -40,11 +41,12 @@ class CreateUserResourceTest {
     private lateinit var jwtTokenGenerator: JwtTokenGenerator
 
     private val usersDtoMappers: UsersDtoMappers = Mockito.mock(UsersDtoMappers::class.java)
+
     @InjectMock
     private lateinit var createUsersIn: CreateUsersIn
 
     companion object {
-        val adminRequest:CreateAdminRequest = CreateAdminRequest(
+        val adminRequest: CreateAdminRequest = CreateAdminRequest(
             "Sid",
             "Bennaceur",
             "test@test.com",
@@ -52,7 +54,7 @@ class CreateUserResourceTest {
             "0613511351",
             "123456789"
         )
-        val mappedRequest:CreateUserCommand = CreateUserCommand(
+        val mappedRequest: CreateUserCommand = CreateUserCommand(
             adminRequest.firstName,
             adminRequest.lastName,
             adminRequest.mail,
@@ -82,24 +84,22 @@ class CreateUserResourceTest {
         val adminCodeCaptor = argumentCaptor<String>()
 
         whenever(usersDtoMappers.fromCreationRequest(adminRequest)).thenReturn(mappedRequest)
-        whenever(createUsersIn.createAdmin(
-            any()
-        , eq(adminRequest.adminCode))).thenReturn(userBasicInformations)
-
-        whenever(cookieUtils.setUpCookie("Bearer", userBasicInformations.jwToken)).thenReturn( NewCookie
-            ("Bearer",
-            userBasicInformations.jwToken, "/",
-            null, null,
-            64800,
-            true) )
+        whenever(
+            createUsersIn.createAdmin(
+                any(), eq(adminRequest.adminCode)
+            )
+        ).thenReturn(userBasicInformations)
+        whenever(cookieUtils.setUpCookie("Bearer", userBasicInformations.jwToken))
+            .thenReturn(
+                NewCookie.Builder("Bearer").value(jwtToken).maxAge(64800).httpOnly(true).path("/")
+                    .build()
+            )
         whenever(csrfTokenGeneratorIn.generateToken(adminRequest.mail)).thenReturn(csrfToken)
-        whenever(cookieUtils.setUpCookie("csrf-token", csrfToken)).thenReturn( NewCookie
-            ("csrf-token",
-            csrfToken, "/",
-            null, null,
-            64800,
-            true) )
-       val res =  RestAssured.given()
+        whenever(cookieUtils.setUpCookie("csrf-token", csrfToken)).thenReturn(
+            NewCookie.Builder("csrf-token").value
+                (csrfToken).maxAge(64800).httpOnly(false).path("/").build()
+        )
+        val res = RestAssured.given()
             .header("Content-Type", "application/json")
             .body(json)
             .`when`()
@@ -120,6 +120,7 @@ class CreateUserResourceTest {
         assertEquals(res.cookie("Bearer"), jwtToken)
 
     }
+
     @Test
     @DisplayName("Should get bad request")
     fun testCreateAdminBadRequest() {
@@ -137,30 +138,22 @@ class CreateUserResourceTest {
         val adminCodeCaptor = argumentCaptor<String>()
 
         whenever(usersDtoMappers.fromCreationRequest(adminRequest)).thenReturn(mappedRequest)
-        whenever(createUsersIn.createAdmin(
-            any()
-            , eq(adminRequest.adminCode))).thenThrow(ApplicationException(ApplicationExceptionsEnum.CREATE_USER_INVALID_PHONE_NUMBER))
 
-        whenever(cookieUtils.setUpCookie("Bearer", userBasicInformations.jwToken)).thenReturn( NewCookie
-            ("Bearer",
-            userBasicInformations.jwToken, "/",
-            null, null,
-            64800,
-            true) )
-        whenever(csrfTokenGeneratorIn.generateToken(adminRequest.mail)).thenReturn(csrfToken)
-        whenever(cookieUtils.setUpCookie("csrf-token", csrfToken)).thenReturn( NewCookie
-            ("csrf-token",
-            csrfToken, "/",
-            null, null,
-            64800,
-            true) )
+        whenever(
+            createUsersIn.createAdmin(
+                any(), eq(adminRequest.adminCode)
+            )
+        ).thenThrow(ApplicationException(ApplicationExceptionsEnum.CREATE_USER_INVALID_PHONE_NUMBER))
+
         val res = RestAssured.given()
             .header("Content-Type", "application/json")
             .body(json)
             .`when`()
             .post("/users-create/admin")
             .then().extract()
+
         verify(createUsersIn).createAdmin(createUserCommandCaptor.capture(), adminCodeCaptor.capture())
+
         assertTrue(createUserCommandCaptor.firstValue.mail == adminRequest.mail)
         assertTrue(createUserCommandCaptor.firstValue.firstName == adminRequest.firstName)
         assertTrue(createUserCommandCaptor.firstValue.lastName == adminRequest.lastName)

@@ -64,7 +64,7 @@ class AzureStorage : AzureStorageIn {
 
     override fun updateProfilePicture(mail: String, role:String, phoneNumber:String, file: FileUpload): String {
         val containerName = String.format(FORMATTER, phoneNumber)
-        val fileName: String = file.fileName()
+        val fileName = "profile-picture${file.name().substringAfterLast(".")}"
         try {
             val containerClient: BlobContainerClient = blobServiceClient!!.getBlobContainerClient(containerName)
             containerClient.listBlobs().forEach{ blob ->

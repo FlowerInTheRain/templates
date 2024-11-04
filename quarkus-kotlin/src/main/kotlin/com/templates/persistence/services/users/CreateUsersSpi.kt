@@ -59,8 +59,8 @@ class CreateUsersSpi : CreateUsersOut {
     }
 
     private fun handleExceptions(e:ConstraintViolationException):Throws {
-        Log.error(String.format("Error while adding admin : %s", e.message))
-        Log.error(String.format("Error while adding admin : %s", e.constraintName))
+        Log.debug(String.format("Error while adding admin : %s", e.message))
+        Log.debug(String.format("Error while adding admin : %s", e.constraintName))
         when {
             e.constraintName.equals(MAIL_KEY) -> {
                 throw ApplicationException(ApplicationExceptionsEnum.CREATE_USER_DUPLICATE_MAIL)

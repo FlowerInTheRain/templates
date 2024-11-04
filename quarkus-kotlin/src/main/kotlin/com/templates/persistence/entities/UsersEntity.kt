@@ -19,13 +19,13 @@ class UsersEntity {
     var lastName: String? = null
     @Column(name = "mail", columnDefinition = "varchar(90)", nullable = false, unique = true)
     var mail: String? = null
-    @Column(name = "password", columnDefinition = "varchar(150)", nullable = false)
+    @Column(name = "password", columnDefinition = "varchar(25)", nullable = false)
     var password: String? = null
     @Column(name = "reference", columnDefinition = "bpchar(32)", nullable = false, unique = true, updatable = false)
     var reference: String? = null
-    @Column(name = "type", columnDefinition = "varchar(12)", nullable = false, updatable = false, insertable = false)
+    @Column(name = "type", columnDefinition = "varchar(10)", nullable = false, updatable = false, insertable = false)
     var type: String? = null
-    @Column(name = "phone_number", columnDefinition = "varchar(12)", unique = true, nullable = false)
+    @Column(name = "phone_number", columnDefinition = "bpchar(10)", unique = true, nullable = false)
     var phoneNumber: String? = null
     @Column(name = "verification_code", columnDefinition = "varchar(100)")
     var verificationCode: String? = null

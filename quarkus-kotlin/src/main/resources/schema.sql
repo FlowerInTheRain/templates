@@ -1,18 +1,18 @@
 create table if not exists users (
                                      account_verified boolean DEFAULT false not null,
                                      id bigint not null,
-                                     verification_code_timestamp TIMESTAMP,
-                                     type varchar(10) not null,
                                      first_name varchar(30) not null,
                                      last_name varchar(30) not null,
                                      mail varchar(90) not null,
-                                     password varchar(150) not null,
-                                     phone_number varchar(10) not null,
-                                     profile_pic_url varchar(200),
+                                     password varchar(25) not null,
                                      reference bpchar(32) not null,
+                                     type varchar(10) not null,
+                                     phone_number bpchar(10) not null,
                                      verification_code varchar(100),
+                                     verification_code_timestamp TIMESTAMP,
                                      password_verification_code varchar(100),
                                      password_verification_timestamp TIMESTAMP,
+                                     profile_pic_url varchar(200),
 
                                      constraint user_pk
                                          primary key (id, type),
@@ -33,7 +33,7 @@ create table if not exists admins
         FOR VALUES IN ('ADMIN');
 
 
-CREATE SEQUENCE users_seq
+CREATE SEQUENCE IF NOT EXISTS users_seq
     START 1
     INCREMENT 1
     NO MINVALUE
